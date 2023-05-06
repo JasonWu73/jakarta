@@ -20,7 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 协调 SPA 单页面应用和 REST API JSON 数据返回的控制器。
+ * 兼容 SPA 单页面应用和 REST API 服务。
  *
  * @author 吴仙杰
  */
@@ -44,13 +44,13 @@ public class NotFoundController {
   public static final String PAGE_SPA_INDEX = "classpath:/static/index.html";
 
   /**
-   * 配置 Web 服务器工厂接口：
+   * 配置 Web 服务器工厂：
    *
    * <ul>
-   *   <li>将“404 未找”到重定向至自定义控制器 {@link #URI_NOT_FOUND}</li>
+   *   <li>将“404 未找”到重定向至自定义 Controller {@link #URI_NOT_FOUND}</li>
    * </ul>
    *
-   * @return 自定义配置后的 Web 服务器工厂接口。
+   * @return 自定义配置后的 Web 服务器工厂。
    */
   @Bean
   public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> webServerFactoryCustomizer() {
