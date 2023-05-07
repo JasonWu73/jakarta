@@ -20,7 +20,7 @@ import java.util.List;
 @Validated
 @Configuration
 @ConfigurationProperties(prefix = "security")
-public class WebSecurityProps {
+public class SecurityProps {
 
   /**
    * JWT Token 签名密钥。
