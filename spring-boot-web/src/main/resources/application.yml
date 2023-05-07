@@ -1,0 +1,4 @@
+security:
+  token-key: '=rgd(B`]{Q\4fRA'
+  public-apis:
+    - POST /api/v1/token
