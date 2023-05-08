@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class TokenCacheConfig {
 
-  private final SecurityProps securityProps;
-
   /**
    * 用于 Token 身份验证的定时缓存。
    *
@@ -25,7 +23,7 @@ public class TokenCacheConfig {
   @Bean
   public TimedCache<String, AuthData> tokenCache() {
     // 创建 Token 定时缓存
-    final int timeoutMs = securityProps.getExpirationSec() * 1000;
+    final int timeoutMs = SecurityProps.EXPIRATION_SEC * 1000;
     final TimedCache<String, AuthData> cache = CacheUtil.newTimedCache(timeoutMs);
 
     // 启动定时任务，每到过期时间时清理一次过期条目
