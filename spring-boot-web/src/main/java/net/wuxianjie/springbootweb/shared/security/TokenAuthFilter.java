@@ -57,7 +57,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
     }
 
     if (!StrUtil.startWith(bearerTokenOpt.get(), BEARER_PREFIX)) {
-      filterChain.doFilter(request, response);
+      resolveError(request, response, "授权信息格式有误");
       return;
     }
 
