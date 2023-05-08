@@ -3,8 +3,8 @@ package net.wuxianjie.springbootweb.shared.util;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import net.wuxianjie.springbootweb.shared.security.AuthData;
-import net.wuxianjie.springbootweb.shared.security.AuthUtils;
+import net.wuxianjie.springbootweb.auth.AuthData;
+import net.wuxianjie.springbootweb.auth.AuthUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 

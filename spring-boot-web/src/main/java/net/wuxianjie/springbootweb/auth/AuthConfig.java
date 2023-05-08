@@ -1,8 +1,7 @@
-package net.wuxianjie.springbootweb.shared.security;
+package net.wuxianjie.springbootweb.auth;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @author 吴仙杰
  */
 @Configuration
-@RequiredArgsConstructor
-public class TokenCacheConfig {
+public class AuthConfig {
 
   /**
    * 用于 Token 身份验证的定时缓存。
@@ -21,9 +19,9 @@ public class TokenCacheConfig {
    * @return Token 登录缓存（{@code {username: AuthData}}）
    */
   @Bean
-  public TimedCache<String, AuthData> tokenCache() {
+  public TimedCache<String, AuthData> accessTokenCache() {
     // 创建 Token 定时缓存
-    final int timeoutMs = SecurityProps.EXPIRATION_SEC * 1000;
+    final int timeoutMs = AuthProps.TOKEN_EXPIRATION_SEC * 1000;
     final TimedCache<String, AuthData> cache = CacheUtil.newTimedCache(timeoutMs);
 
     // 启动定时任务，每到过期时间时清理一次过期条目

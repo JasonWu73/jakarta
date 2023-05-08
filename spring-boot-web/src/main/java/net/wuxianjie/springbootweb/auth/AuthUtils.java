@@ -1,4 +1,4 @@
-package net.wuxianjie.springbootweb.shared.security;
+package net.wuxianjie.springbootweb.auth;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package net.wuxianjie.springbootweb.shared.security;
+package net.wuxianjie.springbootweb.auth;
 
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
@@ -66,7 +66,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class WebSecurityConfig {
 
   private final HandlerExceptionResolver handlerExceptionResolver;
   private final TokenAuth tokenAuth;

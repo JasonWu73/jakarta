@@ -1,4 +1,4 @@
-package net.wuxianjie.springbootweb.shared.security;
+package net.wuxianjie.springbootweb.auth;
 
 import cn.hutool.core.util.ArrayUtil;
 import org.springframework.security.core.GrantedAuthority;

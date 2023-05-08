@@ -1,4 +1,4 @@
-package net.wuxianjie.springbootweb.shared.security;
+package net.wuxianjie.springbootweb.auth;
 
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.jwt.JWT;
@@ -20,8 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TokenAuthImpl implements TokenAuth {
 
-  private final SecurityProps securityProps;
-  private final TimedCache<String, AuthData> tokenCache;
+  private final AuthProps securityProps;
+  private final TimedCache<String, AuthData> accessTokenCache;
 
   @Override
   public AuthData authenticate(final String accessToken) {
@@ -37,21 +37,21 @@ public class TokenAuthImpl implements TokenAuth {
     // 解析 JWT Token 获取用户名及类型
     final JWT jwt = JWTUtil.parseToken(accessToken);
 
-    final String username = Optional.ofNullable(jwt.getPayload(SecurityProps.JWT_PAYLOAD_USERNAME))
+    final String username = Optional.ofNullable(jwt.getPayload(AuthProps.JWT_PAYLOAD_USERNAME))
       .map(Object::toString)
       .orElseThrow(() -> new RuntimeException("错误 Token"));
 
-    final String type = Optional.ofNullable(jwt.getPayload(SecurityProps.JWT_PAYLOAD_TYPE))
+    final String type = Optional.ofNullable(jwt.getPayload(AuthProps.JWT_PAYLOAD_TYPE))
       .map(Object::toString)
       .orElseThrow(() -> new RuntimeException("错误 Token"));
 
     // 判断 Token 必须为 Access Token
-    if (!Objects.equals(type, SecurityProps.TOKEN_TYPE_ACCESS)) {
+    if (!Objects.equals(type, AuthProps.TOKEN_TYPE_ACCESS)) {
       throw new RuntimeException("API 鉴权请使用 Access Token");
     }
 
     // 通过用户名获取用户数据
-    final AuthData authData = Optional.ofNullable(tokenCache.get(username))
+    final AuthData authData = Optional.ofNullable(accessTokenCache.get(username))
       .orElseThrow(() -> new RuntimeException("Token 已被失效"));
 
     if (!Objects.equals(authData.accessToken(), accessToken)) {

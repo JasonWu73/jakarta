@@ -1,4 +1,4 @@
-package net.wuxianjie.springbootweb.shared.security;
+package net.wuxianjie.springbootweb.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -7,15 +7,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Web Security 配置项。
+ * Token 鉴权相关的配置项。
  *
  * @author 吴仙杰
  **/
 @Data
 @Validated
 @Configuration
-@ConfigurationProperties(prefix = "security")
-public class SecurityProps {
+@ConfigurationProperties(prefix = "auth")
+public class AuthProps {
 
   /**
    * JWT Payload - 用户名。
@@ -40,7 +40,7 @@ public class SecurityProps {
   /**
    * Token 过期时间，单位：秒。
    */
-  public static final int EXPIRATION_SEC = 1800;
+  public static final int TOKEN_EXPIRATION_SEC = 1800;
 
   /**
    * Token 签名密钥。
