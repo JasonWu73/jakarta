@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /**
@@ -63,6 +64,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class SecurityConfig {
 
   private final HandlerExceptionResolver handlerExceptionResolver;
+  private final TokenAuthFilter tokenAuthFilter;
 
   /**
    * <p>静态资源需要排除在 Spring Security 之外，否则会导致浏览器无法缓存。
@@ -91,13 +93,20 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    // 以下配置仅对 API 请求生效
+    http
+      .securityMatcher("/api/**")
+      // 按顺序比较，符合则退出后续比较
+      .authorizeHttpRequests()
+      // 默认所有 API 都需要登录才能访问
+      .anyRequest().authenticated().and()
+      // 在进入 Spring Security 身份验证过滤器前添加自定义的身份验证过滤器
+      .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     http
       // 按顺序比较，符合则退出后续比较
       .authorizeHttpRequests()
-      // 默认所有 API 都需要登录才能访问
-      .requestMatchers("/api/**").authenticated()
-      // 所有非 API 请求（即 SPA 前端）都可直接访问
+      // 默认所有请求所有人都可访问
       .anyRequest().permitAll().and()
       // 启用登录表单
       .formLogin().and()
