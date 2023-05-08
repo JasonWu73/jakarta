@@ -82,6 +82,7 @@ public class SecurityConfig {
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return web -> web.ignoring().requestMatchers(
+      "favicon.ico",
       "/UEditor/**",
       "/js/**",
       "/css/**",
@@ -104,7 +105,7 @@ public class SecurityConfig {
       // 按顺序比较，符合则退出后续比较
       .authorizeHttpRequests()
       // 默认所有 API 都需要登录才能访问
-      .anyRequest().authenticated().and()
+      .requestMatchers("/**").permitAll().and()
       // 在进入 Spring Security 身份验证过滤器前添加自定义的身份验证过滤器
       .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -112,7 +113,7 @@ public class SecurityConfig {
       // 按顺序比较，符合则退出后续比较
       .authorizeHttpRequests()
       // 默认所有请求所有人都可访问
-      .anyRequest().permitAll().and()
+      .requestMatchers("/**").permitAll().and()
       // 启用登录表单
       .formLogin().and()
       // 允许前端使用 iFrame

@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.shared.security;
 
 import cn.hutool.core.util.StrUtil;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -23,10 +24,36 @@ import java.util.List;
 public class SecurityProps {
 
   /**
-   * JWT Token 签名密钥。
+   * JWT Payload - 用户名。
    */
-  @NotBlank(message = "JWT Token 签名密钥不能为空")
+  public static final String JWT_PAYLOAD_USERNAME = "username";
+
+  /**
+   * JWT Payload - Token 类型。
+   */
+  public static final String JWT_PAYLOAD_TYPE = "type";
+
+  /**
+   * JWT Payload - Access Token 类型值。
+   */
+  public static final String TOKEN_TYPE_ACCESS = "access";
+
+  /**
+   * JWT Payload - Refresh Token 类型值。
+   */
+  public static final String TOKEN_TYPE_REFRESH = "refresh";
+
+  /**
+   * Token 签名密钥。
+   */
+  @NotBlank(message = "Token 签名密钥不能为空")
   private String tokenKey;
+
+  /**
+   * Token 过期时间，单位：秒.
+   */
+  @Min(message = "Token 过期时间至少要大于 600 秒", value = 600)
+  private int expirationSec;
 
   /**
    * 定义 Public API Endpoint，格式为 {@code [[HTTP_METHOD] API_PATH]}。

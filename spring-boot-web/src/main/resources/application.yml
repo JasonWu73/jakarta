@@ -1,4 +1,5 @@
 security:
   token-key: '=rgd(B`]{Q\4fRA'
+  expiration-sec: 1800
   public-apis:
     - POST /api/v1/token
