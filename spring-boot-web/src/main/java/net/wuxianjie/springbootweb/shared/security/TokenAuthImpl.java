@@ -52,7 +52,7 @@ public class TokenAuthImpl implements TokenAuth {
 
     // 通过用户名获取用户数据
     final AuthData authData = Optional.ofNullable(tokenCache.get(username))
-      .orElseThrow(() -> new RuntimeException("Token 已过期"));
+      .orElseThrow(() -> new RuntimeException("Token 已被失效"));
 
     if (!Objects.equals(authData.accessToken(), accessToken)) {
       throw new RuntimeException("Token 已被更新");
