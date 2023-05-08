@@ -69,7 +69,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class SecurityConfig {
 
   private final HandlerExceptionResolver handlerExceptionResolver;
-  private final TokenAuthFilter tokenAuthFilter;
+  private final TokenAuth tokenAuth;
 
   /**
    * <p>静态资源需要排除在 Spring Security 之外，否则会导致浏览器无法缓存。
@@ -105,17 +105,20 @@ public class SecurityConfig {
       // 按顺序比较，符合则退出后续比较
       .authorizeHttpRequests()
       // 默认所有 API 都需要登录才能访问
-      .requestMatchers("/**").permitAll().and()
-      // 在进入 Spring Security 身份验证过滤器前添加自定义的身份验证过滤器
-      .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class);
+      .requestMatchers("/**").authenticated().and()
+      // 在进入 Spring Security 身份验证过滤器前添加自定义的 Token 身份验证过滤器
+      // 注意：哪怕是 `permitAll` 的 URI 也会进入过滤器
+      .addFilterBefore(
+        new TokenAuthFilter(handlerExceptionResolver, tokenAuth),
+        UsernamePasswordAuthenticationFilter.class
+      );
 
+    // 以下配置对所有请求生效
     http
       // 按顺序比较，符合则退出后续比较
       .authorizeHttpRequests()
-      // 默认所有请求所有人都可访问
+      // 默认所有请求所有人都可访问（保证 SPA 前端资源可用）
       .requestMatchers("/**").permitAll().and()
-      // 启用登录表单
-      .formLogin().and()
       // 允许前端使用 iFrame
       .headers().frameOptions().disable().and()
       // 启用 CORS 并禁用 CSRF

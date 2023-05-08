@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
@@ -30,7 +29,6 @@ import java.util.Optional;
  *
  * @author 吴仙杰
  */
-@Component
 @RequiredArgsConstructor
 public class TokenAuthFilter extends OncePerRequestFilter {
 
@@ -54,12 +52,12 @@ public class TokenAuthFilter extends OncePerRequestFilter {
     );
 
     if (bearerTokenOpt.isEmpty()) {
-      resolveError(request, response, "授权失败 [未携带授权信息]");
+      filterChain.doFilter(request, response);
       return;
     }
 
     if (!StrUtil.startWith(bearerTokenOpt.get(), BEARER_PREFIX)) {
-      resolveError(request, response, "授权失败 [授权信息格式有误]");
+      filterChain.doFilter(request, response);
       return;
     }
 
