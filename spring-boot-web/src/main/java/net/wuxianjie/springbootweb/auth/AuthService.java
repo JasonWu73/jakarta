@@ -60,7 +60,7 @@ public class AuthService {
       100,
       request.getUsername(),
       "测试用户",
-      false,
+      true,
       List.of(),
       accessToken,
       refreshToken
