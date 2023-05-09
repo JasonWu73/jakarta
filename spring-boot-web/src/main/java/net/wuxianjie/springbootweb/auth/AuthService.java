@@ -1,18 +1,17 @@
 package net.wuxianjie.springbootweb.auth;
 
 import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
-import net.wuxianjie.springbootweb.auth.dto.AuthData;
-import net.wuxianjie.springbootweb.auth.dto.GetTokenRequest;
-import net.wuxianjie.springbootweb.auth.dto.TokenPayload;
-import net.wuxianjie.springbootweb.auth.dto.TokenResponse;
+import net.wuxianjie.springbootweb.auth.dto.*;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import net.wuxianjie.springbootweb.shared.util.ServletUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 身份验证相关处理。
@@ -23,9 +22,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AuthService {
 
+  private final PasswordEncoder passwordEncoder;
   private final TokenService tokenService;
   private final TimedCache<String, AuthData> accessTokenCache;
   private final TokenAuth tokenAuth;
+  private final AuthMapper authMapper;
 
   /**
    * 获取 Access Token。
@@ -34,9 +35,14 @@ public class AuthService {
    * @return Access Token 相关信息
    */
   public TokenResponse getToken(final GetTokenRequest request) {
-    // 执行身份验证
-    if (!Objects.equals(request.getUsername(), "wxj")) {
-      throw new ApiException(HttpStatus.UNAUTHORIZED, "用户或密码错误");
+    // 通过用户名查询数据库获取用户数据
+    final RawAuthData rawAuth = Optional.ofNullable(
+      authMapper.selectByUsername(request.getUsername())
+    ).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误"));
+
+    // 判断密码是否正确
+    if (!passwordEncoder.matches(request.getPassword(), rawAuth.hashedPassword())) {
+      throw new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误");
     }
 
     // 创建 Token
@@ -56,28 +62,59 @@ public class AuthService {
     ));
 
     // 添加 Token 缓存
-    final AuthData authData = new AuthData(
-      100,
-      request.getUsername(),
-      "测试用户",
-      true,
-      List.of(),
+    final AuthData auth = new AuthData(
+      rawAuth.userId(),
+      rawAuth.username(),
+      rawAuth.nickname(),
+      rawAuth.status(),
+      StrUtil.split(rawAuth.menus(), StrUtil.COMMA, true, true),
       accessToken,
       refreshToken
     );
-
-    accessTokenCache.put(request.getUsername(), authData);
+    accessTokenCache.put(request.getUsername(), auth);
 
     // 添加 Spring Security Context 以便记录登录日志进可获取用户名
-    tokenAuth.setAuthenticatedContext(authData, ServletUtils.getCurrentRequest().orElseThrow());
+    tokenAuth.setAuthenticatedContext(auth, ServletUtils.getCurrentRequest().orElseThrow());
 
     return new TokenResponse(
       accessToken,
       refreshToken,
       AuthProps.TOKEN_EXPIRATION_SEC,
       request.getUsername(),
-      "测试用户",
-      List.of()
+      auth.nickname(),
+      auth.authorities()
     );
+  }
+
+  public TokenResponse updateToken(final String refreshToken) {
+    // 验证 JWT Token 本身（格式）是否合法
+    final boolean legalToken = tokenService.isLegal(refreshToken);
+    if (!legalToken) {
+      throw new ApiException(HttpStatus.UNAUTHORIZED, "Token 不合法");
+    }
+
+    // 解析 JWT Token 获取用户名及类型
+    final TokenPayload payload = tokenService.parse(refreshToken);
+
+    // 判断 Token 是否为 Refresh Token
+    if (!Objects.equals(payload.type(), AuthProps.TOKEN_TYPE_REFRESH)) {
+      throw new IllegalArgumentException("刷新请使用 Refresh Token");
+    }
+
+    // 通过用户名获取登录缓存中的用户数据，并判断 Token 是否正确
+    final AuthData authData = Optional.ofNullable(accessTokenCache.get(payload.username()))
+      .orElseThrow(() -> new RuntimeException("Token 已失效"));
+
+    if (!Objects.equals(authData.refreshToken(), refreshToken)) {
+      throw new RuntimeException("Token 已废弃");
+    }
+
+    // 查询数据库获取用户数据
+
+    // 创建 Token
+
+    // 添加 Token 缓存
+
+    return null;
   }
 }

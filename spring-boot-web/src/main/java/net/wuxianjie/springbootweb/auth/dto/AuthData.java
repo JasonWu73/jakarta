@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.auth.dto;
 
 import cn.hutool.core.util.ArrayUtil;
+import net.wuxianjie.springbootweb.auth.AccountStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @param userId 用户 id
  * @param username 用户名
  * @param nickname 用户昵称
- * @param enabled 是否启用
+ * @param status 账号状态
  * @param authorities 权限列表
  * @param accessToken Access Token
  * @param refreshToken Refresh Token
@@ -22,7 +23,7 @@ public record AuthData(
   long userId,
   String username,
   String nickname,
-  boolean enabled,
+  AccountStatus status,
   List<String> authorities,
   String accessToken,
   String refreshToken

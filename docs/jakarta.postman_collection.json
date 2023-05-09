@@ -1,0 +1,451 @@
+{
+	"info": {
+		"_postman_id": "70fc00a8-24c4-4ce1-bfc9-27e29f4f6df5",
+		"name": "jakarta",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "获取 Access Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.status === \"OK\") {",
+							"  const data = pm.response.json();",
+							"  pm.collectionVariables.set('accessToken', data.accessToken);",
+							"  pm.collectionVariables.set('refreshToken', data.refreshToken);",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.request.body.raw = jsonMinify(pm.request.body.raw);",
+							"",
+							"// 去除 JSON 参数注释方法",
+							"function jsonMinify(json) {",
+							"",
+							"  var tokenizer = /\"|(\\/\\*)|(\\*\\/)|(\\/\\/)|\\n|\\r|\\[|]/g,",
+							"    in_string = false,",
+							"    in_multiline_comment = false,",
+							"    in_singleline_comment = false,",
+							"    tmp, tmp2, new_str = [], ns = 0, from = 0, lc, rc,",
+							"    prevFrom",
+							"  ;",
+							"",
+							"  tokenizer.lastIndex = 0;",
+							"",
+							"  while (tmp = tokenizer.exec(json)) {",
+							"    lc = RegExp.leftContext;",
+							"    rc = RegExp.rightContext;",
+							"    if (!in_multiline_comment && !in_singleline_comment) {",
+							"      tmp2 = lc.substring(from);",
+							"      if (!in_string) {",
+							"        tmp2 = tmp2.replace(/(\\n|\\r|\\s)*/g, '');",
+							"      }",
+							"      new_str[ns++] = tmp2;",
+							"    }",
+							"    prevFrom = from;",
+							"    from = tokenizer.lastIndex;",
+							"",
+							"    // found a \" character, and we're not currently in",
+							"    // a comment? check for previous `\\` escaping immediately",
+							"    // leftward adjacent to this match",
+							"    if (tmp[0] === '\"' && !in_multiline_comment && !in_singleline_comment) {",
+							"      // limit left-context matching to only go back",
+							"      // to the position of the last token match",
+							"      //",
+							"      // see: https://github.com/getify/JSON.minify/issues/64",
+							"      lc.lastIndex = prevFrom;",
+							"",
+							"      // perform leftward adjacent escaping match",
+							"      tmp2 = lc.match(/(\\\\)*$/);",
+							"      // start of string with \", or unescaped \" character found to end string?",
+							"      if (!in_string || !tmp2 || (tmp2[0].length % 2) === 0) {",
+							"        in_string = !in_string;",
+							"      }",
+							"      from--; // include \" character in next catch",
+							"      rc = json.substring(from);",
+							"    } else if (tmp[0] === '/*' && !in_string && !in_multiline_comment && !in_singleline_comment) {",
+							"      in_multiline_comment = true;",
+							"    } else if (tmp[0] === '*/' && !in_string && in_multiline_comment && !in_singleline_comment) {",
+							"      in_multiline_comment = false;",
+							"    } else if (tmp[0] === '//' && !in_string && !in_multiline_comment && !in_singleline_comment) {",
+							"      in_singleline_comment = true;",
+							"    } else if ((tmp[0] === '\\n' || tmp[0] === '\\r') && !in_string && !in_multiline_comment && in_singleline_comment) {",
+							"      in_singleline_comment = false;",
+							"    } else if (!in_multiline_comment && !in_singleline_comment && !(/\\n|\\r|\\s/.test(tmp[0]))) {",
+							"      new_str[ns++] = tmp[0];",
+							"    }",
+							"  }",
+							"  new_str[ns++] = rc;",
+							"  return new_str.join('');",
+							"};"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"wxj\", // 用户名, 必填\n  \"password\": \"111\" // 密码, 必填\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/token",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"token"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "成功",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"wxj\", // 用户名, 必填\n  \"password\": \"111\" // 密码, 必填\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"token"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 09 May 2023 09:29:48 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accessToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Ind4aiIsImV4cCI6MTY4MzYyNjM4OCwidHlwZSI6ImFjY2VzcyIsImlzcyI6IuWQtOS7meadsOa8lOekuuezu-e7nyJ9.ZYXs8aBRbUpqMB_8H9iZ7wPTmEB1JluE0UrLF-3CvAg\", // 用于接口访问的 Access Token\n    \"refreshToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Ind4aiIsImV4cCI6MTY4MzYyNjM4OCwidHlwZSI6InJlZnJlc2giLCJpc3MiOiLlkLTku5nmnbDmvJTnpLrns7vnu58ifQ.YAQSybOGzgblgO7nYGkwJiTss85Yz_WHomaVnnayLwI\", // 用于刷新的 Refresh Token\n    \"expiresInSec\": 1800, // Token 多少秒后过期\n    \"username\": \"wxj\", // 用户名\n    \"nickname\": \"吴仙杰\", // 昵称\n    \"authorities\": [ // 权限列表\n        \"root\"\n    ]\n}"
+				},
+				{
+					"name": "统一失败返回格式",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"wxj\", // 用户名, 必填\n  \"password\": \"111 \" // 密码, 必填\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"token"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 09 May 2023 09:31:04 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"timestamp\": \"2023-05-09 17:31:04\", // 请求的时间戳\n    \"status\": 401, // HTTP 响应状态码\n    \"error\": \"用户名或密码错误\", // 错误提示信息\n    \"path\": \"/api/v1/token\" // 请求的资源路径\n}"
+				}
+			]
+		},
+		{
+			"name": "404",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgzNTM1MTQxLCJ1c2VyIjoic3UifQ.87Jh5NmhQHN6G_lMUdN7OdKcvYLKV285zu_FK1l2_fk",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/no-resource",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"no-resource"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "成功",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgzNTM1MTQxLCJ1c2VyIjoic3UifQ.87Jh5NmhQHN6G_lMUdN7OdKcvYLKV285zu_FK1l2_fk",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/no-resource",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"no-resource"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 09 May 2023 09:32:25 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"timestamp\": \"2023-05-09 17:32:25\",\n    \"status\": 404,\n    \"error\": \"资源不存在\",\n    \"path\": \"/api/v1/no-resource\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8090",
+			"type": "default"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshToken",
+			"value": ""
+		}
+	]
+}

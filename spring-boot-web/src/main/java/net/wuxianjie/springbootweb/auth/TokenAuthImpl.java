@@ -32,7 +32,7 @@ public class TokenAuthImpl implements TokenAuth {
     // 解析 JWT Token 获取用户名及类型
     final TokenPayload payload = tokenService.parse(accessToken);
 
-    // 判断 Token 必须为 Access Token
+    // 判断 Token 是否为 Access Token
     if (!Objects.equals(payload.type(), AuthProps.TOKEN_TYPE_ACCESS)) {
       throw new IllegalArgumentException("API 鉴权请使用 Access Token");
     }
@@ -45,7 +45,7 @@ public class TokenAuthImpl implements TokenAuth {
       throw new RuntimeException("Token 已废弃");
     }
 
-    if (!authData.enabled()) {
+    if (authData.status() == AccountStatus.DISABLED) {
       throw new RuntimeException("账号已禁用");
     }
 

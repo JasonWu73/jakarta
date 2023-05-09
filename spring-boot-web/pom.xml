@@ -18,6 +18,8 @@
 
   <properties>
     <java.version>17</java.version>
+
+    <jasypt.version>3.0.5</jasypt.version>
   </properties>
 
   <dependencies>
@@ -25,6 +27,23 @@
       <groupId>cn.hutool</groupId>
       <artifactId>hutool-all</artifactId>
       <version>5.8.16</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.ulisesbocchio</groupId>
+      <artifactId>jasypt-spring-boot-starter</artifactId>
+      <version>${jasypt.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
     </dependency>
 
     <dependency>
@@ -62,6 +81,8 @@
   </dependencies>
 
   <build>
+    <finalName>spring-boot-web</finalName>
+
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -73,6 +94,47 @@
               <artifactId>lombok</artifactId>
             </exclude>
           </excludes>
+        </configuration>
+      </plugin>
+
+      <!--
+      Jasypt Maven 插件：
+
+      1、加密指定的原始字符串：
+      `mvn jasypt:encrypt-value \
+        -Djasypt.encryptor.password=wxj#secret_ \
+        -Djasypt.plugin.value=pass123`
+       ->
+      `ENC(KOTlCZ7eoNB0p1NfdIyj/c+k5cA3KgVm5e+Wee0EuU4LaI6WfGOau9PCwCqJxZ0I)`
+
+      2、解密指定的原始字符串：
+      `mvn jasypt:decrypt-value \
+        -Djasypt.encryptor.password=wxj#secret_ \
+        -Djasypt.plugin.value=KOTlCZ7eoNB0p1NfdIyj/c+k5cA3KgVm5e+Wee0EuU4LaI6WfGOau9PCwCqJxZ0I`
+      ->
+      `pass123`
+
+      3、加密 Spring Boot 配置文件中属性值（`DEC(raw)` -> `ENC(encrypted)`）：
+      `mvn jasypt:encrypt -Djasypt.encryptor.password=wxj#secret_`
+
+      3.1、使用新密钥重新加密 Spring Boot 配置文件：
+      `mvn jasypt:reencrypt \
+        -Djasypt.plugin.old.password=wxj#secret_ \
+        -Djasypt.encryptor.password=new-wxj#secret_`
+
+      3.2、解密并打印 Spring Boot 配置文件内容：
+      `mvn jasypt:decrypt -Djasypt.encryptor.password=wxj#secret_`
+
+      4、提供密钥以运行 Spring Boot 应用程序：
+      `java -Djasypt.encryptor.password=wxj#secret_ -jar spring-boot-web.jar`
+      -->
+      <plugin>
+        <groupId>com.github.ulisesbocchio</groupId>
+        <artifactId>jasypt-maven-plugin</artifactId>
+        <version>${jasypt.version}</version>
+        <configuration>
+          <!-- 默认为 `src/main/resources/application.properties` -->
+          <path>file:src/main/resources/application.yml</path>
         </configuration>
       </plugin>
     </plugins>

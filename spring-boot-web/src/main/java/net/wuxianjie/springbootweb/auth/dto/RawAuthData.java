@@ -1,5 +1,7 @@
 package net.wuxianjie.springbootweb.auth.dto;
 
+import net.wuxianjie.springbootweb.auth.AccountStatus;
+
 /**
  * Token 身份验证后的原始数据。
  *
@@ -7,7 +9,7 @@ package net.wuxianjie.springbootweb.auth.dto;
  * @param username 用户名
  * @param nickname 用户昵称
  * @param hashedPassword Hash 计算后的密码
- * @param enabled 是否启用
+ * @param status 账号状态
  * @param roleId 角色 id
  * @param menus 以英文逗号分隔的功能菜单（权限）字符串
  */
@@ -16,7 +18,7 @@ public record RawAuthData(
   String username,
   String nickname,
   String hashedPassword,
-  boolean enabled,
+  AccountStatus status,
   long roleId,
   String menus
 ) {

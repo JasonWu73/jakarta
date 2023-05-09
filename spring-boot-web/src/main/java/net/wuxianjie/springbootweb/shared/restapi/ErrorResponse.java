@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * 自定义 API 错误结果。
  *
- * @param timestamp 请求时间戳
+ * @param timestamp 请求的时间戳
  * @param status HTTP 响应状态码
  * @param error 错误提示信息
  * @param path 请求的资源路径

@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @param accessToken 用于接口访问的 Access Token
  * @param refreshToken 用于刷新的 Refresh Token
- * @param expiresInSec Access Token 多少秒后过期
+ * @param expiresInSec Token 多少秒后过期
  * @param username 用户名
  * @param nickname 昵称
  * @param authorities 权限列表
