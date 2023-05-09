@@ -43,6 +43,11 @@ public class AuthProps {
   public static final int TOKEN_EXPIRATION_SEC = 1800;
 
   /**
+   * Token 签发者，即当前系统名。
+   */
+  public static final String TOKEN_ISSUER = "设备管控平台";
+
+  /**
    * Token 签名密钥。
    */
   @NotBlank(message = "Token 签名密钥不能为空")

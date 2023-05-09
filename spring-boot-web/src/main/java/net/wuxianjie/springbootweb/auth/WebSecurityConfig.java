@@ -104,6 +104,8 @@ public class WebSecurityConfig {
       .securityMatcher("/api/**")
       // 按顺序比较，符合则退出后续比较
       .authorizeHttpRequests()
+      // 开放获取鉴权信息相关 API
+      .requestMatchers("/api/v1/token/**").permitAll()
       // 默认所有 API 都需要登录才能访问
       .requestMatchers("/**").authenticated().and()
       // 在进入 Spring Security 身份验证过滤器前添加自定义的 Token 身份验证过滤器

@@ -1,5 +1,13 @@
 package net.wuxianjie.springbootweb.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
+import net.wuxianjie.springbootweb.auth.dto.AuthData;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
+import java.util.List;
+
 /**
  * 实现 Token 身份验证必须要实现的接口，详见 {@link TokenAuthFilter}。
  *
@@ -24,4 +32,25 @@ public interface TokenAuth {
    * @throws Exception 当身份验证失败时抛出
    */
   AuthData authenticate(String accessToken) throws Exception;
+
+  /**
+   * 将登录信息写入 Spring Security Context 以便后续其他代码可从上下文中获取登录数据。
+   *
+   * @param authData 登录成功后的数据
+   * @param request 当前 HTTP 请求
+   */
+  default void setAuthenticatedContext(
+    final AuthData authData,
+    final HttpServletRequest request
+  ) {
+    final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+      authData,
+      null,
+      authData == null ? List.of() : authData.getAuthorities()
+    );
+
+    token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+    SecurityContextHolder.getContext().setAuthentication(token);
+  }
 }

@@ -7,17 +7,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -73,7 +70,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
     }
 
     // 将登录信息写入 Spring Security Context 中
-    setAuthenticatedContext(authData, request);
+    tokenAuth.setAuthenticatedContext(authData, request);
 
     // 继续执行下一个过滤器
     filterChain.doFilter(request, response);
@@ -90,20 +87,5 @@ public class TokenAuthFilter extends OncePerRequestFilter {
       null,
       new ApiException(HttpStatus.UNAUTHORIZED, error)
     );
-  }
-
-  private void setAuthenticatedContext(
-    final AuthData authData,
-    final HttpServletRequest request
-  ) {
-    final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-      authData,
-      null,
-      authData == null ? List.of() : authData.getAuthorities()
-    );
-
-    token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-    SecurityContextHolder.getContext().setAuthentication(token);
   }
 }

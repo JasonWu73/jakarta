@@ -1,4 +1,4 @@
-package net.wuxianjie.springbootweb.auth;
+package net.wuxianjie.springbootweb.auth.dto;
 
 import cn.hutool.core.util.ArrayUtil;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +13,7 @@ import java.util.List;
  * @param userId 用户 id
  * @param username 用户名
  * @param nickname 用户昵称
- * @param enabled 启用状态，1：启用，0：禁用
+ * @param enabled 是否启用
  * @param authorities 权限列表
  * @param accessToken Access Token
  * @param refreshToken Refresh Token

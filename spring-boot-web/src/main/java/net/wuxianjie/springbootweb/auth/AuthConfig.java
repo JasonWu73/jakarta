@@ -2,6 +2,7 @@ package net.wuxianjie.springbootweb.auth;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
+import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
