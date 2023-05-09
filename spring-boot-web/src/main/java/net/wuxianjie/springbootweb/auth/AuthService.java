@@ -98,23 +98,57 @@ public class AuthService {
 
     // 判断 Token 是否为 Refresh Token
     if (!Objects.equals(payload.type(), AuthProps.TOKEN_TYPE_REFRESH)) {
-      throw new IllegalArgumentException("刷新请使用 Refresh Token");
+      throw new ApiException(HttpStatus.UNAUTHORIZED, "刷新请使用 Refresh Token");
     }
 
     // 通过用户名获取登录缓存中的用户数据，并判断 Token 是否正确
     final AuthData authData = Optional.ofNullable(accessTokenCache.get(payload.username()))
-      .orElseThrow(() -> new RuntimeException("Token 已失效"));
+      .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Token 已失效"));
 
     if (!Objects.equals(authData.refreshToken(), refreshToken)) {
-      throw new RuntimeException("Token 已废弃");
+      throw new ApiException(HttpStatus.UNAUTHORIZED, "Token 已废弃");
     }
 
     // 查询数据库获取用户数据
+    final RawAuthData rawAuth = Optional.ofNullable(
+      authMapper.selectByUsername(payload.username())
+    ).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "无效的 Token"));
 
     // 创建 Token
+    final long timestampSec = System.currentTimeMillis() / 1000;
+    final String accessToken = tokenService.createToken(new TokenPayload(
+      payload.username(),
+      AuthProps.TOKEN_TYPE_ACCESS,
+      AuthProps.TOKEN_ISSUER,
+      timestampSec + AuthProps.TOKEN_EXPIRATION_SEC
+    ));
+
+    final String newRefreshToken = tokenService.createToken(new TokenPayload(
+      payload.username(),
+      AuthProps.TOKEN_TYPE_REFRESH,
+      AuthProps.TOKEN_ISSUER,
+      timestampSec + AuthProps.TOKEN_EXPIRATION_SEC
+    ));
 
     // 添加 Token 缓存
+    final AuthData auth = new AuthData(
+      rawAuth.userId(),
+      rawAuth.username(),
+      rawAuth.nickname(),
+      rawAuth.status(),
+      StrUtil.split(rawAuth.menus(), StrUtil.COMMA, true, true),
+      accessToken,
+      newRefreshToken
+    );
+    accessTokenCache.put(payload.username(), auth);
 
-    return null;
+    return new TokenResponse(
+      accessToken,
+      newRefreshToken,
+      AuthProps.TOKEN_EXPIRATION_SEC,
+      payload.username(),
+      auth.nickname(),
+      auth.authorities()
+    );
   }
 }
