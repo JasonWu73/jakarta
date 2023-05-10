@@ -84,7 +84,7 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES (1, 'wxj', '吴仙杰', '$2a$10$5.HAUrgWzzz6Vkju4X/guOFcVIqPr0c/HFHXBX6QilZTYf38SlK72', 111, 1, '2023-05-09 16:15:42', '2023-05-09 16:15:42', NULL);
+INSERT INTO `user` VALUES (1, 'wxj', '吴仙杰', '$2a$10$5.HAUrgWzzz6Vkju4X/guOFcVIqPr0c/HFHXBX6QilZTYf38SlK72', 1, 1, '2023-05-09 16:15:42', '2023-05-09 16:15:42', NULL);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
