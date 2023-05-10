@@ -5,4 +5,36 @@
     insert into op_log (request_time, client_ip, api, username, message)
     values (#{requestTime}, #{clientIp}, #{api}, #{username}, #{message})
   </insert>
+
+  <sql id="whereQuery">
+    <where>
+      request_time &gt;= #{q.startTime}
+      and request_time &lt;= #{q.endTime}
+      <if test="q.clientIp != null">
+        and client_ip like #{q.clientIp}
+      </if>
+      <if test="q.message != null">
+        and message like #{q.message}
+      </if>
+    </where>
+  </sql>
+
+  <select id="selectByQuery" resultType="net.wuxianjie.springbootweb.oplog.OpLog">
+    select id,
+    request_time as requestTime,
+    client_ip as clientIp,
+    username,
+    api,
+    message
+    from op_log
+    <include refid="whereQuery"/>
+    order by request_time desc
+    limit #{p.offset}, #{p.pageSize}
+  </select>
+
+  <select id="countByQuery" resultType="long">
+    select count(1)
+    from op_log
+    <include refid="whereQuery"/>
+  </select>
 </mapper>

@@ -52,7 +52,32 @@ public enum Authority {
   ROLE_VIEW(ROLE.id + ".1", ROLE.id, "查看角色", "role_view"),
   ROLE_ADD(ROLE.id + ".2", ROLE.id, "新增角色", "role_add"),
   ROLE_EDIT(ROLE.id + ".3", ROLE.id, "编辑角色", "role_edit"),
-  ROLE_DEL(ROLE.id + ".4", ROLE.id, "删除角色", "role_del");
+  ROLE_DEL(ROLE.id + ".4", ROLE.id, "删除角色", "role_del"),
+
+  // 操作日志
+  OP_LOG(ROOT.id + ".3", ROOT.id, "操作日志", "op_log"),
+  OP_LOG_VIEW(OP_LOG.id + ".1", OP_LOG.id, "查看日志", "op_log_view");
+
+  /**
+   * 获取符合 {@link RoleHierarchyImpl} 的权限字符串。
+   *
+   * @return 符合 {@link RoleHierarchyImpl} 的权限字符串
+   */
+  public static String getHierarchy() {
+    return ROOT.code + " > " + USER.code + "\n" +
+      USER.code + " > " + USER_VIEW.code + "\n" +
+      USER.code + " > " + USER_ADD.code + "\n" +
+      USER.code + " > " + USER_EDIT.code + "\n" +
+      USER.code + " > " + USER_DEL.code + "\n" +
+      USER.code + " > " + USER_RESET.code + "\n" +
+      ROOT.code + " > " + ROLE.code + "\n" +
+      ROLE.code + " > " + ROLE_VIEW.code + "\n" +
+      ROLE.code + " > " + ROLE_ADD.code + "\n" +
+      ROLE.code + " > " + ROLE_EDIT.code + "\n" +
+      ROLE.code + " > " + ROLE_DEL.code + "\n" +
+      ROOT.code + " > " + OP_LOG.code + "\n" +
+      OP_LOG.code + " > " + OP_LOG_VIEW.code + "\n";
+  }
 
   /**
    * 权限 id。
@@ -88,25 +113,6 @@ public enum Authority {
       .toList();
 
     return TreeUtil.build(nodes, ROOT.parentId);
-  }
-
-  /**
-   * 获取符合 {@link RoleHierarchyImpl} 的权限字符串。
-   *
-   * @return 符合 {@link RoleHierarchyImpl} 的权限字符串
-   */
-  public static String getHierarchy() {
-    return ROOT.code + " > " + USER.code + "\n" +
-      USER.code + " > " + USER_VIEW.code + "\n" +
-      USER.code + " > " + USER_ADD.code + "\n" +
-      USER.code + " > " + USER_EDIT.code + "\n" +
-      USER.code + " > " + USER_DEL.code + "\n" +
-      USER.code + " > " + USER_RESET.code + "\n" +
-      ROOT.code + " > " + ROLE.code + "\n" +
-      ROLE.code + " > " + ROLE_VIEW.code + "\n" +
-      ROLE.code + " > " + ROLE_ADD.code + "\n" +
-      ROLE.code + " > " + ROLE_EDIT.code + "\n" +
-      ROLE.code + " > " + ROLE_DEL.code + "\n";
   }
 
   /**

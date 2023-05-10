@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
 import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import net.wuxianjie.springbootweb.shared.util.ServletUtils;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
  *
  * @author 吴仙杰
  */
+@Slf4j
 @Aspect
 @Component
 @RequiredArgsConstructor
@@ -73,7 +75,10 @@ public class OpLogAspect {
     final String message = annotation.value();
     opLog.setMessage(message);
 
-    opLogMapper.insert(opLog);
+    // 保存至数据库
+    if (opLogMapper.insert(opLog) != 1) {
+      log.error("新增操作日志失败");
+    }
 
     return result;
   }
