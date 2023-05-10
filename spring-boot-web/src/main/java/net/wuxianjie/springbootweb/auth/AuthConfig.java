@@ -5,9 +5,12 @@ import cn.hutool.cache.impl.TimedCache;
 import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 
 /**
- * Token 缓存配置。
+ * 授权管理相关配置。
  *
  * @author 吴仙杰
  */
@@ -29,5 +32,32 @@ public class AuthConfig {
     cache.schedulePrune(timeoutMs);
 
     return cache;
+  }
+
+  /**
+   * 配置拥有上下级关系的功能权限。
+   *
+   * <p>Spring Boot 3 即 Spring Security 6 开始，还需要创建 {@link #expressionHandler()}，
+   * <br>否则无法在方法之上使用 {@code @PreAuthorize("hasAuthority('user_add')")}。
+   *
+   * @return 拥有上下级关系的功能权限
+   */
+  @Bean
+  public RoleHierarchy roleHierarchy() {
+    final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+    roleHierarchy.setHierarchy(Authority.getHierarchy());
+    return roleHierarchy;
+  }
+
+  /**
+   * 结合 {@link #roleHierarchy()} 使用。
+   *
+   * @return 实现拥有上下级关系的功能权限
+   */
+  @Bean
+  public DefaultMethodSecurityExpressionHandler expressionHandler() {
+    final DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+    expressionHandler.setRoleHierarchy(roleHierarchy());
+    return expressionHandler;
   }
 }

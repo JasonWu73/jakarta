@@ -5,8 +5,6 @@ import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,7 +25,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
  * <p>业务程序还可参考以下示例代码定义拥有上下级层级关系的功能权限：
  *
  * <pre>{@code
- * @Bean
+ *  @Bean
  *  public RoleHierarchy roleHierarchy() {
  *     final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
  *     final String roleHierarchyStr = """
@@ -54,10 +52,10 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
  *   @RequestMapping("/api/v1")
  *   public class SecurityTestController {
  *
- *     @GetMapping("/menu")
- *     @PreAuthorize("hasAuthority('menu_view')")
- *     public String getMenu() {
- *       return "menu data";
+ *     @GetMapping("/user")
+ *     @PreAuthorize("hasAuthority('user_view')")
+ *     public String getUser() {
+ *       return "user data";
  *     }
  *   }
  * }</pre>
@@ -100,7 +98,7 @@ public class WebSecurityConfig {
    * @throws Exception 当配置失败时抛出
    */
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
     // 以下配置仅对 API 请求生效
     http
       .securityMatcher("/api/**")
@@ -186,17 +184,5 @@ public class WebSecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
-  }
-
-  /**
-   * 配置拥有上下级关系的功能权限。
-   *
-   * @return 拥有上下级关系的功能权限
-   */
-  @Bean
-  public RoleHierarchy roleHierarchy() {
-    final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-    roleHierarchy.setHierarchy(Auth.getAuthHierarchy());
-    return roleHierarchy;
   }
 }

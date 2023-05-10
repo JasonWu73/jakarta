@@ -53,6 +53,6 @@ public class AuthController {
    */
   @GetMapping("/auth-trees")
   public ResponseEntity<List<Tree<String>>> update() {
-    return ResponseEntity.ok(Auth.getTrees());
+    return ResponseEntity.ok(Authority.getTrees());
   }
 }

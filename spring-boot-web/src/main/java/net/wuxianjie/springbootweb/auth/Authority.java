@@ -30,29 +30,29 @@ import java.util.Optional;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public enum Auth {
+public enum Authority {
 
   // 切记：每次添加节点时，都需要手动修改 `getRoleHierarchy` 方法
 
   /**
    * 定义权限树中的根节点，即系统最高权限。
    */
-  ROOT("1", "0", "根权限", "root", "hasAuthority('root')"),
+  ROOT("1", "0", "根权限", "root"),
 
   // 用户管理
-  USER(ROOT.id + ".1", ROOT.id, "用户管理", "user", "hasAuthority('user')"),
-  USER_VIEW(USER.id + ".1", USER.id, "查看", "user_view", "hasAuthority('user_view')"),
-  USER_ADD(USER.id + ".2", USER.id, "新增", "user_add", "hasAuthority('user_add')"),
-  USER_EDIT(USER.id + ".3", USER.id, "编辑", "user_edit", "hasAuthority('user_edit')"),
-  USER_DEL(USER.id + ".4", USER.id, "删除", "user_del", "hasAuthority('user_del')"),
-  USER_RESET(USER.id + ".5", USER.id, "重置密码", "user_reset", "hasAuthority('user_reset')"),
+  USER(ROOT.id + ".1", ROOT.id, "用户管理", "user"),
+  USER_VIEW(USER.id + ".1", USER.id, "查看用户", "user_view"),
+  USER_ADD(USER.id + ".2", USER.id, "新增用户", "user_add"),
+  USER_EDIT(USER.id + ".3", USER.id, "编辑用户", "user_edit"),
+  USER_DEL(USER.id + ".4", USER.id, "删除用户", "user_del"),
+  USER_RESET(USER.id + ".5", USER.id, "重置密码", "user_reset"),
 
   // 角色管理
-  ROLE(ROOT.id + ".2", ROOT.id, "角色管理", "role", "hasAuthority('role')"),
-  ROLE_VIEW(ROLE.id + ".1", ROLE.id, "查看", "role_view", "hasAuthority('role_view')"),
-  ROLE_ADD(ROLE.id + ".2", ROLE.id, "新增", "role_add", "hasAuthority('role_add')"),
-  ROLE_EDIT(ROLE.id + ".3", ROLE.id, "编辑", "role_edit", "hasAuthority('role_edit')"),
-  ROLE_DEL(ROLE.id + ".4", ROLE.id, "删除", "role_del", "hasAuthority('role_del')");
+  ROLE(ROOT.id + ".2", ROOT.id, "角色管理", "role"),
+  ROLE_VIEW(ROLE.id + ".1", ROLE.id, "查看角色", "role_view"),
+  ROLE_ADD(ROLE.id + ".2", ROLE.id, "新增角色", "role_add"),
+  ROLE_EDIT(ROLE.id + ".3", ROLE.id, "编辑角色", "role_edit"),
+  ROLE_DEL(ROLE.id + ".4", ROLE.id, "删除角色", "role_del");
 
   /**
    * 权限 id。
@@ -75,13 +75,6 @@ public enum Auth {
   private final String code;
 
   /**
-   * Spring Security 权限控制代码。
-   *
-   * <p>比如在方法之上使用 {@code @PreAuthorize(Auth.ROOT.authorize)}。
-   */
-  private final String authorize;
-
-  /**
    * 获取完整权限树列表。
    *
    * @return 包含全部数据的权限树列表
@@ -102,7 +95,7 @@ public enum Auth {
    *
    * @return 符合 {@link RoleHierarchyImpl} 的权限字符串
    */
-  public static String getAuthHierarchy() {
+  public static String getHierarchy() {
     return ROOT.code + " > " + USER.code + "\n" +
       USER.code + " > " + USER_VIEW.code + "\n" +
       USER.code + " > " + USER_ADD.code + "\n" +
@@ -129,11 +122,11 @@ public enum Auth {
     final String checkedCode
   ) throws IllegalArgumentException {
     final String parentId = resolve(parentCode)
-      .map(Auth::getId)
+      .map(Authority::getId)
       .orElseThrow(() -> new IllegalArgumentException("无法识别 parentCode: " + parentCode));
 
     final String checkedId = resolve(checkedCode)
-      .map(Auth::getId)
+      .map(Authority::getId)
       .orElseThrow(() -> new IllegalArgumentException("无法识别 checkedCode: " + checkedCode));
 
     return checkedId.equals(parentId) || // 本级
@@ -146,7 +139,7 @@ public enum Auth {
    * @param code 需要解析的权限代码
    * @return 权限枚举值
    */
-  public static Optional<Auth> resolve(final String code) {
+  public static Optional<Authority> resolve(final String code) {
     try {
       // 定义时保证常量名与 `code` 保持一致，故可采用 `valueOf()` 方法解析
       return Optional.of(valueOf(code.toUpperCase()));
