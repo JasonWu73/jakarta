@@ -7,6 +7,7 @@ import net.wuxianjie.springbootweb.auth.dto.*;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import net.wuxianjie.springbootweb.shared.util.ServletUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class AuthService {
    * @param request 请求参数
    * @return Access Token 相关信息
    */
-  public TokenResponse getToken(final GetTokenRequest request) {
+  public ResponseEntity<TokenResponse> getToken(final GetTokenRequest request) {
     // 通过用户名查询数据库获取用户数据
     final RawAuthData rawAuth = Optional.ofNullable(
       authMapper.selectByUsername(request.getUsername())
@@ -76,17 +77,17 @@ public class AuthService {
     // 添加 Spring Security Context 以便记录登录日志进可获取用户名
     tokenAuth.setAuthenticatedContext(auth, ServletUtils.getCurrentRequest().orElseThrow());
 
-    return new TokenResponse(
+    return ResponseEntity.ok(new TokenResponse(
       accessToken,
       refreshToken,
       AuthProps.TOKEN_EXPIRATION_SEC,
       request.getUsername(),
       auth.nickname(),
       auth.authorities()
-    );
+    ));
   }
 
-  public TokenResponse updateToken(final String refreshToken) {
+  public ResponseEntity<TokenResponse> updateToken(final String refreshToken) {
     // 验证 JWT Token 本身（格式）是否合法
     final boolean legalToken = tokenService.isLegal(refreshToken);
     if (!legalToken) {
@@ -142,13 +143,13 @@ public class AuthService {
     );
     accessTokenCache.put(payload.username(), auth);
 
-    return new TokenResponse(
+    return ResponseEntity.ok(new TokenResponse(
       accessToken,
       newRefreshToken,
       AuthProps.TOKEN_EXPIRATION_SEC,
       payload.username(),
       auth.nickname(),
       auth.authorities()
-    );
+    ));
   }
 }

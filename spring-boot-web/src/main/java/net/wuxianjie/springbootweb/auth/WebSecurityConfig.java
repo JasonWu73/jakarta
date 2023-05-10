@@ -5,6 +5,8 @@ import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,20 +27,20 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
  * <p>业务程序还可参考以下示例代码定义拥有上下级层级关系的功能权限：
  *
  * <pre>{@code
- *   @Bean
- *   public RoleHierarchy roleHierarchy() {
+ * @Bean
+ *  public RoleHierarchy roleHierarchy() {
  *     final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
  *     final String roleHierarchyStr = """
- *       root > menu
  *       root > user
- *       menu > menu_view
- *       menu > menu_add
- *       menu > menu_edit
- *       menu > menu_del
  *       user > user_view
  *       user > user_add
  *       user > user_edit
  *       user > user_del
+ *       root > role
+ *       role > role_view
+ *       role > role_add
+ *       role > role_edit
+ *       role > role_del
  *       """;
  *     roleHierarchy.setHierarchy(roleHierarchyStr);
  *     return roleHierarchy;
@@ -184,5 +186,17 @@ public class WebSecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  /**
+   * 配置拥有上下级关系的功能权限。
+   *
+   * @return 拥有上下级关系的功能权限
+   */
+  @Bean
+  public RoleHierarchy roleHierarchy() {
+    final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+    roleHierarchy.setHierarchy(Auth.getAuthHierarchy());
+    return roleHierarchy;
   }
 }

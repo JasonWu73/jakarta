@@ -29,6 +29,7 @@
       <version>5.8.16</version>
     </dependency>
 
+    <!-- 需要与对应的 Maven 插件一起使用 -->
     <dependency>
       <groupId>com.github.ulisesbocchio</groupId>
       <artifactId>jasypt-spring-boot-starter</artifactId>
@@ -98,7 +99,7 @@
       </plugin>
 
       <!--
-      Jasypt Maven 插件：
+      Jasypt Maven 插件（需要在项目中添加对应的 Compile 依赖）：
 
       1、加密指定的原始字符串：
       `mvn jasypt:encrypt-value \
