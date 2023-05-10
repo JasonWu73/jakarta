@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.wuxianjie.springbootweb.oplog.OpLogMapper">
   <insert id="insert">
-    insert into op_log (request_time, client_ip, api, username, message)
-    values (#{requestTime}, #{clientIp}, #{api}, #{username}, #{message})
+    insert into op_log (request_time, client_ip, username, message)
+    values (#{requestTime}, #{clientIp}, #{username}, #{message})
   </insert>
 
   <sql id="whereQuery">
@@ -24,7 +24,6 @@
     request_time as requestTime,
     client_ip as clientIp,
     username,
-    api,
     message
     from op_log
     <include refid="whereQuery"/>

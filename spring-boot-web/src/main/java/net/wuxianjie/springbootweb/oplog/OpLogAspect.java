@@ -1,7 +1,6 @@
 package net.wuxianjie.springbootweb.oplog;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -61,12 +60,6 @@ public class OpLogAspect {
       .map(AuthData::username)
       .orElse(null);
     opLog.setUsername(username);
-
-    // 请求 API
-    final String requestUri = request.getRequestURI();
-    final String requestMethod = request.getMethod();
-    final String api = StrUtil.format("[{}] {}", requestMethod, requestUri);
-    opLog.setApi(api);
 
     // 操作描述
     final MethodSignature signature = (MethodSignature) joinPoint.getSignature();

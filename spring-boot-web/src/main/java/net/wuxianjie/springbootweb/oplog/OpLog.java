@@ -33,11 +33,6 @@ public class OpLog {
   private String username;
 
   /**
-   * API。
-   */
-  private String api;
-
-  /**
    * 操作描述。
    */
   private String message;
