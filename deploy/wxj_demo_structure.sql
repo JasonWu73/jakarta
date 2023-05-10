@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 09/05/2023 17:27:21
+ Date: 10/05/2023 18:33:36
 */
 
 SET NAMES utf8mb4;
@@ -23,21 +23,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `op_log`;
 CREATE TABLE `op_log` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `req_time` datetime DEFAULT NULL,
-  `req_ip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `endpoint` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `request_time` datetime DEFAULT NULL,
+  `client_ip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `message` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `method` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `params` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of op_log
--- ----------------------------
-BEGIN;
-COMMIT;
 
 -- ----------------------------
 -- Table structure for role
@@ -57,13 +48,6 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Records of role
--- ----------------------------
-BEGIN;
-INSERT INTO `role` VALUES (1, '超级管理员', 'root', NULL, NULL, '1', '2023-05-09 17:24:50', '2023-05-09 17:24:50', NULL);
-COMMIT;
-
--- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -79,12 +63,5 @@ CREATE TABLE `user` (
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of user
--- ----------------------------
-BEGIN;
-INSERT INTO `user` VALUES (1, 'wxj', '吴仙杰', '$2a$10$5.HAUrgWzzz6Vkju4X/guOFcVIqPr0c/HFHXBX6QilZTYf38SlK72', 1, 1, '2023-05-09 16:15:42', '2023-05-09 16:15:42', NULL);
-COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

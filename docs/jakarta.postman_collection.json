@@ -290,7 +290,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"timestamp\": \"2023-05-09 17:31:04\", // 请求的时间戳\n    \"status\": 401, // HTTP 响应状态码\n    \"error\": \"用户名或密码错误\", // 错误提示信息\n    \"path\": \"/api/v1/token\" // 请求的资源路径\n}"
+							"body": "{\n    \"timestamp\": \"2023-05-09 17:31:04\", // 请求时间戳\n    \"status\": 401, // HTTP 响应状态码\n    \"error\": \"用户名或密码错误\", // 错误提示信息\n    \"path\": \"/api/v1/token\" // 请求资源路径\n}"
 						}
 					]
 				},
@@ -479,6 +479,433 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"accessToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM2Mjk0NTgsInR5cGUiOiJhY2Nlc3MiLCJpc3MiOiLlkLTku5nmnbDmvJTnpLrns7vnu58iLCJ1c2VybmFtZSI6Ind4aiJ9.Y8T7CR4RvVEPCnnPYtoKd1hSVDh-aX-ORO2KHyU1ZVE\",\n    \"refreshToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM2Mjk0NTgsInR5cGUiOiJyZWZyZXNoIiwiaXNzIjoi5ZC05LuZ5p2w5ryU56S657O757ufIiwidXNlcm5hbWUiOiJ3eGoifQ.b3nt5ScEZPAzrzHDZ0Rx9xTuZ93BqWeP_NYtwmk5xNI\",\n    \"expiresInSec\": 1800,\n    \"username\": \"wxj\",\n    \"nickname\": \"吴仙杰\",\n    \"authorities\": [\n        \"root\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "获取完整权限树列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.body.raw = jsonMinify(pm.request.body.raw);",
+									"",
+									"// 去除 JSON 参数注释方法",
+									"function jsonMinify(json) {",
+									"",
+									"  var tokenizer = /\"|(\\/\\*)|(\\*\\/)|(\\/\\/)|\\n|\\r|\\[|]/g,",
+									"    in_string = false,",
+									"    in_multiline_comment = false,",
+									"    in_singleline_comment = false,",
+									"    tmp, tmp2, new_str = [], ns = 0, from = 0, lc, rc,",
+									"    prevFrom",
+									"  ;",
+									"",
+									"  tokenizer.lastIndex = 0;",
+									"",
+									"  while (tmp = tokenizer.exec(json)) {",
+									"    lc = RegExp.leftContext;",
+									"    rc = RegExp.rightContext;",
+									"    if (!in_multiline_comment && !in_singleline_comment) {",
+									"      tmp2 = lc.substring(from);",
+									"      if (!in_string) {",
+									"        tmp2 = tmp2.replace(/(\\n|\\r|\\s)*/g, '');",
+									"      }",
+									"      new_str[ns++] = tmp2;",
+									"    }",
+									"    prevFrom = from;",
+									"    from = tokenizer.lastIndex;",
+									"",
+									"    // found a \" character, and we're not currently in",
+									"    // a comment? check for previous `\\` escaping immediately",
+									"    // leftward adjacent to this match",
+									"    if (tmp[0] === '\"' && !in_multiline_comment && !in_singleline_comment) {",
+									"      // limit left-context matching to only go back",
+									"      // to the position of the last token match",
+									"      //",
+									"      // see: https://github.com/getify/JSON.minify/issues/64",
+									"      lc.lastIndex = prevFrom;",
+									"",
+									"      // perform leftward adjacent escaping match",
+									"      tmp2 = lc.match(/(\\\\)*$/);",
+									"      // start of string with \", or unescaped \" character found to end string?",
+									"      if (!in_string || !tmp2 || (tmp2[0].length % 2) === 0) {",
+									"        in_string = !in_string;",
+									"      }",
+									"      from--; // include \" character in next catch",
+									"      rc = json.substring(from);",
+									"    } else if (tmp[0] === '/*' && !in_string && !in_multiline_comment && !in_singleline_comment) {",
+									"      in_multiline_comment = true;",
+									"    } else if (tmp[0] === '*/' && !in_string && in_multiline_comment && !in_singleline_comment) {",
+									"      in_multiline_comment = false;",
+									"    } else if (tmp[0] === '//' && !in_string && !in_multiline_comment && !in_singleline_comment) {",
+									"      in_singleline_comment = true;",
+									"    } else if ((tmp[0] === '\\n' || tmp[0] === '\\r') && !in_string && !in_multiline_comment && in_singleline_comment) {",
+									"      in_singleline_comment = false;",
+									"    } else if (!in_multiline_comment && !in_singleline_comment && !(/\\n|\\r|\\s/.test(tmp[0]))) {",
+									"      new_str[ns++] = tmp[0];",
+									"    }",
+									"  }",
+									"  new_str[ns++] = rc;",
+									"  return new_str.join('');",
+									"};"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth-trees",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth-trees"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "成功",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}",
+										"type": "default"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/auth-trees",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth-trees"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 10 May 2023 09:21:30 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"1\",\n        \"parentId\": \"0\",\n        \"weight\": 1,\n        \"name\": \"根权限\",\n        \"code\": \"root\",\n        \"children\": [\n            {\n                \"id\": \"1.1\",\n                \"parentId\": \"1\",\n                \"weight\": 1,\n                \"name\": \"用户管理\",\n                \"code\": \"user\",\n                \"children\": [\n                    {\n                        \"id\": \"1.1.1\",\n                        \"parentId\": \"1.1\",\n                        \"weight\": 1,\n                        \"name\": \"查看用户\",\n                        \"code\": \"user_view\"\n                    },\n                    {\n                        \"id\": \"1.1.2\",\n                        \"parentId\": \"1.1\",\n                        \"weight\": 1,\n                        \"name\": \"新增用户\",\n                        \"code\": \"user_add\"\n                    },\n                    {\n                        \"id\": \"1.1.3\",\n                        \"parentId\": \"1.1\",\n                        \"weight\": 1,\n                        \"name\": \"编辑用户\",\n                        \"code\": \"user_edit\"\n                    },\n                    {\n                        \"id\": \"1.1.4\",\n                        \"parentId\": \"1.1\",\n                        \"weight\": 1,\n                        \"name\": \"删除用户\",\n                        \"code\": \"user_del\"\n                    },\n                    {\n                        \"id\": \"1.1.5\",\n                        \"parentId\": \"1.1\",\n                        \"weight\": 1,\n                        \"name\": \"重置密码\",\n                        \"code\": \"user_reset\"\n                    }\n                ]\n            },\n            {\n                \"id\": \"1.2\",\n                \"parentId\": \"1\",\n                \"weight\": 1,\n                \"name\": \"角色管理\",\n                \"code\": \"role\",\n                \"children\": [\n                    {\n                        \"id\": \"1.2.1\",\n                        \"parentId\": \"1.2\",\n                        \"weight\": 1,\n                        \"name\": \"查看角色\",\n                        \"code\": \"role_view\"\n                    },\n                    {\n                        \"id\": \"1.2.2\",\n                        \"parentId\": \"1.2\",\n                        \"weight\": 1,\n                        \"name\": \"新增角色\",\n                        \"code\": \"role_add\"\n                    },\n                    {\n                        \"id\": \"1.2.3\",\n                        \"parentId\": \"1.2\",\n                        \"weight\": 1,\n                        \"name\": \"编辑角色\",\n                        \"code\": \"role_edit\"\n                    },\n                    {\n                        \"id\": \"1.2.4\",\n                        \"parentId\": \"1.2\",\n                        \"weight\": 1,\n                        \"name\": \"删除角色\",\n                        \"code\": \"role_del\"\n                    }\n                ]\n            },\n            {\n                \"id\": \"1.3\",\n                \"parentId\": \"1\",\n                \"weight\": 1,\n                \"name\": \"操作日志\",\n                \"code\": \"op_log\",\n                \"children\": [\n                    {\n                        \"id\": \"1.3.1\",\n                        \"parentId\": \"1.3\",\n                        \"weight\": 1,\n                        \"name\": \"查看日志\",\n                        \"code\": \"op_log_view\"\n                    }\n                ]\n            }\n        ]\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "操作日志",
+			"item": [
+				{
+					"name": "获取操作日志列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.body.raw = jsonMinify(pm.request.body.raw);",
+									"",
+									"// 去除 JSON 参数注释方法",
+									"function jsonMinify(json) {",
+									"",
+									"  var tokenizer = /\"|(\\/\\*)|(\\*\\/)|(\\/\\/)|\\n|\\r|\\[|]/g,",
+									"    in_string = false,",
+									"    in_multiline_comment = false,",
+									"    in_singleline_comment = false,",
+									"    tmp, tmp2, new_str = [], ns = 0, from = 0, lc, rc,",
+									"    prevFrom",
+									"  ;",
+									"",
+									"  tokenizer.lastIndex = 0;",
+									"",
+									"  while (tmp = tokenizer.exec(json)) {",
+									"    lc = RegExp.leftContext;",
+									"    rc = RegExp.rightContext;",
+									"    if (!in_multiline_comment && !in_singleline_comment) {",
+									"      tmp2 = lc.substring(from);",
+									"      if (!in_string) {",
+									"        tmp2 = tmp2.replace(/(\\n|\\r|\\s)*/g, '');",
+									"      }",
+									"      new_str[ns++] = tmp2;",
+									"    }",
+									"    prevFrom = from;",
+									"    from = tokenizer.lastIndex;",
+									"",
+									"    // found a \" character, and we're not currently in",
+									"    // a comment? check for previous `\\` escaping immediately",
+									"    // leftward adjacent to this match",
+									"    if (tmp[0] === '\"' && !in_multiline_comment && !in_singleline_comment) {",
+									"      // limit left-context matching to only go back",
+									"      // to the position of the last token match",
+									"      //",
+									"      // see: https://github.com/getify/JSON.minify/issues/64",
+									"      lc.lastIndex = prevFrom;",
+									"",
+									"      // perform leftward adjacent escaping match",
+									"      tmp2 = lc.match(/(\\\\)*$/);",
+									"      // start of string with \", or unescaped \" character found to end string?",
+									"      if (!in_string || !tmp2 || (tmp2[0].length % 2) === 0) {",
+									"        in_string = !in_string;",
+									"      }",
+									"      from--; // include \" character in next catch",
+									"      rc = json.substring(from);",
+									"    } else if (tmp[0] === '/*' && !in_string && !in_multiline_comment && !in_singleline_comment) {",
+									"      in_multiline_comment = true;",
+									"    } else if (tmp[0] === '*/' && !in_string && in_multiline_comment && !in_singleline_comment) {",
+									"      in_multiline_comment = false;",
+									"    } else if (tmp[0] === '//' && !in_string && !in_multiline_comment && !in_singleline_comment) {",
+									"      in_singleline_comment = true;",
+									"    } else if ((tmp[0] === '\\n' || tmp[0] === '\\r') && !in_string && !in_multiline_comment && in_singleline_comment) {",
+									"      in_singleline_comment = false;",
+									"    } else if (!in_multiline_comment && !in_singleline_comment && !(/\\n|\\r|\\s/.test(tmp[0]))) {",
+									"      new_str[ns++] = tmp[0];",
+									"    }",
+									"  }",
+									"  new_str[ns++] = rc;",
+									"  return new_str.join('');",
+									"};"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/op-logs?pageNumber=1&pageSize=2&startTime=1970-01-01 00:00:00&endTime=2093-12-31 23:59:59",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"op-logs"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1",
+									"description": "页码，必填，值 >= 1"
+								},
+								{
+									"key": "pageSize",
+									"value": "2",
+									"description": "每页显示条目个数，必填，值 >= 1"
+								},
+								{
+									"key": "startTime",
+									"value": "1970-01-01 00:00:00",
+									"description": "请求起始时间"
+								},
+								{
+									"key": "endTime",
+									"value": "2093-12-31 23:59:59",
+									"description": "请求结束时间"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "成功",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}",
+										"type": "default"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/op-logs?pageNumber=1&pageSize=2&startTime=1970-01-01 00:00:00&endTime=2093-12-31 23:59:59",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"op-logs"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1",
+											"description": "页码，必填，值 >= 1"
+										},
+										{
+											"key": "pageSize",
+											"value": "2",
+											"description": "每页显示条目个数，必填，值 >= 1"
+										},
+										{
+											"key": "startTime",
+											"value": "1970-01-01 00:00:00",
+											"description": "请求起始时间"
+										},
+										{
+											"key": "endTime",
+											"value": "2093-12-31 23:59:59",
+											"description": "请求结束时间"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 10 May 2023 10:41:00 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"pageNumber\": 1, // 页码\n    \"pageSize\": 2, // 每页显示条目个数\n    \"total\": 1, // 总条目数\n    \"list\": [ // 数据列表\n        {\n            \"id\": 1, // 操作日志 id\n            \"requestTime\": \"2023-05-10 18:38:20\", // 请求时间\n            \"clientIp\": \"127.0.0.1\", // 客户端 IP\n            \"username\": \"wxj\", // 用户名\n            \"message\": \"登录系统\" // 操作描述\n        }\n    ]\n}"
 						}
 					]
 				}
