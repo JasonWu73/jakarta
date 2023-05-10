@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.dto.GetTokenRequest;
 import net.wuxianjie.springbootweb.auth.dto.TokenResponse;
+import net.wuxianjie.springbootweb.oplog.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class AuthController {
    * @param request 请求参数
    * @return Access Token 相关信息
    */
+  @Log("登录系统")
   @PostMapping("/token")
   public ResponseEntity<TokenResponse> getToken(@RequestBody @Valid final GetTokenRequest request) {
     return authService.getToken(request);
