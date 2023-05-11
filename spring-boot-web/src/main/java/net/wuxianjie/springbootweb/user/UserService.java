@@ -92,7 +92,7 @@ public class UserService {
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到新增用户的角色"));
 
     // 判断新增用户的角色是否为当前用户的下级角色
-    if (!isCurrentUserSubRole(savedRoleFullPath)) {
+    if (isNotCurrentUserSubRole(savedRoleFullPath)) {
       throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级角色的用户");
     }
 
@@ -135,7 +135,7 @@ public class UserService {
     final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(updatedUser.getRoleId()))
       .orElseThrow();
 
-    if (!isCurrentUserSubRole(updatedUserRoleFullPath)) {
+    if (isNotCurrentUserSubRole(updatedUserRoleFullPath)) {
       throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新下级角色的用户");
     }
 
@@ -146,7 +146,7 @@ public class UserService {
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到更新用户的角色"));
 
       // 判断更新的目标角色是否为当前用户的下级角色
-      if (!isCurrentUserSubRole(newUpdatedRoleFullPath)) {
+      if (isNotCurrentUserSubRole(newUpdatedRoleFullPath)) {
         throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新为下级角色的用户");
       }
     }
@@ -165,12 +165,12 @@ public class UserService {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  private boolean isCurrentUserSubRole(final String roleFullPath) {
+  private boolean isNotCurrentUserSubRole(final String roleFullPath) {
     final long currentUserId = AuthUtils.getCurrentUser().orElseThrow().userId();
 
     final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUserId))
       .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
 
-    return roleFullPath.startsWith(currentRoleFullPath + "."); // 下级
+    return !roleFullPath.startsWith(currentRoleFullPath + "."); // 下级
   }
 }
