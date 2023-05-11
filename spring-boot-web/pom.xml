@@ -89,6 +89,21 @@
   <build>
     <finalName>spring-boot-web</finalName>
 
+    <resources>
+      <!-- 将源码中的 XML 打包进 Classpath，从而使得 Mapper.xml 可以与 Java 类写在一起 -->
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+          <include>**/*.xml</include>
+        </includes>
+      </resource>
+
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
