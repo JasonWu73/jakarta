@@ -69,7 +69,7 @@ public class OpLogAspect {
     opLog.setMessage(message);
 
     // 保存至数据库
-    if (opLogMapper.insert(opLog) != 1) {
+    if (opLogMapper.insert(opLog) == 0) {
       log.error("新增操作日志失败");
     }
 

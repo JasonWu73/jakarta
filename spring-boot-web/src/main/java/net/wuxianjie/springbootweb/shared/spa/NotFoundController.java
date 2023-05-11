@@ -85,7 +85,7 @@ public class NotFoundController {
       return ResponseEntity
         .status(HttpStatus.NOT_FOUND)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .body(new ErrorResponse(HttpStatus.NOT_FOUND, "资源不存在", originalUri));
+        .body(new ErrorResponse(HttpStatus.NOT_FOUND, "未找到请求的资源", originalUri));
     }
 
     // 返回 SPA 首页，由前端处理 404

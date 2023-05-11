@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.wuxianjie.springbootweb.user.UserMapper">
+  <select id="selectById" resultType="net.wuxianjie.springbootweb.user.User">
+    select id,
+           username,
+           nickname,
+           hashed_password as hashedPassword,
+           status,
+           role_id         as roleId,
+           created_at      as createdAt,
+           updated_at      as updatedAt,
+           remark
+    from user
+    where id = #{id}
+  </select>
+
+  <select id="selectRoleFullPathByRoleId" resultType="java.lang.String">
+    select full_path
+    from role
+    where id = #{roleId}
+  </select>
+
+  <select id="selectRoleFullPathById" resultType="java.lang.String">
+    select r.full_path
+    from role r
+           join user u on r.id = u.role_id
+    where u.id = #{id}
+  </select>
+
+  <select id="existsByUsername" resultType="boolean">
+    select exists(select 1 from user where username = #{username})
+  </select>
+
   <sql id="whereQuery">
     <where>
       <if test="q.username != null">
@@ -39,24 +70,21 @@
     <include refid="whereQuery"/>
   </select>
 
-  <select id="existsByUsername" resultType="boolean">
-    select exists(select 1 from user where username = #{username})
-  </select>
-
-  <select id="selectRoleFullPathByRoleId" resultType="java.lang.String">
-    select full_path
-    from role
-    where id = #{roleId}
-  </select>
-
-  <select id="selectRoleFullPathById" resultType="java.lang.String">
-    select r.full_path
-    from role r join user u on r.id = u.role_id
-    where u.id = #{id}
-  </select>
-
   <insert id="insert">
     insert into user (username, nickname, hashed_password, status, role_id, created_at, updated_at, remark)
     values (#{username}, #{nickname}, #{hashedPassword}, #{status}, #{roleId}, #{createdAt}, #{updatedAt}, #{remark})
   </insert>
+
+  <update id="update">
+    update user
+    set username       = #{username},
+        nickname       = #{nickname},
+        hashed_password=#{hashedPassword},
+        status         = #{status},
+        role_id        = #{roleId},
+        created_at     = #{createdAt},
+        updated_at     = #{updatedAt},
+        remark         = #{remark}
+    where id = #{id}
+  </update>
 </mapper>
