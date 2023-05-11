@@ -34,6 +34,7 @@
 
   <sql id="whereQuery">
     <where>
+      r.full_path like #{subRoleLikeFullPath}
       <if test="q.username != null">
         and u.username like #{q.username}
       </if>

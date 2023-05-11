@@ -53,19 +53,25 @@ public interface UserMapper {
    *
    * @param pagination 查询分页参数
    * @param request 查询参数
+   * @param subRoleLikeFullPath 下级角色的完整路径前缀
    * @return 过滤后的用户分页列表
    */
   List<UserResponse> selectByQuery(
     @Param("p") PaginationParam pagination,
-    @Param("q") GetUserRequest request);
+    @Param("q") GetUserRequest request,
+    final String subRoleLikeFullPath);
 
   /**
    * 根据查询条件获取用户总条数。
    *
    * @param request 查询参数
+   * @param subRoleLikeFullPath 下级角色的完整路径前缀
    * @return 过滤后的总条数
    */
-  long countByQuery(@Param("q") final GetUserRequest request);
+  long countByQuery(
+    @Param("q") final GetUserRequest request,
+    final String subRoleLikeFullPath
+  );
 
   /**
    * 新增用户。

@@ -36,6 +36,8 @@ public class UserService {
   /**
    * 获取用户列表。
    *
+   * <p>用户仅可查看其下级角色的用户。
+   *
    * @param pagination 分页请求参数
    * @param request 请求参数
    * @return 用户分页列表
@@ -49,11 +51,16 @@ public class UserService {
     request.setNickname(StringUtils.toNullableLikeValue(request.getNickname()));
     request.setRoleName(StringUtils.toNullableLikeValue(request.getRoleName()));
 
+    // 获取当前登录用户的角色完整路径以便查找其下级角色的用户
+    final long userId = AuthUtils.getCurrentUser().orElseThrow().userId();
+    final String roleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(userId)).orElseThrow();
+    final String subRoleLikeFullPath = roleFullPath + ".%";
+
     // 查询数据库获取列表数据
-    final List<UserResponse> logs = userMapper.selectByQuery(pagination, request);
+    final List<UserResponse> logs = userMapper.selectByQuery(pagination, request, subRoleLikeFullPath);
 
     // 查询数据库获取总条目数
-    final long total = userMapper.countByQuery(request);
+    final long total = userMapper.countByQuery(request, subRoleLikeFullPath);
 
     // 构造分页结果
     return ResponseEntity.ok(new PaginationResult<>(
@@ -66,6 +73,8 @@ public class UserService {
 
   /**
    * 新增用户。
+   *
+   * <p>只允许新增当前用户的下级角色用户。
    *
    * @param request 请求参数
    * @return 201 HTTP 状态码
@@ -82,9 +91,9 @@ public class UserService {
     final String savedRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(request.getRoleId()))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到新增用户的角色"));
 
-    // 判断新增用户的角色是否为当前用户角色或其下级角色
-    if (!isCurrentUserRoleOrSub(savedRoleFullPath)) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "无法创建上级角色的用户");
+    // 判断新增用户的角色是否为当前用户的下级角色
+    if (!isCurrentUserSubRole(savedRoleFullPath)) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级角色的用户");
     }
 
     // 将明文密码进行 Hash 计算后再保存
@@ -111,6 +120,8 @@ public class UserService {
   /**
    * 更新用户。
    *
+   * <p>只允许更新当前用户的下级角色用户。
+   *
    * @param id 用户 id
    * @param request 请求参数
    * @return 204 HTTP 状态码
@@ -120,12 +131,12 @@ public class UserService {
     final User updatedUser = Optional.ofNullable(userMapper.selectById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要更新的用户"));
 
-    // 判断更新的用户是否为当前用户角色或其下级角色
+    // 判断更新的用户是否为当前用户的下级角色
     final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(updatedUser.getRoleId()))
       .orElseThrow();
 
-    if (!isCurrentUserRoleOrSub(updatedUserRoleFullPath)) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "无法更新上级角色的用户");
+    if (!isCurrentUserSubRole(updatedUserRoleFullPath)) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新下级角色的用户");
     }
 
     // 判断是否需要更新用户的角色
@@ -134,9 +145,9 @@ public class UserService {
       final String newUpdatedRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(request.getRoleId()))
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到更新用户的角色"));
 
-      // 判断更新的目标角色是否为当前用户角色或其下级角色
-      if (!isCurrentUserRoleOrSub(newUpdatedRoleFullPath)) {
-        throw new ApiException(HttpStatus.FORBIDDEN, "无法更新为上级角色的用户");
+      // 判断更新的目标角色是否为当前用户的下级角色
+      if (!isCurrentUserSubRole(newUpdatedRoleFullPath)) {
+        throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新为下级角色的用户");
       }
     }
 
@@ -154,13 +165,12 @@ public class UserService {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  private boolean isCurrentUserRoleOrSub(final String roleFullPath) {
+  private boolean isCurrentUserSubRole(final String roleFullPath) {
     final long currentUserId = AuthUtils.getCurrentUser().orElseThrow().userId();
 
     final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUserId))
       .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
 
-    return roleFullPath.equals(currentRoleFullPath) || // 本级
-      roleFullPath.startsWith(currentUserId + "."); // 下级
+    return roleFullPath.startsWith(currentRoleFullPath + "."); // 下级
   }
 }

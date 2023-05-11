@@ -28,6 +28,8 @@ public class UserController {
   /**
    * 获取用户列表。
    *
+   * <p>用户仅可查看其下级角色的用户。
+   *
    * @param pagination 分页请求参数
    * @param request 请求参数
    * @return 用户分页列表
@@ -44,6 +46,8 @@ public class UserController {
   /**
    * 新增用户。
    *
+   * <p>只允许新增当前用户的下级角色用户。
+   *
    * @param request 请求参数
    * @return 201 HTTP 状态码
    */
@@ -56,6 +60,8 @@ public class UserController {
 
   /**
    * 更新用户。
+   *
+   * <p>只允许更新当前用户的下级角色用户。
    *
    * @param id 用户 id
    * @param request 请求参数
