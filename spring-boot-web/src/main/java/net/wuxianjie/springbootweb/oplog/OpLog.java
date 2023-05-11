@@ -15,7 +15,7 @@ public class OpLog {
   /**
    * 操作日志 id。
    */
-  private Integer id;
+  private Long id;
 
   /**
    * 请求时间。
@@ -28,7 +28,7 @@ public class OpLog {
   private String clientIp;
 
   /**
-   * 用户名.
+   * 用户名。
    */
   private String username;
 
