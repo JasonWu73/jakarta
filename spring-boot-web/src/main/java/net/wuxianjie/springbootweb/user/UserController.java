@@ -2,15 +2,15 @@ package net.wuxianjie.springbootweb.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import net.wuxianjie.springbootweb.oplog.Log;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationParam;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationResult;
+import net.wuxianjie.springbootweb.user.dto.AddUserRequest;
 import net.wuxianjie.springbootweb.user.dto.GetUserRequest;
 import net.wuxianjie.springbootweb.user.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户管理相关 REST API。
@@ -38,5 +38,18 @@ public class UserController {
     @Valid final GetUserRequest request
   ) {
     return userService.getUsers(pagination, request);
+  }
+
+  /**
+   * 新增用户。
+   *
+   * @param request 请求参数
+   * @return 201 HTTP 状态码
+   */
+  @Log("新增用户")
+  @PostMapping("/users")
+  @PreAuthorize("hasAuthority('user_add')")
+  public ResponseEntity<PaginationResult<UserResponse>> addUser(@RequestBody @Valid final AddUserRequest request) {
+    return userService.addUser(request);
   }
 }

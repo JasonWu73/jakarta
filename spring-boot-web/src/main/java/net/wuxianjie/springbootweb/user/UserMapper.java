@@ -34,4 +34,36 @@ public interface UserMapper {
    * @return 过滤后的总条数
    */
   long countByQuery(@Param("q") final GetUserRequest request);
+
+  /**
+   * 判断用户名是否存在。
+   *
+   * @param username 需要查找的用户名
+   * @return 用户名是否存在
+   */
+  boolean existsByUsername(String username);
+
+  /**
+   * 通过角色 id 获取角色的完整路径。
+   *
+   * @param roleId 需要查找的角色 id
+   * @return 角色的完整路径
+   */
+  String selectRoleFullPathByRoleId(long roleId);
+
+  /**
+   * 通过用户 id 获取角色的完整路径。
+   *
+   * @param id 需要查找的用户 id
+   * @return 角色的完整路径
+   */
+  String selectRoleFullPathById(long id);
+
+  /**
+   * 新增用户。
+   *
+   * @param user 需要新增的用户数据
+   * @return 新增记录数
+   */
+  int insert(User user);
 }
