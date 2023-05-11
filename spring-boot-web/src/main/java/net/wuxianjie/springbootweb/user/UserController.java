@@ -60,7 +60,7 @@ public class UserController {
    *
    * <p>只允许更新当前用户的下级角色用户。
    *
-   * @param id 用户 id
+   * @param id 需要更新的用户 id
    * @param request 请求参数
    * @return 204 HTTP 状态码
    */
@@ -90,7 +90,7 @@ public class UserController {
    *
    * <p>无法旧密码即可重置。
    *
-   * @param id 用户 id
+   * @param id 需要重置密码的用户 id
    * @param request 请求参数
    * @return 204 HTTP 状态码
    */
@@ -102,5 +102,20 @@ public class UserController {
     @RequestBody @Valid final ResetPasswordRequest request
   ) {
     return userService.resetPassword(id, request);
+  }
+
+  /**
+   * 删除用户。
+   *
+   * <p>只允许更新当前用户的下级角色用户。
+   *
+   * @param id 需要删除的用户 id
+   * @return 204 HTTP 状态码
+   */
+  @Log("删除用户")
+  @DeleteMapping("/users/{id}")
+  @PreAuthorize("hasAuthority('user_del')")
+  public ResponseEntity<Void> deleteUser(@PathVariable final long id) {
+    return userService.deleteUser(id);
   }
 }

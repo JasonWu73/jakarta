@@ -768,7 +768,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/op-logs?pageNumber=1&pageSize=2&startTime=1970-01-01 00:00:00&endTime=2093-12-31 23:59:59&clientIp=127&message=登录",
+							"raw": "{{base_url}}/api/v1/op-logs?pageNumber=1&pageSize=10&startTime=1970-01-01 00:00:00&endTime=2093-12-31 23:59:59",
 							"host": [
 								"{{base_url}}"
 							],
@@ -785,7 +785,7 @@
 								},
 								{
 									"key": "pageSize",
-									"value": "2",
+									"value": "10",
 									"description": "每页显示条目个数，必填，值 >= 1"
 								},
 								{
@@ -801,12 +801,14 @@
 								{
 									"key": "clientIp",
 									"value": "127",
-									"description": "客户端 IP"
+									"description": "客户端 IP",
+									"disabled": true
 								},
 								{
 									"key": "message",
 									"value": "登录",
-									"description": "操作描述"
+									"description": "操作描述",
+									"disabled": true
 								}
 							]
 						}
@@ -1982,6 +1984,189 @@
 								{
 									"key": "Date",
 									"value": "Thu, 11 May 2023 08:51:43 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "删除用户",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.body.raw = jsonMinify(pm.request.body.raw);",
+									"",
+									"// 去除 JSON 参数注释方法",
+									"function jsonMinify(json) {",
+									"",
+									"  var tokenizer = /\"|(\\/\\*)|(\\*\\/)|(\\/\\/)|\\n|\\r|\\[|]/g,",
+									"    in_string = false,",
+									"    in_multiline_comment = false,",
+									"    in_singleline_comment = false,",
+									"    tmp, tmp2, new_str = [], ns = 0, from = 0, lc, rc,",
+									"    prevFrom",
+									"  ;",
+									"",
+									"  tokenizer.lastIndex = 0;",
+									"",
+									"  while (tmp = tokenizer.exec(json)) {",
+									"    lc = RegExp.leftContext;",
+									"    rc = RegExp.rightContext;",
+									"    if (!in_multiline_comment && !in_singleline_comment) {",
+									"      tmp2 = lc.substring(from);",
+									"      if (!in_string) {",
+									"        tmp2 = tmp2.replace(/(\\n|\\r|\\s)*/g, '');",
+									"      }",
+									"      new_str[ns++] = tmp2;",
+									"    }",
+									"    prevFrom = from;",
+									"    from = tokenizer.lastIndex;",
+									"",
+									"    // found a \" character, and we're not currently in",
+									"    // a comment? check for previous `\\` escaping immediately",
+									"    // leftward adjacent to this match",
+									"    if (tmp[0] === '\"' && !in_multiline_comment && !in_singleline_comment) {",
+									"      // limit left-context matching to only go back",
+									"      // to the position of the last token match",
+									"      //",
+									"      // see: https://github.com/getify/JSON.minify/issues/64",
+									"      lc.lastIndex = prevFrom;",
+									"",
+									"      // perform leftward adjacent escaping match",
+									"      tmp2 = lc.match(/(\\\\)*$/);",
+									"      // start of string with \", or unescaped \" character found to end string?",
+									"      if (!in_string || !tmp2 || (tmp2[0].length % 2) === 0) {",
+									"        in_string = !in_string;",
+									"      }",
+									"      from--; // include \" character in next catch",
+									"      rc = json.substring(from);",
+									"    } else if (tmp[0] === '/*' && !in_string && !in_multiline_comment && !in_singleline_comment) {",
+									"      in_multiline_comment = true;",
+									"    } else if (tmp[0] === '*/' && !in_string && in_multiline_comment && !in_singleline_comment) {",
+									"      in_multiline_comment = false;",
+									"    } else if (tmp[0] === '//' && !in_string && !in_multiline_comment && !in_singleline_comment) {",
+									"      in_singleline_comment = true;",
+									"    } else if ((tmp[0] === '\\n' || tmp[0] === '\\r') && !in_string && !in_multiline_comment && in_singleline_comment) {",
+									"      in_singleline_comment = false;",
+									"    } else if (!in_multiline_comment && !in_singleline_comment && !(/\\n|\\r|\\s/.test(tmp[0]))) {",
+									"      new_str[ns++] = tmp[0];",
+									"    }",
+									"  }",
+									"  new_str[ns++] = rc;",
+									"  return new_str.join('');",
+									"};"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"3"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "成功",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}",
+										"type": "default"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/users/3",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"3"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 11 May 2023 09:24:34 GMT"
 								},
 								{
 									"key": "Keep-Alive",

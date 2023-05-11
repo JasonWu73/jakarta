@@ -88,4 +88,12 @@ public interface UserMapper {
    * @return 更新记录数
    */
   int update(User user);
+
+  /**
+   * 删除用户。
+   *
+   * @param id 需要删除的用户 id
+   * @return 删除记录数
+   */
+  int deleteById(long id);
 }

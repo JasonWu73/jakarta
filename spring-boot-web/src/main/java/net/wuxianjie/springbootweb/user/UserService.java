@@ -120,7 +120,7 @@ public class UserService {
    *
    * <p>只允许更新当前用户的下级角色用户。
    *
-   * @param id 用户 id
+   * @param id 需要更新的用户 id
    * @param request 请求参数
    * @return 204 HTTP 状态码
    */
@@ -205,7 +205,7 @@ public class UserService {
    *
    * <p>无法旧密码即可重置。
    *
-   * @param id 用户 id
+   * @param id 需要重置密码的用户 id
    * @param request 请求参数
    * @return 204 HTTP 状态码
    */
@@ -232,6 +232,35 @@ public class UserService {
     // 更新至数据库
     if (userMapper.update(user) == 0) {
       throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新用户失败");
+    }
+
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  /**
+   * 删除用户。
+   *
+   * <p>只允许更新当前用户的下级角色用户。
+   *
+   * @param id 需要删除的用户 id
+   * @return 204 HTTP 状态码
+   */
+  public ResponseEntity<Void> deleteUser(final long id) {
+    // 判断要删除的用户是否存在
+    final User user = Optional.ofNullable(userMapper.selectById(id))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要删除的用户"));
+
+    // 判断要删除的用户是否为当前用户的下级角色的用户
+    final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(user.getRoleId()))
+      .orElseThrow();
+
+    if (isNotCurrentUserSubRole(updatedUserRoleFullPath)) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许删除下级角色的用户");
+    }
+
+    // 从数据库中删除
+    if (userMapper.deleteById(id) == 0) {
+      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "删除用户失败");
     }
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
