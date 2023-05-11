@@ -37,9 +37,8 @@ public class AuthService {
    */
   public ResponseEntity<TokenResponse> getToken(final GetTokenRequest request) {
     // 通过用户名查询数据库获取用户数据
-    final RawAuthData rawAuth = Optional.ofNullable(
-      authMapper.selectByUsername(request.getUsername())
-    ).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误"));
+    final RawAuthData rawAuth = Optional.ofNullable(authMapper.selectByUsername(request.getUsername()))
+      .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误"));
 
     // 判断密码是否正确
     if (!passwordEncoder.matches(request.getPassword(), rawAuth.hashedPassword())) {
@@ -111,9 +110,8 @@ public class AuthService {
     }
 
     // 查询数据库获取用户数据
-    final RawAuthData rawAuth = Optional.ofNullable(
-      authMapper.selectByUsername(payload.username())
-    ).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "无效的 Token"));
+    final RawAuthData rawAuth = Optional.ofNullable(authMapper.selectByUsername(payload.username()))
+      .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "无效的 Token"));
 
     // 创建 Token
     final long timestampSec = System.currentTimeMillis() / 1000;
