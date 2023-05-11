@@ -1,5 +1,6 @@
 package net.wuxianjie.springbootweb.user;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AccountStatus;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
@@ -7,10 +8,7 @@ import net.wuxianjie.springbootweb.shared.pagination.PaginationParam;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationResult;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import net.wuxianjie.springbootweb.shared.util.StringUtils;
-import net.wuxianjie.springbootweb.user.dto.AddUserRequest;
-import net.wuxianjie.springbootweb.user.dto.GetUserRequest;
-import net.wuxianjie.springbootweb.user.dto.UpdateUserRequest;
-import net.wuxianjie.springbootweb.user.dto.UserResponse;
+import net.wuxianjie.springbootweb.user.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -160,6 +158,40 @@ public class UserService {
 
     if (userMapper.update(updatedUser) == 0) {
       throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新用户失败");
+    }
+
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  /**
+   * 修改本账号信息。
+   *
+   * @param request 请求参数
+   * @return 204 HTTP 状态码
+   */
+  public ResponseEntity<Void> updateSelf(final UpdateSelfRequest request) {
+    // 获取当前登录的用户信息
+    final long userId = AuthUtils.getCurrentUser().orElseThrow().userId();
+    final User user = Optional.ofNullable(userMapper.selectById(userId)).orElseThrow();
+
+    // 修改昵称
+    user.setUpdatedAt(LocalDateTime.now());
+    user.setNickname(request.getNickname());
+
+    // 判断是否需要修改密码
+    if (!StrUtil.isBlank(request.getOldPassword()) && !StrUtil.isBlank(request.getNewPassword())) {
+      // 判断旧密码是否正确
+      if (!passwordEncoder.matches(request.getOldPassword(), user.getHashedPassword())) {
+        throw new ApiException(HttpStatus.BAD_REQUEST, "密码错误");
+      }
+
+      final String newHashedPassword = passwordEncoder.encode(request.getNewPassword());
+      user.setHashedPassword(newHashedPassword);
+    }
+
+    // 更新至数据库
+    if (userMapper.update(user) == 0) {
+      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新账号失败");
     }
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

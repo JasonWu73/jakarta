@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.oplog.Log;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationParam;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationResult;
-import net.wuxianjie.springbootweb.user.dto.AddUserRequest;
-import net.wuxianjie.springbootweb.user.dto.GetUserRequest;
-import net.wuxianjie.springbootweb.user.dto.UpdateUserRequest;
-import net.wuxianjie.springbootweb.user.dto.UserResponse;
+import net.wuxianjie.springbootweb.user.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -75,5 +72,16 @@ public class UserController {
     @RequestBody @Valid final UpdateUserRequest request
   ) {
     return userService.updateUser(id, request);
+  }
+
+  /**
+   * 修改本账号信息。
+   *
+   * @param request 请求参数
+   * @return 204 HTTP 状态码
+   */
+  @PutMapping("/self")
+  public ResponseEntity<Void> updateSelf(@RequestBody @Valid final UpdateSelfRequest request) {
+    return userService.updateSelf(request);
   }
 }
