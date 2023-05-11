@@ -84,4 +84,23 @@ public class UserController {
   public ResponseEntity<Void> updateSelf(@RequestBody @Valid final UpdateSelfRequest request) {
     return userService.updateSelf(request);
   }
+
+  /**
+   * 重置密码。
+   *
+   * <p>无法旧密码即可重置。
+   *
+   * @param id 用户 id
+   * @param request 请求参数
+   * @return 204 HTTP 状态码
+   */
+  @Log("重置密码")
+  @PutMapping("/users/{id}/reset")
+  @PreAuthorize("hasAuthority('user_reset')")
+  public ResponseEntity<Void> resetPassword(
+    @PathVariable final long id,
+    @RequestBody @Valid final ResetPasswordRequest request
+  ) {
+    return userService.resetPassword(id, request);
+  }
 }

@@ -129,7 +129,7 @@ public class UserService {
     final User updatedUser = Optional.ofNullable(userMapper.selectById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要更新的用户"));
 
-    // 判断更新的用户是否为当前用户的下级角色
+    // 判断更新的用户是否为当前用户的下级角色的用户
     final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(updatedUser.getRoleId()))
       .orElseThrow();
 
@@ -174,8 +174,10 @@ public class UserService {
     final long userId = AuthUtils.getCurrentUser().orElseThrow().userId();
     final User user = Optional.ofNullable(userMapper.selectById(userId)).orElseThrow();
 
-    // 修改昵称
+    // 更新记录修改时间
     user.setUpdatedAt(LocalDateTime.now());
+
+    // 修改昵称
     user.setNickname(request.getNickname());
 
     // 判断是否需要修改密码
@@ -185,6 +187,7 @@ public class UserService {
         throw new ApiException(HttpStatus.BAD_REQUEST, "密码错误");
       }
 
+      // 将明文密码进行 Hash 计算后再保存
       final String newHashedPassword = passwordEncoder.encode(request.getNewPassword());
       user.setHashedPassword(newHashedPassword);
     }
@@ -192,6 +195,43 @@ public class UserService {
     // 更新至数据库
     if (userMapper.update(user) == 0) {
       throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新账号失败");
+    }
+
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  /**
+   * 重置密码。
+   *
+   * <p>无法旧密码即可重置。
+   *
+   * @param id 用户 id
+   * @param request 请求参数
+   * @return 204 HTTP 状态码
+   */
+  public ResponseEntity<Void> resetPassword(final long id, final ResetPasswordRequest request) {
+    // 判断要更新的用户是否存在
+    final User user = Optional.ofNullable(userMapper.selectById(id))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要重置密码的用户"));
+
+    // 判断更新的用户是否为当前用户的下级角色的用户
+    final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(user.getRoleId()))
+      .orElseThrow();
+
+    if (isNotCurrentUserSubRole(updatedUserRoleFullPath)) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许重置下级角色的用户密码");
+    }
+
+    // 更新记录修改时间
+    user.setUpdatedAt(LocalDateTime.now());
+
+    // 将明文密码进行 Hash 计算后再保存
+    final String newHashedPassword = passwordEncoder.encode(request.getPassword());
+    user.setHashedPassword(newHashedPassword);
+
+    // 更新至数据库
+    if (userMapper.update(user) == 0) {
+      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新用户失败");
     }
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
