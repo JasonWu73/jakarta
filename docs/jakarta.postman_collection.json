@@ -2185,31 +2185,19 @@
 			]
 		},
 		{
-			"name": "404",
+			"name": "获取项目版本号",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{accessToken}}",
-						"type": "default"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM2MjkzODIsInR5cGUiOiJhY2Nlc3MiLCJpc3MiOiLlkLTku5nmnbDmvJTnpLrns7vnu58iLCJ1c2VybmFtZSI6Ind4aiJ9.SrJhSb2GW4EfsdGEJAqckPzLsbJWuuseI0yphnYIX5E",
-						"type": "default",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "{{base_url}}/api/v1/no-resource",
+					"raw": "{{base_url}}/api/v1/version",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"api",
 						"v1",
-						"no-resource"
+						"version"
 					]
 				}
 			},
@@ -2218,33 +2206,21 @@
 					"name": "成功",
 					"originalRequest": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{accessToken}}",
-								"type": "default"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgzNTM1MTQxLCJ1c2VyIjoic3UifQ.87Jh5NmhQHN6G_lMUdN7OdKcvYLKV285zu_FK1l2_fk",
-								"type": "default",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/v1/no-resource",
+							"raw": "{{base_url}}/api/v1/version",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"no-resource"
+								"version"
 							]
 						}
 					},
-					"status": "Not Found",
-					"code": 404,
+					"status": "OK",
+					"code": 200,
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
@@ -2289,7 +2265,7 @@
 						},
 						{
 							"key": "Date",
-							"value": "Tue, 09 May 2023 09:32:25 GMT"
+							"value": "Fri, 12 May 2023 02:11:59 GMT"
 						},
 						{
 							"key": "Keep-Alive",
@@ -2301,7 +2277,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"timestamp\": \"2023-05-09 17:32:25\",\n    \"status\": 404,\n    \"error\": \"资源不存在\",\n    \"path\": \"/api/v1/no-resource\"\n}"
+					"body": "{\n    \"version\": \"v1.0.0\", // 版本号\n    \"projectName\": \"吴仙杰演示系统\", // 项目名\n    \"developer\": \"吴仙杰\" // 开发者\n}"
 				}
 			]
 		}
