@@ -8,7 +8,7 @@ package net.wuxianjie.springbootweb.auth.dto;
  * @param expiresInSec Token 多少秒后过期
  * @param username 用户名
  * @param nickname 昵称
- * @param authorities 以英文逗号分隔的功能菜单（权限）字符串
+ * @param authorities 以英文逗号分隔的功能权限字符串
  */
 public record TokenResponse(
   String accessToken,

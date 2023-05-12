@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
  *
  * @param id 角色 id
  * @param name 角色名
- * @param authorities 以英文逗号分隔的功能菜单（权限）字符串
- * @param parentId 上级角色 id
- * @param parentName 上级角色名
+ * @param authorities 以英文逗号分隔的功能权限字符串
+ * @param parentId 父角色 id
+ * @param parentName 父角色名
  * @param updatedAt 更新时间
  * @param remark 备注
  */

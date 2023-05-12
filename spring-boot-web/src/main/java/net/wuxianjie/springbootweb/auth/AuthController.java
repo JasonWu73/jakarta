@@ -9,8 +9,6 @@ import net.wuxianjie.springbootweb.oplog.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * 身份验证相关 REST API。
  *
@@ -49,12 +47,12 @@ public class AuthController {
   }
 
   /**
-   * 获取完整权限树列表。
+   * 获取权限树。
    *
-   * @return 权限树列表
+   * @return 权限树
    */
   @GetMapping("/auth-trees")
-  public ResponseEntity<List<Tree<String>>> update() {
-    return ResponseEntity.ok(Authority.getTrees());
+  public ResponseEntity<Tree<String>> update() {
+    return ResponseEntity.ok(Authority.getTree());
   }
 }

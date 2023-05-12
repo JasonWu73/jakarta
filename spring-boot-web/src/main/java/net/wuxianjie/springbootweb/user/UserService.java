@@ -85,11 +85,11 @@ public class UserService {
       throw new ApiException(HttpStatus.CONFLICT, "已存在相同用户名");
     }
 
-    // 判断新增用户的角色是否存在
+    // 新增用户的角色存在性校验
     final String savedRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(request.getRoleId()))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到新增用户的角色"));
 
-    // 判断新增用户的角色是否为当前用户的下级角色
+    // 校验新增用户的角色是否为当前用户的下级角色
     if (isNotCurrentUserSubRole(savedRoleFullPath)) {
       throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级角色的用户");
     }
@@ -125,11 +125,11 @@ public class UserService {
    * @return 204 HTTP 状态码
    */
   public ResponseEntity<Void> updateUser(final long id, final UpdateUserRequest request) {
-    // 判断要更新的用户是否存在
+    // 更新的用户存在性校验
     final User updatedUser = Optional.ofNullable(userMapper.selectById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要更新的用户"));
 
-    // 判断更新的用户是否为当前用户的下级角色的用户
+    // 校验更新的用户是否为当前用户的下级角色的用户
     final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(updatedUser.getRoleId()))
       .orElseThrow();
 
@@ -139,11 +139,11 @@ public class UserService {
 
     // 判断是否需要更新用户的角色
     if (!Objects.equals(updatedUser.getRoleId(), request.getRoleId())) {
-      // 判断更新的目标角色是否存在
+      // 更新的目标角色存在性校验
       final String newUpdatedRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(request.getRoleId()))
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到更新用户的角色"));
 
-      // 判断更新的目标角色是否为当前用户的下级角色
+      // 校验更新的目标角色是否为当前用户的下级角色
       if (isNotCurrentUserSubRole(newUpdatedRoleFullPath)) {
         throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新为下级角色的用户");
       }
@@ -182,7 +182,7 @@ public class UserService {
 
     // 判断是否需要修改密码
     if (!StrUtil.isBlank(request.getOldPassword()) && !StrUtil.isBlank(request.getNewPassword())) {
-      // 判断旧密码是否正确
+      // 校验旧密码是否正确
       if (!passwordEncoder.matches(request.getOldPassword(), user.getHashedPassword())) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "密码错误");
       }
@@ -210,11 +210,11 @@ public class UserService {
    * @return 204 HTTP 状态码
    */
   public ResponseEntity<Void> resetPassword(final long id, final ResetPasswordRequest request) {
-    // 判断要更新的用户是否存在
+    // 更新的用户存在性校验
     final User user = Optional.ofNullable(userMapper.selectById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要重置密码的用户"));
 
-    // 判断更新的用户是否为当前用户的下级角色的用户
+    // 校验更新的用户是否为当前用户的下级角色的用户
     final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(user.getRoleId()))
       .orElseThrow();
 
@@ -246,11 +246,11 @@ public class UserService {
    * @return 204 HTTP 状态码
    */
   public ResponseEntity<Void> deleteUser(final long id) {
-    // 判断要删除的用户是否存在
+    // 删除用户的存在性校验
     final User user = Optional.ofNullable(userMapper.selectById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要删除的用户"));
 
-    // 判断要删除的用户是否为当前用户的下级角色的用户
+    // 校验删除用户是否为当前用户的下级角色的用户
     final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(user.getRoleId()))
       .orElseThrow();
 

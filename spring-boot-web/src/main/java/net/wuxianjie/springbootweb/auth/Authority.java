@@ -85,7 +85,7 @@ public enum Authority {
   private final String id;
 
   /**
-   * 上级权限 id。
+   * 父权限 id。
    */
   private final String parentId;
 
@@ -104,7 +104,7 @@ public enum Authority {
    *
    * @return 包含全部数据的权限树列表
    */
-  public static List<Tree<String>> getTrees() {
+  public static Tree<String> getTree() {
     final List<TreeNode<String>> nodes = Arrays.stream(values())
       .map(auth ->
         new TreeNode<>(auth.id, auth.parentId, auth.name, 1)
@@ -112,13 +112,13 @@ public enum Authority {
       )
       .toList();
 
-    return TreeUtil.build(nodes, ROOT.parentId);
+    return TreeUtil.build(nodes, ROOT.parentId).get(0);
   }
 
   /**
    * 检查节点是否为本级或下级节点，即判断是否拥有指定权限。
    *
-   * @param parentCode 比较的上级节点 code
+   * @param parentCode 比较的父节点 code
    * @param checkedCode 被检查的下级节点 code
    * @return {@code checkedCode} 是否为 {@code parentCode} 的本级或下级节点
    * @throws IllegalArgumentException 当 code 解析失败时

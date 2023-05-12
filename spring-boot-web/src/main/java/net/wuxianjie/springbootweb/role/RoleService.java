@@ -2,8 +2,10 @@ package net.wuxianjie.springbootweb.role;
 
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
+import net.wuxianjie.springbootweb.role.dto.AddRoleRequest;
 import net.wuxianjie.springbootweb.role.dto.RoleResponse;
 import net.wuxianjie.springbootweb.user.UserMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +39,27 @@ public class RoleService {
 
     // 查询数据库获取列表数据
     return ResponseEntity.ok(roleMapper.selectAllByFullPathLike(subRoleLikeFullPath));
+  }
+
+  /**
+   * 新增角色。
+   *
+   * <p>只允许新增当前用户的下级角色。
+   *
+   * @param request 请求参数
+   * @return 201 HTTP 状态码
+   */
+  public ResponseEntity<Void> addRole(final AddRoleRequest request) {
+    // 角色名唯一性校验
+
+    // 设置的功能权限合法性校验，并格式化功能权限字符串（仅保存最父权限）
+
+    // 父角色有效性校验
+
+    // 校验新增角色是否为当前用户的下级角色
+
+    // 保存至数据库
+
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }

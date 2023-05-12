@@ -23,17 +23,17 @@ public class Role {
   private String name;
 
   /**
-   * 以英文逗号分隔的功能菜单（权限）字符串。
+   * 以英文逗号分隔的功能权限字符串。
    */
   private String authorities;
 
   /**
-   * 上级角色 id。
+   * 父角色 id。
    */
   private Long parentId;
 
   /**
-   * 上级角色名。
+   * 父角色名。
    */
   private String parentName;
 
