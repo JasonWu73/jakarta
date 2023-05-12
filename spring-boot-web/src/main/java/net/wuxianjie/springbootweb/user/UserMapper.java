@@ -49,12 +49,12 @@ public interface UserMapper {
   boolean existsByUsername(String username);
 
   /**
-   * 根据查询条件获取用户分页列表。
+   * 根据查询条件获取下级角色的用户分页列表。
    *
    * @param pagination 查询分页参数
    * @param request 查询参数
    * @param subRoleLikeFullPath 下级角色的完整路径前缀
-   * @return 过滤后的用户分页列表
+   * @return 过滤后的下级角色的用户分页列表
    */
   List<UserResponse> selectByQuery(
     @Param("p") PaginationParam pagination,
