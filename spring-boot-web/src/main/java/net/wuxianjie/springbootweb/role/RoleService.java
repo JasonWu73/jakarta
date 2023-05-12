@@ -183,6 +183,51 @@ public class RoleService {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
+  /**
+   * 删除角色。
+   *
+   * <p>只允许更新当前用户的下级角色。
+   *
+   * @param id 需要删除的角色 id
+   * @return 204 HTTP 状态码
+   */
+  public ResponseEntity<Void> deleteRole(final long id) {
+    // 角色存在性校验
+    final Role role = Optional.ofNullable(roleMapper.selectById(id))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要删除的角色"));
+
+    // 校验角色是否为当前用户的下级角色
+    final AuthData currentUser = AuthUtils.getCurrentUser().orElseThrow();
+
+    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.userId()))
+      .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
+
+    if (!role.getFullPath().startsWith(currentRoleFullPath + ".")) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许删除下级角色");
+    }
+
+    // 不可删除存在下级的角色
+    final boolean existsSub = roleMapper.existsByFullPathLike(role.getFullPath() + ".%");
+
+    if (existsSub) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "不可删除存在下级的角色");
+    }
+
+    // 不可删除已被用户绑定的角色
+    final boolean existsUser = roleMapper.existsUserById(id);
+
+    if (existsUser) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "不可删除已被用户绑定的角色");
+    }
+
+    // 从数据库中删除
+    if (roleMapper.deleteById(id) == 0) {
+      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "删除角色失败");
+    }
+
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
   private String sanitizeAuthorities(final List<String> currentUserAuthorities, final String newAuthorities) {
     if (newAuthorities == null) {
       return null;

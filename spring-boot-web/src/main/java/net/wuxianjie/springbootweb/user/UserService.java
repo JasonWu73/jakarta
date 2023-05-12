@@ -246,11 +246,11 @@ public class UserService {
    * @return 204 HTTP 状态码
    */
   public ResponseEntity<Void> deleteUser(final long id) {
-    // 删除用户的存在性校验
+    // 用户存在性校验
     final User user = Optional.ofNullable(userMapper.selectById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要删除的用户"));
 
-    // 校验删除用户是否为当前用户的下级角色的用户
+    // 校验要删除的用户是否为当前用户的下级角色的用户
     final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(user.getRoleId()))
       .orElseThrow();
 

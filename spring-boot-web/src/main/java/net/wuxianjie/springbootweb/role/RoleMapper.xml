@@ -19,6 +19,14 @@
     select exists(select 1 from role where name = #{name})
   </select>
 
+  <select id="existsByFullPathLike" resultType="boolean">
+    select exists(select 1 from role where full_path like #{subRoleLikeFullPath})
+  </select>
+
+  <select id="existsUserById" resultType="boolean">
+    select exists(select 1 from user where role_id = #{id})
+  </select>
+
   <select id="selectAllByFullPathLikeOrderByUpdatedAt" resultType="net.wuxianjie.springbootweb.role.dto.RoleResponse">
     select id,
            name,
@@ -49,4 +57,10 @@
         remark      = #{remark}
     where id = #{id}
   </update>
+
+  <delete id="deleteById">
+    delete
+    from role
+    where id = #{id}
+  </delete>
 </mapper>

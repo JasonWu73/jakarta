@@ -30,6 +30,22 @@ public interface RoleMapper {
   boolean existsByName(String name);
 
   /**
+   * 判断是否存在下级角色。
+   *
+   * @param subRoleLikeFullPath 下级角色的完整路径前缀
+   * @return 是否存在下级角色
+   */
+  boolean existsByFullPathLike(String subRoleLikeFullPath);
+
+  /**
+   * 判断是否存在指定角色的用户。
+   *
+   * @param id 需要查找的角色 id
+   * @return 是否存指定角色的用户
+   */
+  boolean existsUserById(long id);
+
+  /**
    * 获取所有下级角色。
    *
    * @param subRoleLikeFullPath 下级角色的完整路径前缀
@@ -52,4 +68,12 @@ public interface RoleMapper {
    * @return 更新记录数
    */
   int update(Role role);
+
+  /**
+   * 删除角色。
+   *
+   * @param id 需要删除的角色 id
+   * @return 删除记录数
+   */
+  int deleteById(long id);
 }

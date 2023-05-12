@@ -55,7 +55,7 @@ public class RoleController {
   /**
    * 更新角色。
    *
-   * <p>只允许更新当前角色的下级角色。
+   * <p>只允许更新当前用户的下级角色。
    *
    * @param id 需要更新的角色 id
    * @param request 请求参数
@@ -69,5 +69,20 @@ public class RoleController {
     @RequestBody @Valid final UpdateRoleRequest request
   ) {
     return roleService.updateRole(id, request);
+  }
+
+  /**
+   * 删除角色。
+   *
+   * <p>只允许更新当前用户的下级角色。
+   *
+   * @param id 需要删除的角色 id
+   * @return 204 HTTP 状态码
+   */
+  @Log("删除角色")
+  @DeleteMapping("/roles/{id}")
+  @PreAuthorize("hasAuthority('role_del')")
+  public ResponseEntity<Void> deleteRole(@PathVariable final long id) {
+    return roleService.deleteRole(id);
   }
 }
