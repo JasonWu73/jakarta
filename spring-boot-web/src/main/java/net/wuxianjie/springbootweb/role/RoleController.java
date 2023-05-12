@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.oplog.Log;
 import net.wuxianjie.springbootweb.role.dto.AddRoleRequest;
 import net.wuxianjie.springbootweb.role.dto.RoleResponse;
+import net.wuxianjie.springbootweb.role.dto.UpdateRoleRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -49,5 +50,24 @@ public class RoleController {
   @PreAuthorize("hasAuthority('role_add')")
   public ResponseEntity<Void> addRole(@RequestBody @Valid final AddRoleRequest request) {
     return roleService.addRole(request);
+  }
+
+  /**
+   * 更新角色。
+   *
+   * <p>只允许更新当前角色的下级角色。
+   *
+   * @param id 需要更新的角色 id
+   * @param request 请求参数
+   * @return 204 HTTP 状态码
+   */
+  @Log("更新角色")
+  @PutMapping("/roles/{id}")
+  @PreAuthorize("hasAuthority('role_edit')")
+  public ResponseEntity<Void> updateRole(
+    @PathVariable final long id,
+    @RequestBody @Valid final UpdateRoleRequest request
+  ) {
+    return roleService.updateRole(id, request);
   }
 }

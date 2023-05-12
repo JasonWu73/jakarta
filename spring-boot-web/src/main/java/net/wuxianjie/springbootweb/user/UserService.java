@@ -125,7 +125,7 @@ public class UserService {
    * @return 204 HTTP 状态码
    */
   public ResponseEntity<Void> updateUser(final long id, final UpdateUserRequest request) {
-    // 更新的用户存在性校验
+    // 用户存在性校验
     final User updatedUser = Optional.ofNullable(userMapper.selectById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要更新的用户"));
 
