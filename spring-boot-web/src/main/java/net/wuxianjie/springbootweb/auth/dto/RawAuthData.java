@@ -11,7 +11,7 @@ import net.wuxianjie.springbootweb.auth.AccountStatus;
  * @param hashedPassword Hash 计算后的密码
  * @param status 账号状态
  * @param roleId 角色 id
- * @param menus 以英文逗号分隔的功能菜单（权限）字符串
+ * @param authorities 以英文逗号分隔的功能菜单（权限）字符串
  */
 public record RawAuthData(
   long userId,
@@ -20,6 +20,6 @@ public record RawAuthData(
   String hashedPassword,
   AccountStatus status,
   long roleId,
-  String menus
+  String authorities
 ) {
 }

@@ -67,7 +67,7 @@ public class AuthService {
       rawAuth.username(),
       rawAuth.nickname(),
       rawAuth.status(),
-      StrUtil.split(rawAuth.menus(), StrUtil.COMMA, true, true),
+      StrUtil.split(rawAuth.authorities(), StrUtil.COMMA, true, true),
       accessToken,
       refreshToken
     );
@@ -81,8 +81,8 @@ public class AuthService {
       refreshToken,
       AuthProps.TOKEN_EXPIRATION_SEC,
       request.getUsername(),
-      auth.nickname(),
-      auth.authorities()
+      rawAuth.nickname(),
+      rawAuth.authorities()
     ));
   }
 
@@ -135,7 +135,7 @@ public class AuthService {
       rawAuth.username(),
       rawAuth.nickname(),
       rawAuth.status(),
-      StrUtil.split(rawAuth.menus(), StrUtil.COMMA, true, true),
+      StrUtil.split(rawAuth.authorities(), StrUtil.COMMA, true, true),
       accessToken,
       newRefreshToken
     );
@@ -146,8 +146,8 @@ public class AuthService {
       newRefreshToken,
       AuthProps.TOKEN_EXPIRATION_SEC,
       payload.username(),
-      auth.nickname(),
-      auth.authorities()
+      rawAuth.nickname(),
+      rawAuth.authorities()
     ));
   }
 }

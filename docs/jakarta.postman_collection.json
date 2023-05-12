@@ -204,7 +204,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"accessToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Ind4aiIsImV4cCI6MTY4MzYyNjM4OCwidHlwZSI6ImFjY2VzcyIsImlzcyI6IuWQtOS7meadsOa8lOekuuezu-e7nyJ9.ZYXs8aBRbUpqMB_8H9iZ7wPTmEB1JluE0UrLF-3CvAg\", // 用于接口访问的 Access Token\n    \"refreshToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Ind4aiIsImV4cCI6MTY4MzYyNjM4OCwidHlwZSI6InJlZnJlc2giLCJpc3MiOiLlkLTku5nmnbDmvJTnpLrns7vnu58ifQ.YAQSybOGzgblgO7nYGkwJiTss85Yz_WHomaVnnayLwI\", // 用于刷新的 Refresh Token\n    \"expiresInSec\": 1800, // Token 多少秒后过期\n    \"username\": \"wxj\", // 用户名\n    \"nickname\": \"吴仙杰\", // 昵称\n    \"authorities\": [ // 权限列表\n        \"root\"\n    ]\n}"
+							"body": "{\n    \"accessToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Ind4aiIsImV4cCI6MTY4MzYyNjM4OCwidHlwZSI6ImFjY2VzcyIsImlzcyI6IuWQtOS7meadsOa8lOekuuezu-e7nyJ9.ZYXs8aBRbUpqMB_8H9iZ7wPTmEB1JluE0UrLF-3CvAg\", // 用于接口访问的 Access Token\n    \"refreshToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Ind4aiIsImV4cCI6MTY4MzYyNjM4OCwidHlwZSI6InJlZnJlc2giLCJpc3MiOiLlkLTku5nmnbDmvJTnpLrns7vnu58ifQ.YAQSybOGzgblgO7nYGkwJiTss85Yz_WHomaVnnayLwI\", // 用于刷新的 Refresh Token\n    \"expiresInSec\": 1800, // Token 多少秒后过期\n    \"username\": \"wxj\", // 用户名\n    \"nickname\": \"吴仙杰\", // 昵称\n    \"authorities\": \"root\" // 以英文逗号分隔的功能菜单（权限）字符串\n}"
 						},
 						{
 							"name": "统一失败返回格式",

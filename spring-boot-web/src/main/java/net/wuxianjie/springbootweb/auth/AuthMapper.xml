@@ -8,7 +8,7 @@
            u.hashed_password as hashedPassword,
            u.status,
            r.id              as roleId,
-           r.menus
+           r.authorities
     from user u
            join role r on u.role_id = r.id
     where u.username = #{username}
