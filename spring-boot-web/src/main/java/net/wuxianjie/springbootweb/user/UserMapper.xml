@@ -50,7 +50,7 @@
     </where>
   </sql>
 
-  <select id="selectByQuery" resultType="net.wuxianjie.springbootweb.user.dto.UserResponse">
+  <select id="selectByQueryOrderByUpdatedAt" resultType="net.wuxianjie.springbootweb.user.dto.UserResponse">
     select u.id,
     u.username,
     u.nickname,

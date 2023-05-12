@@ -55,7 +55,7 @@ public class UserService {
     final String subRoleLikeFullPath = roleFullPath + ".%";
 
     // 查询数据库获取列表数据
-    final List<UserResponse> logs = userMapper.selectByQuery(pagination, request, subRoleLikeFullPath);
+    final List<UserResponse> logs = userMapper.selectByQueryOrderByUpdatedAt(pagination, request, subRoleLikeFullPath);
 
     // 查询数据库获取总条目数
     final long total = userMapper.countByQuery(request, subRoleLikeFullPath);
@@ -184,7 +184,7 @@ public class UserService {
     if (!StrUtil.isBlank(request.getOldPassword()) && !StrUtil.isBlank(request.getNewPassword())) {
       // 校验旧密码是否正确
       if (!passwordEncoder.matches(request.getOldPassword(), user.getHashedPassword())) {
-        throw new ApiException(HttpStatus.BAD_REQUEST, "密码错误");
+        throw new ApiException(HttpStatus.BAD_REQUEST, "旧密码错误");
       }
 
       // 将明文密码进行 Hash 计算后再保存

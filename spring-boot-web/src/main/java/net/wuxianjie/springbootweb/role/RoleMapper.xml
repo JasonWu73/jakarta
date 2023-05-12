@@ -1,15 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.wuxianjie.springbootweb.role.RoleMapper">
-<select id="selectAllByFullPathLike" resultType="net.wuxianjie.springbootweb.role.dto.RoleResponse">
-  select id,
-         name,
-         authorities,
-         parent_id   as parentId,
-         parent_name as parentName,
-         updated_at  as updatedAt,
-         remark
-  from role
-  where full_path like #{subRoleLikeFullPath}
-</select>
+  <select id="selectById" resultType="net.wuxianjie.springbootweb.role.Role">
+    select id,
+           name,
+           authorities,
+           parent_id   as parentId,
+           parent_name as parentName,
+           full_path   as fullPath,
+           created_at  as createdAt,
+           updated_at  as updatedAt,
+           remark
+    from role
+    where id = #{id}
+  </select>
+
+  <select id="existsByName" resultType="boolean">
+    select exists(select 1 from role where name = #{name})
+  </select>
+
+  <select id="selectAllByFullPathLikeOrderByUpdatedAt" resultType="net.wuxianjie.springbootweb.role.dto.RoleResponse">
+    select id,
+           name,
+           authorities,
+           parent_id   as parentId,
+           parent_name as parentName,
+           updated_at  as updatedAt,
+           remark
+    from role
+    where full_path like #{subRoleLikeFullPath}
+    order by updatedAt desc
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    insert into role (name, authorities, parent_id, parent_name, full_path, created_at, updated_at, remark)
+    values (#{name}, #{authorities}, #{parentId}, #{parentName}, #{fullPath}, #{createdAt}, #{updatedAt}, #{remark})
+  </insert>
+
+  <update id="update">
+    update role
+    set name        = #{name},
+        authorities = #{authorities},
+        parent_id   = #{parentId},
+        parent_name = #{parentName},
+        full_path   = #{fullPath},
+        created_at  = #{createdAt},
+        updated_at  = #{updatedAt},
+        remark      = #{remark}
+    where id = #{id}
+  </update>
 </mapper>

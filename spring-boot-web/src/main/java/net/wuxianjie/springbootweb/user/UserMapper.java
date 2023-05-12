@@ -56,7 +56,7 @@ public interface UserMapper {
    * @param subRoleLikeFullPath 下级角色的完整路径前缀
    * @return 过滤后的下级角色的用户分页列表
    */
-  List<UserResponse> selectByQuery(
+  List<UserResponse> selectByQueryOrderByUpdatedAt(
     @Param("p") PaginationParam pagination,
     @Param("q") GetUserRequest request,
     final String subRoleLikeFullPath);

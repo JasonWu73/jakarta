@@ -37,7 +37,7 @@ public class OpLogService {
     request.setMessage(StringUtils.toNullableLikeValue(request.getMessage()));
 
     // 查询数据库获取列表数据
-    final List<OpLog> logs = opLogMapper.selectByQuery(pagination, request);
+    final List<OpLog> logs = opLogMapper.selectByQueryOrderByUpdatedAtDesc(pagination, request);
 
     // 查询数据库获取总条目数
     final long total = opLogMapper.countByQuery(request);

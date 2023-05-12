@@ -19,7 +19,7 @@
     </where>
   </sql>
 
-  <select id="selectByQuery" resultType="net.wuxianjie.springbootweb.oplog.OpLog">
+  <select id="selectByQueryOrderByUpdatedAtDesc" resultType="net.wuxianjie.springbootweb.oplog.OpLog">
     select id,
     request_time as requestTime,
     client_ip as clientIp,
@@ -27,7 +27,7 @@
     message
     from op_log
     <include refid="whereQuery"/>
-    order by request_time desc
+    order by requestTime desc
     limit #{p.offset}, #{p.pageSize}
   </select>
 

@@ -116,11 +116,11 @@ public enum Authority {
   }
 
   /**
-   * 检查节点是否为本级或下级节点，即判断是否拥有指定权限。
+   * 检查节点是否为下级节点，即判断是否拥有指定权限。
    *
    * @param parentCode 比较的父节点 code
    * @param checkedCode 被检查的下级节点 code
-   * @return {@code checkedCode} 是否为 {@code parentCode} 的本级或下级节点
+   * @return {@code checkedCode} 是否为 {@code parentCode} 的下级节点
    * @throws IllegalArgumentException 当 code 解析失败时
    */
   public static boolean isSubNode(
@@ -135,8 +135,7 @@ public enum Authority {
       .map(Authority::getId)
       .orElseThrow(() -> new IllegalArgumentException("无法识别 checkedCode: " + checkedCode));
 
-    return checkedId.equals(parentId) || // 本级
-      checkedId.startsWith(parentId + "."); // 下级
+    return checkedId.startsWith(parentId + "."); // 下级
   }
 
   /**

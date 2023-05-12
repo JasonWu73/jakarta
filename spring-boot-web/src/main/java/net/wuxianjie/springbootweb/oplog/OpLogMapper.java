@@ -30,7 +30,7 @@ public interface OpLogMapper {
    * @param request 查询参数
    * @return 过滤后的操作日志分页列表
    */
-  List<OpLog> selectByQuery(
+  List<OpLog> selectByQueryOrderByUpdatedAtDesc(
     @Param("p") PaginationParam pagination,
     @Param("q") GetOpLogRequest request);
 
