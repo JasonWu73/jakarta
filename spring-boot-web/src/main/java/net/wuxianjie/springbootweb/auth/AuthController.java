@@ -51,7 +51,7 @@ public class AuthController {
    *
    * @return 权限树
    */
-  @GetMapping("/auth-trees")
+  @GetMapping("/auth-tree")
   public ResponseEntity<Tree<String>> update() {
     return ResponseEntity.ok(Authority.getTree());
   }
