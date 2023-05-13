@@ -42,7 +42,8 @@ management:
       exposure:
         # 使用 `*` 可暴露所有 Actuator API
         # 也可使用 `,` 分隔暴露指定的 Actuator API
-        include: '*'
+        include: health,info
+#        exclude: '*'
   info:
     env:
       # 开启后才可返回自定义 `/info` 返回信息

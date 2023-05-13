@@ -30,14 +30,14 @@
       <version>5.8.16</version>
     </dependency>
 
-    <!-- Spring Boot 项目配置文件的加密库，需要与对应的 Maven 插件一起使用 -->
+    <!-- Jasypt 项目配置文件加密库，此外还需添加 Jasypt Maven 插件 -->
     <dependency>
       <groupId>com.github.ulisesbocchio</groupId>
       <artifactId>jasypt-spring-boot-starter</artifactId>
       <version>${jasypt.version}</version>
     </dependency>
 
-    <!-- MyBatis 在 Spring Boot 中的整合 -->
+    <!-- MyBatis -->
     <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -56,41 +56,41 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-    <!-- Spring Security 在 Spring Boot 中的整合 -->
+    <!-- Spring Security -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
 
-    <!-- Hibernate Validator 等在 Spring Boot 中的使用 -->
+    <!-- Hibernate Validator -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
 
-    <!-- Spring Boot AOP 开发 -->
+    <!-- Spring AOP -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-aop</artifactId>
     </dependency>
 
     <!-- 监控和管理 Spring Boot 程序
-      http://localhost:8090/actuator/health：查看运行状况
-      http://localhost:8090/actuator/info：查看程序信息
+    http://localhost:8090/actuator/health：查看运行状况
+    http://localhost:8090/actuator/info：查看程序信息
     -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- 为项目配置文件生成自定义配置项 -->
+    <!-- 自定义配置文件的配置项 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
     </dependency>
 
-    <!-- 简化 Java 代码 -->
+    <!-- Lombok -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -111,7 +111,9 @@
 
     <!-- 自定义资源文件配置 -->
     <resources>
-      <!-- 将源码中的 XML 打包进 Classpath，从而使得 Mapper.xml 可以与 Java 类写在一起 -->
+      <!-- 将源码中的 XML 打包进 Classpath，从而使得 Mapper.xml 可以与 Java 类写在一起。
+      此时，需要通过 `suchu01/JRebel mybatisPlus extension` 插件实现对 Mapper.xml 的热加载
+      -->
       <resource>
         <directory>src/main/java</directory>
         <includes>
@@ -140,9 +142,7 @@
         </configuration>
       </plugin>
 
-      <!--
-      Jasypt Maven 插件（需要在项目中添加对应的 Compile 依赖）：
-
+      <!-- Jasypt Maven 插件（还需要在项目中添加 Jasypt Compile 依赖）：
       1、加密指定的原始字符串：
       `mvn jasypt:encrypt-value \
         -Djasypt.encryptor.password=wxj#secret_ \
