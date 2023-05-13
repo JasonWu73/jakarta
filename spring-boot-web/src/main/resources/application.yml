@@ -27,6 +27,21 @@ spring:
     multipart:
       max-file-size: 1GB
       max-request-size: 1GB
+# Spring Boot Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  info:
+    env:
+      enabled: true
+# 自定义 Spring Boot Actuator `/info` 返回信息
+info:
+  app:
+    version: v1.0.0
+    name: 吴仙杰演示系统
+    developer: 吴仙杰
 mybatis:
   type-handlers-package: net.wuxianjie.springbootweb.shared.mybatis
   mapper-locations: classpath:**/*Mapper.xml

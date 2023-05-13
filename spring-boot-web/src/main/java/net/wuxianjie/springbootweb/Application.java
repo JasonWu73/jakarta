@@ -42,9 +42,9 @@ public class Application {
    * 项目版本号信息。
    *
    * @param version 版本号
-   * @param projectName 项目名
+   * @param appName 应用名
    * @param developer 开发者
    */
-  private record Version(String version, String projectName, String developer) {
+  private record Version(String version, String appName, String developer) {
   }
 }
