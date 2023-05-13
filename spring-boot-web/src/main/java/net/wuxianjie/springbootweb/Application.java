@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 @SpringBootApplication
-public class SpringBootWebApplication {
+public class Application {
 
   public static void main(String[] args) {
-    SpringApplication.run(SpringBootWebApplication.class, args);
+    SpringApplication.run(Application.class, args);
   }
 
   /**
