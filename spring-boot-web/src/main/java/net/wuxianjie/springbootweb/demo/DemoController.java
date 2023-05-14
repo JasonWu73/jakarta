@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,10 @@ public class DemoController {
 
   private DemoService demoService;
 
+  @Autowired
+  @Qualifier("demoService2Impl")
+  private DemoService demoService2;
+
   /**
    * 获取自定义配置。
    *
@@ -48,8 +53,23 @@ public class DemoController {
     return ResponseEntity.ok(demoService.helloWorld());
   }
 
+  /**
+   * Field Injection.
+   *
+   * @return Hello World
+   */
+  @GetMapping("/field-injection")
+  public ResponseEntity<String> getFieldInjection() {
+    return ResponseEntity.ok(demoService2.helloWorld());
+  }
+
+  /**
+   * Setter Injection.
+   *
+   * @param demoService {@link DemoServiceImpl}
+   */
   @Autowired
-  public void setDemoService(final DemoService demoService) {
+  public void setDemoService(final DemoServiceImpl demoService) {
     this.demoService = demoService;
   }
 }

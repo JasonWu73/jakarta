@@ -4,6 +4,11 @@ import net.wuxianjie.springbootweb.auth.dto.GetTokenRequest;
 import net.wuxianjie.springbootweb.auth.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * 身份验证相关处理。
+ *
+ * @author 吴仙杰
+ */
 public interface AuthService {
 
   /**
