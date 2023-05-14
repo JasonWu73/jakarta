@@ -128,11 +128,15 @@
     </resources>
 
     <plugins>
-      <!-- Spring Boot Maven 插件 -->
+      <!-- Spring Boot Maven 插件（`mvn spring-boot:run`） -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
+          <!-- 指定 JVM 参数 -->
+          <jvmArguments>
+            -Djasypt.encryptor.password=wxj#secret_
+          </jvmArguments>
           <excludes>
             <exclude>
               <groupId>org.projectlombok</groupId>
