@@ -1,6 +1,6 @@
 package net.wuxianjie.springbootweb.demo;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1/demo")
-@RequiredArgsConstructor
 public class DemoController {
 
   @Value("${demo.author.name}")
@@ -24,6 +23,8 @@ public class DemoController {
 
   @Value("${demo.author.email}")
   private String authorEmail;
+
+  private DemoService demoService;
 
   /**
    * 获取自定义配置。
@@ -33,7 +34,22 @@ public class DemoController {
    * @return 自定义配置项
    */
   @GetMapping("/custom-config-props")
-  private ResponseEntity<Map<String, String>> getCustomConfigProperties() {
+  public ResponseEntity<Map<String, String>> getCustomConfigProperties() {
     return ResponseEntity.ok(Map.of("authorName", authorName, "authorEmail", authorEmail));
+  }
+
+  /**
+   * Setter 方法依赖注入。
+   *
+   * @return Hello World
+   */
+  @GetMapping("/setter-injection")
+  public ResponseEntity<String> getSetterInjection() {
+    return ResponseEntity.ok(demoService.helloWorld());
+  }
+
+  @Autowired
+  public void setDemoService(final DemoService demoService) {
+    this.demoService = demoService;
   }
 }
