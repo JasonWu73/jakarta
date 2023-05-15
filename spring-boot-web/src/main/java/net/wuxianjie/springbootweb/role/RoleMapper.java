@@ -70,6 +70,24 @@ public interface RoleMapper {
   int update(Role role);
 
   /**
+   * 更新下级的父角色名。
+   *
+   * @param name 父角色名
+   * @param id 父角色 id
+   * @return 更新记录数
+   */
+  int updateParentNameByParentId(String name, long id);
+
+  /**
+   * 更新所有下节角色的完整路径。
+   *
+   * @param newFullPath 新的完整路径，以 {@code .} 结尾
+   * @param oldFullPath 旧的完整路径，以 {@code .} 结尾
+   * @return 更新记录数
+   */
+  int updateSubFullPath(String newFullPath, String oldFullPath);
+
+  /**
    * 删除角色。
    *
    * @param id 需要删除的角色 id

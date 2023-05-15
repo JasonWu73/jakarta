@@ -1,7 +1,6 @@
 package net.wuxianjie.springbootweb.role;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
 import net.wuxianjie.springbootweb.auth.Authority;
 import net.wuxianjie.springbootweb.auth.dto.AuthData;
@@ -10,9 +9,11 @@ import net.wuxianjie.springbootweb.role.dto.RoleResponse;
 import net.wuxianjie.springbootweb.role.dto.UpdateRoleRequest;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import net.wuxianjie.springbootweb.user.UserMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -117,6 +118,7 @@ public class RoleService {
    * @param request 请求参数
    * @return 204 HTTP 状态码
    */
+  @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> updateRole(final long id, final UpdateRoleRequest request) {
     // 角色存在性校验
     final Role updatedRole = Optional.ofNullable(roleMapper.selectById(id))
@@ -142,6 +144,11 @@ public class RoleService {
       }
 
       updatedRole.setName(request.getName());
+
+      // 更新下级的父角色名
+      if (roleMapper.updateParentNameByParentId(request.getName(), id) == 0) {
+        throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新下级的父角色名失败");
+      }
     }
 
     // 判断是否需要更新父角色
@@ -155,14 +162,24 @@ public class RoleService {
       final Role parentRole = Optional.ofNullable(roleMapper.selectById(request.getParentId()))
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到父角色数据"));
 
-      // 校验更新的目标角色是否为当前用户的下级角色
+      // 校验更新的父目标角色是否为当前用户的下级角色
       if (!parentRole.getFullPath().startsWith(currentRoleFullPath + ".")) {
         throw new ApiException(HttpStatus.FORBIDDEN, "父角色只允许更新为当前用户的下级角色");
       }
 
+      // 校验更新的父目标角色不能是要更新角色的下级角色
+      if (parentRole.getFullPath().startsWith(updatedRole.getFullPath() + ".")) {
+        throw new ApiException(HttpStatus.BAD_REQUEST, "下级角色不能作为父角色");
+      }
+
       updatedRole.setParentId(parentRole.getId());
       updatedRole.setParentName(parentRole.getName());
+
+      // 更新所有下级角色的完整路径
+      final String oldFullPath = updatedRole.getFullPath() + ".";
       updatedRole.setFullPath(parentRole.getFullPath() + "." + id);
+
+      roleMapper.updateSubFullPath(updatedRole.getFullPath() + ".", oldFullPath);
     }
 
     // 判断是否需要更新权限

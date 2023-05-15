@@ -58,6 +58,20 @@
     where id = #{id}
   </update>
 
+  <update id="updateParentNameByParentId">
+    update role
+    set parent_name = #{name},
+        updated_at  = now()
+    where parent_id = #{id}
+  </update>
+
+  <update id="updateSubFullPath">
+    update role
+    set full_path  = replace(full_path, #{oldFullPath}, #{newFullPath}),
+        updated_at = now()
+    where full_path like concat(#{oldFullPath}, '%')
+  </update>
+
   <delete id="deleteById">
     delete
     from role
