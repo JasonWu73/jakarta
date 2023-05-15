@@ -36,28 +36,5 @@ mybatis:
     shrink-whitespaces-in-sql: true
     # 打印 SQL，生产环境下请注释掉
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-# Spring Boot Actuator
-management:
-  endpoints:
-    web:
-      exposure:
-        # 使用 `*` 可暴露所有 Actuator API
-        # 也可使用 `,` 分隔暴露指定的 Actuator API
-        include: health,info
-  #        exclude: '*'
-  info:
-    env:
-      # 开启后才可返回自定义 `/info` 返回信息
-      enabled: true
-# 自定义 Spring Boot Actuator `/info` 返回信息
-info:
-  app:
-    version: 'v1.0.0'
-    name: '吴仙杰演示系统'
-    developer: '吴仙杰'
 auth:
   token-key: '=rgd(B`]{Q\4fRA'
-demo:
-  author:
-    name: '吴仙杰'
-    email: 'wuxianjiezh@gmail.com'

@@ -74,15 +74,6 @@
       <artifactId>spring-boot-starter-aop</artifactId>
     </dependency>
 
-    <!-- 监控和管理 Spring Boot 程序
-    http://localhost:8090/actuator/health：查看运行状况
-    http://localhost:8090/actuator/info：查看程序信息
-    -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-
     <!-- 提供对自定义的配置项的 JavaDOC 支持 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
