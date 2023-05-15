@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.role;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
 import net.wuxianjie.springbootweb.auth.Authority;
 import net.wuxianjie.springbootweb.auth.dto.AuthData;
@@ -9,7 +10,6 @@ import net.wuxianjie.springbootweb.role.dto.RoleResponse;
 import net.wuxianjie.springbootweb.role.dto.UpdateRoleRequest;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import net.wuxianjie.springbootweb.user.UserMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -179,6 +179,7 @@ public class RoleService {
       final String oldFullPath = updatedRole.getFullPath() + ".";
       updatedRole.setFullPath(parentRole.getFullPath() + "." + id);
 
+      // 因为可能不存在下级，故无需通过返回的更新记录数判断是否更新成功
       roleMapper.updateSubFullPath(updatedRole.getFullPath() + ".", oldFullPath);
     }
 
