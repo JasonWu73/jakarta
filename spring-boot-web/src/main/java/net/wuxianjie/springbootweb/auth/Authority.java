@@ -32,8 +32,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public enum Authority {
 
-  // 切记：每次添加节点时，都需要手动修改 `getRoleHierarchy` 方法
-
   /**
    * 定义权限树中的根节点，即系统最高权限。
    */
@@ -57,6 +55,8 @@ public enum Authority {
   // 操作日志
   OP_LOG(ROOT.id + ".3", ROOT.id, "操作日志", "op_log"),
   OP_LOG_VIEW(OP_LOG.id + ".1", OP_LOG.id, "查看日志", "op_log_view");
+
+  // 切记：每次添加节点时，都需要手动修改 `getHierarchy` 方法
 
   /**
    * 获取符合 {@link RoleHierarchyImpl} 的权限字符串。
