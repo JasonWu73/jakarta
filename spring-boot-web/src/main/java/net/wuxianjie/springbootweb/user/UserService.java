@@ -55,7 +55,7 @@ public class UserService {
     final String subRoleLikeFullPath = roleFullPath + ".%";
 
     // 查询数据库获取列表数据
-    final List<UserResponse> logs = userMapper.selectByQueryOrderByUpdatedAt(pagination, request, subRoleLikeFullPath);
+    final List<UserResponse> list = userMapper.selectByQueryOrderByUpdatedAt(pagination, request, subRoleLikeFullPath);
 
     // 查询数据库获取总条目数
     final long total = userMapper.countByQuery(request, subRoleLikeFullPath);
@@ -65,7 +65,7 @@ public class UserService {
       pagination.getPageNumber(),
       pagination.getPageSize(),
       total,
-      logs
+      list
     ));
   }
 
