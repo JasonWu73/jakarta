@@ -19,10 +19,26 @@
   <properties>
     <java.version>17</java.version>
 
+    <jave.version>3.3.1</jave.version>
     <jasypt.version>3.0.5</jasypt.version>
   </properties>
 
   <dependencies>
+    <!-- JAVE（Java 音频视频编码器）库，其中对 ffmpeg 程序进行了包装 -->
+    <!-- JAVE 核心库 -->
+    <dependency>
+      <groupId>ws.schild</groupId>
+      <artifactId>jave-core</artifactId>
+      <version>${jave.version}</version>
+    </dependency>
+
+    <!-- JAVE 仅用于一个平台，本例为 MacOS 64 位 -->
+    <dependency>
+      <groupId>ws.schild</groupId>
+      <artifactId>jave-nativebin-osx64</artifactId>
+      <version>${jave.version}</version>
+    </dependency>
+
     <!-- 一个小而全的 Java 工具类库 -->
     <dependency>
       <groupId>cn.hutool</groupId>
