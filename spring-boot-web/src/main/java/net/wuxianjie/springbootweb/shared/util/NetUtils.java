@@ -54,24 +54,30 @@ public class NetUtils {
     final int port,
     final byte[] data
   ) {
-    try (
-      // 创建 TCP 客户端，连接 TCP 服务端
-      final Socket client = new Socket(ip, port);
+    // 创建 TCP 客户端
+    try (final Socket client = new Socket()) {
+      // 连接服务端，设置最大 3 秒的等待建立连接时间
+      client.connect(new InetSocketAddress(ip, port), 3_000);
 
-      // 创建客户端输出流，用于发送数据
-      final DataOutputStream out = new DataOutputStream(client.getOutputStream());
-
-      // 创建客户端输入流，用于接收数据
-      final DataInputStream in = new DataInputStream(client.getInputStream());
-    ) {
+      // 检测服务是否连接成功
+      if (!client.isConnected()) {
+        throw new RuntimeException(StrUtil.format("无法与 TCP 服务端建立通信 [ip={};port={}]", ip, port));
+      }
 
       // 向服务端发送数据
-      out.write(data);
-      out.flush();
+      final DataOutputStream req = new DataOutputStream(client.getOutputStream());
+      req.write(data);
+      req.flush();
+
+      // 设置最大 2 秒的等待服务端数据读取时间
+      client.setSoTimeout(2_000);
 
       // 读取服务端返回数据
+      final DataInputStream resp = new DataInputStream(client.getInputStream());
       final byte[] readBuffer = new byte[1024];
-      final int readLen = in.read(readBuffer);
+
+      final int readLen = resp.read(readBuffer);
+
       if (readLen > 0) {
         return Optional.of(ArrayUtil.sub(readBuffer, 0, readLen));
       }
@@ -102,28 +108,35 @@ public class NetUtils {
     final int port,
     final byte[] data
   ) {
-    // 创建 UDP 客户端，连接 UDP 服务端
+    // 创建 UDP 客户端
     try (final DatagramSocket client = new DatagramSocket()) {
-
-      // 设置最大 1 秒的等待响应时间
-      client.setSoTimeout(1_000);
-
       // 向服务端发送数据
       final InetAddress inetAddr = InetAddress.getByName(ip);
       final DatagramPacket reqPkt = new DatagramPacket(data, data.length, inetAddr, port);
       client.send(reqPkt);
 
+      // 检测服务是否连接成功
+      if (!client.isConnected()) {
+        throw new RuntimeException(StrUtil.format("无法与 UDP 服务端建立通信 [ip={};port={}]", ip, port));
+      }
+
+      // 设置最大 2 秒的等待服务端数据读取时间
+      client.setSoTimeout(2_000);
+
       // 读取服务端返回数据
       final byte[] readBuffer = new byte[1024];
       final DatagramPacket respPkt = new DatagramPacket(readBuffer, readBuffer.length);
+
       client.receive(respPkt);
 
-      return Optional.of(ArrayUtil.sub(readBuffer, respPkt.getOffset(), respPkt.getLength()));
-    } catch (IOException e) {
-      if (e instanceof SocketTimeoutException) {
-        return Optional.empty();
+      final int readLen = respPkt.getLength();
+
+      if (readLen > 0) {
+        return Optional.of(ArrayUtil.sub(readBuffer, respPkt.getOffset(), readLen));
       }
 
+      return Optional.empty();
+    } catch (IOException e) {
       throw new RuntimeException(
         StrUtil.format("发送 UDP 请求失败 [ip={};port={};hexData={}]", ip, port, HexUtil.encodeHexStr(data)),
         e

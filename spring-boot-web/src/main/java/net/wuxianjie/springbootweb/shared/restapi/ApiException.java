@@ -2,9 +2,11 @@ package net.wuxianjie.springbootweb.shared.restapi;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
-import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 自定义 API 异常。
@@ -90,7 +92,19 @@ public class ApiException extends RuntimeException {
    */
   @Override
   public String getMessage() {
-    final String message = StrUtil.format("{} \"{}\"", status, reason);
-    return NestedExceptionUtils.buildMessage(message, getCause());
+    final String respMsg = StrUtil.format("{} \"{}\"", status, reason);
+
+    final List<String> msgList = new ArrayList<>();
+    msgList.add(respMsg);
+
+    Throwable cause = getCause();
+    while (cause != null) {
+      final String nestedMsg = StrUtil.format("嵌套异常 [{}: {}]", cause.getClass().getName(), cause.getMessage());
+      msgList.add(nestedMsg);
+
+      cause = cause.getCause();
+    }
+
+    return StrUtil.join("; ", msgList);
   }
 }
