@@ -41,7 +41,7 @@ public enum AccountStatus implements EnumType {
   private final String description;
 
   /**
-   * 解析枚举值.
+   * 解析枚举值。
    *
    * @param code 需要被解析为枚举值的 code
    * @return 枚举值
