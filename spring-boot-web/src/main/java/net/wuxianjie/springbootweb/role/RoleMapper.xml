@@ -15,6 +15,21 @@
     where id = #{id}
   </select>
 
+  <select id="selectByUserId" resultType="net.wuxianjie.springbootweb.role.Role">
+    select r.id,
+           r.name,
+           r.authorities,
+           r.parent_id   as parentId,
+           r.parent_name as parentName,
+           r.full_path   as fullPath,
+           r.created_at  as createdAt,
+           r.updated_at  as updatedAt,
+           r.remark
+    from role r
+           join user u on r.id = u.role_id
+    where u.id = #{userId}
+  </select>
+
   <select id="existsByName" resultType="boolean">
     select exists(select 1 from role where name = #{name})
   </select>

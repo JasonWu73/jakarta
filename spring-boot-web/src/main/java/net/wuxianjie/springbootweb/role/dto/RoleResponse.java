@@ -17,7 +17,7 @@ public record RoleResponse(
   long id,
   String name,
   String authorities,
-  long parentId,
+  Long parentId,
   String parentName,
   LocalDateTime updatedAt,
   String remark

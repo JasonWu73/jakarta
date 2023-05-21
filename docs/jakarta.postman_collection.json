@@ -2469,7 +2469,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_view,user_add,user_edit,user_del,role,role_view,role_add,role_edit,op_log,op_log_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": 2, // 父角色 id\n  \"remark\": null // 备注\n}",
+							"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_view,user_add,user_edit,user_del,role,role_view,role_add,role_edit,op_log,op_log_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": null, // 父角色 id\n  \"remark\": null // 备注\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2502,7 +2502,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_view,user_add,user_edit,user_del,role,role_view,role_add,role_edit,op_log,op_log_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": 2, // 父角色 id\n  \"remark\": null // 备注\n}",
+									"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_view,user_add,user_edit,user_del,role,role_view,role_add,role_edit,op_log,op_log_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": null, // 父角色 id\n  \"remark\": null // 备注\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2672,7 +2672,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_del,role,role_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": 3, // 父角色 id\n  \"remark\": null // 备注\n}",
+							"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_del,role,role_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": 3, // 父角色 id，必填\n  \"remark\": null // 备注\n}",
 							"options": {
 								"raw": {
 									"language": "json"

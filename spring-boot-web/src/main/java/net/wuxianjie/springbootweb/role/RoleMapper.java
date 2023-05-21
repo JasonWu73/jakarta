@@ -22,6 +22,14 @@ public interface RoleMapper {
   Role selectById(long id);
 
   /**
+   * 根据用户 id 获取角色数据。
+   *
+   * @param userId 需要查找的用户 id
+   * @return 角色数据
+   */
+  Role selectByUserId(long userId);
+
+  /**
    * 判断角色名是否存在。
    *
    * @param name 需要查找的角色名

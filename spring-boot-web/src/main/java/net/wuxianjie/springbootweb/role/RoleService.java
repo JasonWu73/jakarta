@@ -67,18 +67,25 @@ public class RoleService {
       throw new ApiException(HttpStatus.CONFLICT, "已存在相同角色名");
     }
 
-    // 父角色存在性校验
-    final Role parentRole = Optional.ofNullable(roleMapper.selectById(request.getParentId()))
-      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到父角色数据"));
-
-    // 校验新增角色是否为当前用户的下级角色
+    // 获取当前登录用户
     final AuthData currentUser = AuthUtils.getCurrentUser().orElseThrow();
 
-    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.userId()))
-      .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
+    // 父角色存在性校验
+    final Role parentRole;
+    if (request.getParentId() != null) {
+      parentRole = Optional.ofNullable(roleMapper.selectById(request.getParentId()))
+        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到父角色数据"));
 
-    if (!parentRole.getFullPath().startsWith(currentRoleFullPath + ".")) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级角色");
+      // 校验新增角色是否为当前用户的下级角色
+      final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.userId()))
+        .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
+
+      if (!parentRole.getFullPath().startsWith(currentRoleFullPath + ".")) {
+        throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级角色");
+      }
+    } else {
+      // 若父角色 id 为 null，则表示创建自己的下级角色
+      parentRole = Optional.ofNullable(roleMapper.selectByUserId(currentUser.userId())).orElseThrow();
     }
 
     // 校验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去除空值、字符串的左右空格，及仅保留父权限）
@@ -88,7 +95,7 @@ public class RoleService {
     final Role role = new Role();
     role.setName(request.getName());
     role.setAuthorities(sanitizedAuthorities);
-    role.setParentId(request.getParentId());
+    role.setParentId(parentRole.getId());
     role.setParentName(parentRole.getName());
     role.setFullPath(parentRole.getFullPath() + "."); // 还需要拼接当前新增角色的 id
     role.setCreatedAt(LocalDateTime.now());
@@ -146,9 +153,7 @@ public class RoleService {
       updatedRole.setName(request.getName());
 
       // 更新下级的父角色名
-      if (roleMapper.updateParentNameByParentId(request.getName(), id) == 0) {
-        throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新下级的父角色名失败");
-      }
+      roleMapper.updateParentNameByParentId(request.getName(), id);
     }
 
     // 判断是否需要更新父角色
