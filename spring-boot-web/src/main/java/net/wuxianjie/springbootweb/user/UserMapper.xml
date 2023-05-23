@@ -15,6 +15,21 @@
     where id = #{id}
   </select>
 
+  <select id="selectUserDetailById" resultType="net.wuxianjie.springbootweb.user.dto.UserDetailResponse">
+    select u.id,
+           u.username,
+           u.nickname,
+           u.status,
+           r.id         as roleId,
+           r.name       as roleName,
+           r.full_path  as fullPath,
+           u.updated_at as updatedAt,
+           u.remark
+    from user u
+           join role r on r.id = u.role_id
+    where u.id = #{id}
+  </select>
+
   <select id="selectRoleFullPathByRoleId" resultType="java.lang.String">
     select full_path
     from role

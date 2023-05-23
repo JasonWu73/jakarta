@@ -70,6 +70,27 @@ public class UserService {
   }
 
   /**
+   * 获取用户详情。
+   *
+   * <p>用户仅可查看其下级角色的用户。
+   *
+   * @param id 需要查找的用户 id
+   * @return 用户详情
+   */
+  public ResponseEntity<UserDetailResponse> getUserDetail(final long id) {
+    // 根据用户 id 获取用户详情，若不存在则抛出 404 异常
+    final UserDetailResponse selectedUser = Optional.ofNullable(userMapper.selectUserDetailById(id))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
+
+    // 若查找的用户不是当前用户的下级角色用户，则抛出 403 异常
+    if (isNotCurrentUserSubRole(selectedUser.fullPath())) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许查看下级角色的用户");
+    }
+
+    return ResponseEntity.ok(selectedUser);
+  }
+
+  /**
    * 新增用户。
    *
    * <p>只允许新增当前用户的下级角色用户。

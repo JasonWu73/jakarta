@@ -2,6 +2,7 @@ package net.wuxianjie.springbootweb.user;
 
 import net.wuxianjie.springbootweb.shared.pagination.PaginationParam;
 import net.wuxianjie.springbootweb.user.dto.GetUserRequest;
+import net.wuxianjie.springbootweb.user.dto.UserDetailResponse;
 import net.wuxianjie.springbootweb.user.dto.UserResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -23,6 +24,14 @@ public interface UserMapper {
    * @return 用户数据
    */
   User selectById(long id);
+
+  /**
+   * 根据用户 id 获取用户详情数据。
+   *
+   * @param id 需要查找的用户 id
+   * @return 用户详情数据
+   */
+  UserDetailResponse selectUserDetailById(long id);
 
   /**
    * 通过角色 id 获取角色的完整路径。

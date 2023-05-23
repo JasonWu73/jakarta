@@ -1,11 +1,11 @@
 package net.wuxianjie.springbootweb.user;
 
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.oplog.Log;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationParam;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationResult;
 import net.wuxianjie.springbootweb.user.dto.*;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +38,20 @@ public class UserController {
     @Valid final GetUserRequest request
   ) {
     return userService.getUsers(pagination, request);
+  }
+
+  /**
+   * 获取用户详情。
+   *
+   * <p>用户仅可查看其下级角色的用户。
+   *
+   * @param id 需要查找的用户 id
+   * @return 用户详情
+   */
+  @GetMapping("/users/{id}")
+  @PreAuthorize("hasAuthority('user_view')")
+  public ResponseEntity<UserDetailResponse> getUserDetail(@PathVariable final long id) {
+    return userService.getUserDetail(id);
   }
 
   /**
