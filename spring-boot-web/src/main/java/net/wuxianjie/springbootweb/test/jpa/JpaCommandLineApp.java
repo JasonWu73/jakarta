@@ -20,14 +20,21 @@ public class JpaCommandLineApp {
   private final UserDao userDao;
   private final PasswordEncoder passwordEncoder;
 
-  @Bean
+//  @Bean
   public CommandLineRunner commandLineRunner() {
     return runner -> {
-      final User savedUser = new User("test", "测试用户", passwordEncoder.encode("111"), 1L);
+      // 创建用户
+      final User savedUser1 = new User("test1", "测试用户1", passwordEncoder.encode("111"), 1L);
+      final User savedUser2 = new User("test2", "测试用户2", passwordEncoder.encode("111"), 1L);
 
-      userDao.save(savedUser);
+      // 保存用户
+      userDao.save(savedUser1);
 
-      log.info("保存用户 [id={}]", savedUser.getId());
+      // 打印保存后的用户 id
+      log.info("保存用户[nickname={};id={}]", savedUser1.getNickname(), savedUser1.getId());
+
+      userDao.save(savedUser2);
+      log.info("保存用户[nickname={};id={}]", savedUser2.getNickname(), savedUser2.getId());
     };
   }
 }
