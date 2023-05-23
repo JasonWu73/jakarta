@@ -1,15 +1,16 @@
 package net.wuxianjie.springbootweb.role;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
 import net.wuxianjie.springbootweb.auth.Authority;
 import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import net.wuxianjie.springbootweb.role.dto.AddRoleRequest;
+import net.wuxianjie.springbootweb.role.dto.RoleDetailResponse;
 import net.wuxianjie.springbootweb.role.dto.RoleResponse;
 import net.wuxianjie.springbootweb.role.dto.UpdateRoleRequest;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import net.wuxianjie.springbootweb.user.UserMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,26 @@ public class RoleService {
 
     // 查询数据库获取列表数据
     return ResponseEntity.ok(roleMapper.selectAllByFullPathLikeOrderByUpdatedAt(subRoleLikeFullPath));
+  }
+
+  /**
+   * 获取角色详情。
+   *
+   * <p>用户仅可查看其下级角色。
+   *
+   * @param id 需要查找的角色 id
+   * @return 角色详情
+   */
+  public ResponseEntity<RoleDetailResponse> getRoleDetail(final long id) {
+    // 根据角色 id 获取详情数据，当数据不存在时抛出 404 异常
+    final RoleDetailResponse selectedRole = roleMapper.selectRoleDetailById(id);
+
+    // 当查看的角色不是当前用户所有拥有角色的下级角色时，抛出 403 异常
+    if (isNotSubordinateRole(selectedRole.fullPath())) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许查看下级角色");
+    }
+
+    return ResponseEntity.ok(selectedRole);
   }
 
   /**
@@ -293,5 +314,12 @@ public class RoleService {
           )
       )
       .collect(Collectors.joining(","));
+  }
+
+  private boolean isNotSubordinateRole(final String subordinateRoleFullPath) {
+    final AuthData currentUser = AuthUtils.getCurrentUser().orElseThrow();
+    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.userId()))
+      .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
+    return !subordinateRoleFullPath.startsWith(currentRoleFullPath + ".");
   }
 }

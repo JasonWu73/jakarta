@@ -1,5 +1,6 @@
 package net.wuxianjie.springbootweb.role;
 
+import net.wuxianjie.springbootweb.role.dto.RoleDetailResponse;
 import net.wuxianjie.springbootweb.role.dto.RoleResponse;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,6 +21,14 @@ public interface RoleMapper {
    * @return 角色数据
    */
   Role selectById(long id);
+
+  /**
+   * 根据角色 id 获取角色详细数据。
+   *
+   * @param id 需要查找的角色 id
+   * @return 角色详细数据
+   */
+  RoleDetailResponse selectRoleDetailById(long id);
 
   /**
    * 根据用户 id 获取角色数据。
