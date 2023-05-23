@@ -1,21 +1,23 @@
 package net.wuxianjie.springbootweb.test.jpa;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
- * 命令行程序。
+ * JPA 命令行测试程序。
  *
  * @author 吴仙杰
  */
 @Component
-public class CommandLineApp {
+@Slf4j
+public class JpaCommandLineApp {
 
   @Bean
   public CommandLineRunner commandLineRunner(final String[] args) {
     return runner -> {
-      System.out.println("Hello World");
+      log.info("Hello World");
     };
   }
 }
