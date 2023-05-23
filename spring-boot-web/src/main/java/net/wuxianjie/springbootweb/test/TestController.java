@@ -19,6 +19,11 @@ public class TestController {
   private final TestService testService;
   private final TestService anotherTestService;
 
+  /**
+   * 测试 Bean Scope。
+   *
+   * @return 打印结果
+   */
   @GetMapping("/scope")
   public String testBeanScope() {
     return StrUtil.format("testService == anotherTestService: {}", testService == anotherTestService);
