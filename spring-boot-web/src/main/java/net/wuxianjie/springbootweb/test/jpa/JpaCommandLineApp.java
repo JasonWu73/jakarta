@@ -20,21 +20,37 @@ public class JpaCommandLineApp {
   private final UserDao userDao;
   private final PasswordEncoder passwordEncoder;
 
-//  @Bean
+  @Bean
   public CommandLineRunner commandLineRunner() {
     return runner -> {
-      // 创建用户
-      final User savedUser1 = new User("test1", "测试用户1", passwordEncoder.encode("111"), 1L);
-      final User savedUser2 = new User("test2", "测试用户2", passwordEncoder.encode("111"), 1L);
-
-      // 保存用户
-      userDao.save(savedUser1);
-
-      // 打印保存后的用户 id
-      log.info("保存用户[nickname={};id={}]", savedUser1.getNickname(), savedUser1.getId());
-
-      userDao.save(savedUser2);
-      log.info("保存用户[nickname={};id={}]", savedUser2.getNickname(), savedUser2.getId());
+//      createUser();
+      readUser();
     };
+  }
+
+  private void createUser() {
+    // 创建用户
+    final User savedUser1 = new User("test1", "测试用户1", passwordEncoder.encode("111"), 1L);
+    final User savedUser2 = new User("test2", "测试用户2", passwordEncoder.encode("111"), 1L);
+
+    // 保存用户
+    userDao.save(savedUser1);
+
+    // 打印保存后的用户 id
+    log.info("保存用户[nickname={};id={}]", savedUser1.getNickname(), savedUser1.getId());
+
+    userDao.save(savedUser2);
+    log.info("保存用户[nickname={};id={}]", savedUser2.getNickname(), savedUser2.getId());
+  }
+
+  private void readUser() {
+    // 需要查找的用户 id
+    final long userId = 1;
+
+    // 查找用户
+    final User findedUser = userDao.findById(userId);
+
+    // 打印找到的用户数据
+    log.info("id 为 {} 的用户数据: {}", userId, findedUser);
   }
 }
