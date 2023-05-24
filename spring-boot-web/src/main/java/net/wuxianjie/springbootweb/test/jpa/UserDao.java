@@ -38,4 +38,11 @@ public interface UserDao {
    * @return 用户列表
    */
   List<User> findByUsernameLike(String username);
+
+  /**
+   * 更新用户数据。
+   *
+   * @param user 要更新的用户数据
+   */
+  void update(User user);
 }

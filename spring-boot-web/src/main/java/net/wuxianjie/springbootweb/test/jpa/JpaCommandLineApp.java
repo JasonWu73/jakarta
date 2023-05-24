@@ -28,7 +28,8 @@ public class JpaCommandLineApp {
 //      createUser();
 //      readUser();
 //      queryAllUsers();
-      queryUsersByUsername();
+//      queryUsersByUsername();
+      updateUser();
     };
   }
 
@@ -73,5 +74,20 @@ public class JpaCommandLineApp {
 
     // 遍例并打印用户列表
     users.forEach(System.out::println);
+  }
+
+  private void updateUser() {
+    // 根据 id 获取用户
+    final long userId = 8;
+    final User user = userDao.findById(userId);
+
+    // 将用户名更新为 "test_update"
+    user.setUsername("test_update");
+
+    // 更新用户
+    userDao.update(user);
+
+    // 打印更新后的用户数据
+    log.info("更新后的用户数据: {}", user);
   }
 }

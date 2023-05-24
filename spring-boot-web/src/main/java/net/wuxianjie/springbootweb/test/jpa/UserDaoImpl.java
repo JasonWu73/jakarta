@@ -44,4 +44,10 @@ public class UserDaoImpl implements UserDao {
     query.setParameter("username", usernameLikeValue);
     return query.getResultList();
   }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void update(final User user) {
+    entityManager.merge(user);
+  }
 }
