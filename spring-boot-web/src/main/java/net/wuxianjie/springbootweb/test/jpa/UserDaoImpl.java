@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.test.jpa;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.shared.util.StringUtils;
@@ -49,5 +50,14 @@ public class UserDaoImpl implements UserDao {
   @Transactional(rollbackFor = Exception.class)
   public void update(final User user) {
     entityManager.merge(user);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public int deleteByUsernameLike(final String username) {
+    final String usernameLike = StringUtils.toNullableLikeValue(username);
+    final Query query = entityManager.createQuery("delete from User where username like :username");
+    query.setParameter("username", usernameLike);
+    return query.executeUpdate();
   }
 }

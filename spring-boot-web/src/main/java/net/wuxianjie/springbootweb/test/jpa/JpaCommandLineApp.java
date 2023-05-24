@@ -29,7 +29,8 @@ public class JpaCommandLineApp {
 //      readUser();
 //      queryAllUsers();
 //      queryUsersByUsername();
-      updateUser();
+//      updateUser();
+      deleteUsers();
     };
   }
 
@@ -89,5 +90,12 @@ public class JpaCommandLineApp {
 
     // 打印更新后的用户数据
     log.info("更新后的用户数据: {}", user);
+  }
+
+  private void deleteUsers() {
+    // 删除所有用户名中包含 "test" 字符串的用户
+    final String username = "test";
+    final int deletedNums = userDao.deleteByUsernameLike(username);
+    log.info("一共删除了 {} 个用户名中包含 {} 字符串的用户", deletedNums, username);
   }
 }

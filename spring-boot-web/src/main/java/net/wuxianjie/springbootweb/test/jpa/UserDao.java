@@ -45,4 +45,12 @@ public interface UserDao {
    * @param user 要更新的用户数据
    */
   void update(User user);
+
+  /**
+   * 通过用户名模糊搜索进行删除用户。
+   *
+   * @param username 需要查找的用户名
+   * @return 删除的用户数
+   */
+  int deleteByUsernameLike(String username);
 }
