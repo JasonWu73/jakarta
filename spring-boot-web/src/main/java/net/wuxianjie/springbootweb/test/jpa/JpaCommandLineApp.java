@@ -27,7 +27,8 @@ public class JpaCommandLineApp {
     return runner -> {
 //      createUser();
 //      readUser();
-      queryAllUsers();
+//      queryAllUsers();
+      queryUsersByUsername();
     };
   }
 
@@ -62,6 +63,15 @@ public class JpaCommandLineApp {
     final List<User> users = userDao.findAll();
 
     // 遍例并打印所有用户
+    users.forEach(System.out::println);
+  }
+
+  private void queryUsersByUsername() {
+    // 查找用户名中 te 字符串的用户数据
+    final String username = "te";
+    final List<User> users = userDao.findByUsernameLike(username);
+
+    // 遍例并打印用户列表
     users.forEach(System.out::println);
   }
 }

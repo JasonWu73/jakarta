@@ -30,4 +30,12 @@ public interface UserDao {
    * @return 用户列表
    */
   List<User> findAll();
+
+  /**
+   * 根据用户名模糊搜索用户数据。
+   *
+   * @param username 需要查找的用户名
+   * @return 用户列表
+   */
+  List<User> findByUsernameLike(String username);
 }

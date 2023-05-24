@@ -3,6 +3,7 @@ package net.wuxianjie.springbootweb.test.jpa;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import net.wuxianjie.springbootweb.shared.util.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,14 @@ public class UserDaoImpl implements UserDao {
   @Override
   public List<User> findAll() {
     final TypedQuery<User> query = entityManager.createQuery("from User order by updatedAt desc", User.class);
+    return query.getResultList();
+  }
+
+  @Override
+  public List<User> findByUsernameLike(final String username) {
+    final String usernameLikeValue = StringUtils.toNullableLikeValue(username);
+    final TypedQuery<User> query = entityManager.createQuery("from User where username like :username", User.class);
+    query.setParameter("username", usernameLikeValue);
     return query.getResultList();
   }
 }
