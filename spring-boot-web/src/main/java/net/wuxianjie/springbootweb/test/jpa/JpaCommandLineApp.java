@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * JPA 命令行测试程序。
  *
@@ -24,7 +26,8 @@ public class JpaCommandLineApp {
   public CommandLineRunner commandLineRunner() {
     return runner -> {
 //      createUser();
-      readUser();
+//      readUser();
+      queryAllUsers();
     };
   }
 
@@ -52,5 +55,13 @@ public class JpaCommandLineApp {
 
     // 打印找到的用户数据
     log.info("id 为 {} 的用户数据: {}", userId, findedUser);
+  }
+
+  private void queryAllUsers() {
+    // 查找所有用户
+    final List<User> users = userDao.findAll();
+
+    // 遍例并打印所有用户
+    users.forEach(System.out::println);
   }
 }

@@ -1,5 +1,7 @@
 package net.wuxianjie.springbootweb.test.jpa;
 
+import java.util.List;
+
 /**
  * 用户 DAO（Data Access Object）。
  *
@@ -21,4 +23,11 @@ public interface UserDao {
    * @return 用户数据
    */
   User findById(long id);
+
+  /**
+   * 获取所有用户数据。
+   *
+   * @return 用户列表
+   */
+  List<User> findAll();
 }
