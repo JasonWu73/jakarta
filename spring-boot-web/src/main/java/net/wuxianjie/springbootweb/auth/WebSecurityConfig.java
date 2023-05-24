@@ -106,7 +106,9 @@ public class WebSecurityConfig {
       .authorizeHttpRequests()
       // 开放获取鉴权信息相关 API
       .requestMatchers("/api/v1/token/**").permitAll()
-      // 获取项目版本号 API
+      // 开放测试相关 API
+      .requestMatchers("/api/v1/test/**").permitAll()
+      // 开放获取项目版本号 API
       .requestMatchers("/api/v1/version").permitAll()
       // 默认所有 API 都需要登录才能访问
       .requestMatchers("/**").authenticated().and()
