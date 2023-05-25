@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.wuxianjie.springbootweb.shared.util.ServletUtils;
 import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -212,14 +213,21 @@ public class ExceptionControllerAdvice {
   }
 
   /**
-   * 处理因字段数据过长而导致 MySQL JDBC 操作失败而引发的异常。
+   * 处理因违反数据库约束条件而引发的异常。
    *
-   * @param e {@link MysqlDataTruncation}
+   * @param e {@link DataIntegrityViolationException}
    * @return 自定义 API 错误结果
    */
-  @ExceptionHandler(MysqlDataTruncation.class)
-  public ResponseEntity<ErrorResponse> handleException(final MysqlDataTruncation e) {
-    return handleApiException(new ApiException(HttpStatus.BAD_REQUEST, "存在过长数据", e));
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<ErrorResponse> handleException(final DataIntegrityViolationException e) {
+    // 字符串数据过长异常（MysqlDataTruncation）会被包装在 DataIntegrityViolationException 内
+    final Throwable rootCause = e.getRootCause();
+    if (rootCause instanceof MysqlDataTruncation) {
+      return handleApiException(new ApiException(HttpStatus.BAD_REQUEST, "字符串数据过长", e));
+    }
+
+    return handleApiException(new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+      "违反数据库约束条件", e, true));
   }
 
   /**
