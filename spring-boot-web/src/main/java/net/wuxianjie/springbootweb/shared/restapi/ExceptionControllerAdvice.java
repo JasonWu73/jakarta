@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.shared.restapi;
 
 import cn.hutool.core.util.StrUtil;
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -208,6 +209,17 @@ public class ExceptionControllerAdvice {
       ),
       e
     ));
+  }
+
+  /**
+   * 处理因字段数据过长而导致 MySQL JDBC 操作失败而引发的异常。
+   *
+   * @param e {@link MysqlDataTruncation}
+   * @return 自定义 API 错误结果
+   */
+  @ExceptionHandler(MysqlDataTruncation.class)
+  public ResponseEntity<ErrorResponse> handleException(final MysqlDataTruncation e) {
+    return handleApiException(new ApiException(HttpStatus.BAD_REQUEST, "存在过长数据", e));
   }
 
   /**
