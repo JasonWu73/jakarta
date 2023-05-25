@@ -23,32 +23,32 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   @Transactional(rollbackFor = Exception.class) // 对于 JPA 来说，更新操作必须要开启事物
-  public void save(final User user) {
+  public void save(final User2 user) {
     entityManager.persist(user);
   }
 
   @Override
-  public User findById(final long id) {
-    return entityManager.find(User.class, id);
+  public User2 findById(final long id) {
+    return entityManager.find(User2.class, id);
   }
 
   @Override
-  public List<User> findAll() {
-    final TypedQuery<User> query = entityManager.createQuery("from User order by updatedAt desc", User.class);
+  public List<User2> findAll() {
+    final TypedQuery<User2> query = entityManager.createQuery("from User2 order by updatedAt desc", User2.class);
     return query.getResultList();
   }
 
   @Override
-  public List<User> findByUsernameLike(final String username) {
+  public List<User2> findByUsernameLike(final String username) {
     final String usernameLikeValue = StringUtils.toNullableLikeValue(username);
-    final TypedQuery<User> query = entityManager.createQuery("from User where username like :username", User.class);
+    final TypedQuery<User2> query = entityManager.createQuery("from User2 where username like :username", User2.class);
     query.setParameter("username", usernameLikeValue);
     return query.getResultList();
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void update(final User user) {
+  public void update(final User2 user) {
     entityManager.merge(user);
   }
 
@@ -56,7 +56,7 @@ public class UserDaoImpl implements UserDao {
   @Transactional(rollbackFor = Exception.class)
   public int deleteByUsernameLike(final String username) {
     final String usernameLike = StringUtils.toNullableLikeValue(username);
-    final Query query = entityManager.createQuery("delete from User where username like :username");
+    final Query query = entityManager.createQuery("delete from User2 where username like :username");
     query.setParameter("username", usernameLike);
     return query.executeUpdate();
   }

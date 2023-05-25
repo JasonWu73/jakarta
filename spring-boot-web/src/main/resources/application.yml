@@ -30,13 +30,23 @@ spring:
       max-request-size: 1GB
   main:
     banner-mode: off
+  jpa:
+    hibernate:
+      # 用于单元测试，在程序运行后先删除表，再创建表，最后在程序停止前再删除表
+      ddl-auto: create-drop
 mybatis:
   type-handlers-package: net.wuxianjie.springbootweb.shared.mybatis
   mapper-locations: classpath:**/*Mapper.xml
   configuration:
     call-setters-on-nulls: true
     shrink-whitespaces-in-sql: true
-    # 打印 SQL，生产环境下请注释掉
+    # 打印 MyBatis SQL，生产环境下请注释掉
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    # 打印 JPA SQL 语句
+    org.hibernate.SQL: debug
+    # 打印 JPA SQL 语句中的参数值
+    org.hibernate.orm.jdbc.bind: trace
 auth:
   token-key: '=rgd(B`]{Q\4fRA'

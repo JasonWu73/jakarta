@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
  * @author 吴仙杰
  */
 @Entity
-@Table(name = "user")
+@Table(name = "user2")
 @Data
-public class User {
+public class User2 {
 
   /**
    * 用户 id。
@@ -72,10 +72,10 @@ public class User {
   @Column(name = "remark")
   private String remark;
 
-  public User() {
+  public User2() {
   }
 
-  public User(final String username, final String nickname, final String hashedPassword, final Long roleId) {
+  public User2(final String username, final String nickname, final String hashedPassword, final Long roleId) {
     this.username = username;
     this.nickname = nickname;
     this.hashedPassword = hashedPassword;

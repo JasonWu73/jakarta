@@ -14,7 +14,7 @@ public interface UserDao {
    *
    * @param user 需要保存的用户数据
    */
-  void save(User user);
+  void save(User2 user);
 
   /**
    * 根据用户 id 获取用户数据。
@@ -22,14 +22,14 @@ public interface UserDao {
    * @param id 需要查找的用户 id
    * @return 用户数据
    */
-  User findById(long id);
+  User2 findById(long id);
 
   /**
    * 获取所有用户数据。
    *
    * @return 用户列表
    */
-  List<User> findAll();
+  List<User2> findAll();
 
   /**
    * 根据用户名模糊搜索用户数据。
@@ -37,14 +37,14 @@ public interface UserDao {
    * @param username 需要查找的用户名
    * @return 用户列表
    */
-  List<User> findByUsernameLike(String username);
+  List<User2> findByUsernameLike(String username);
 
   /**
    * 更新用户数据。
    *
    * @param user 要更新的用户数据
    */
-  void update(User user);
+  void update(User2 user);
 
   /**
    * 通过用户名模糊搜索进行删除用户。

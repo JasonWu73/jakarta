@@ -25,19 +25,19 @@ public class JpaCommandLineApp {
   @Bean
   public CommandLineRunner commandLineRunner() {
     return runner -> {
-//      createUser();
+      createUser();
 //      readUser();
 //      queryAllUsers();
 //      queryUsersByUsername();
 //      updateUser();
-      deleteUsers();
+//      deleteUsers();
     };
   }
 
   private void createUser() {
     // 创建用户
-    final User savedUser1 = new User("test1", "测试用户1", passwordEncoder.encode("111"), 1L);
-    final User savedUser2 = new User("test2", "测试用户2", passwordEncoder.encode("111"), 1L);
+    final User2 savedUser1 = new User2("test1", "测试用户1", passwordEncoder.encode("111"), 1L);
+    final User2 savedUser2 = new User2("test2", "测试用户2", passwordEncoder.encode("111"), 1L);
 
     // 保存用户
     userDao.save(savedUser1);
@@ -54,7 +54,7 @@ public class JpaCommandLineApp {
     final long userId = 1;
 
     // 查找用户
-    final User findedUser = userDao.findById(userId);
+    final User2 findedUser = userDao.findById(userId);
 
     // 打印找到的用户数据
     log.info("id 为 {} 的用户数据: {}", userId, findedUser);
@@ -62,7 +62,7 @@ public class JpaCommandLineApp {
 
   private void queryAllUsers() {
     // 查找所有用户
-    final List<User> users = userDao.findAll();
+    final List<User2> users = userDao.findAll();
 
     // 遍例并打印所有用户
     users.forEach(System.out::println);
@@ -71,7 +71,7 @@ public class JpaCommandLineApp {
   private void queryUsersByUsername() {
     // 查找用户名中 te 字符串的用户数据
     final String username = "te";
-    final List<User> users = userDao.findByUsernameLike(username);
+    final List<User2> users = userDao.findByUsernameLike(username);
 
     // 遍例并打印用户列表
     users.forEach(System.out::println);
@@ -80,7 +80,7 @@ public class JpaCommandLineApp {
   private void updateUser() {
     // 根据 id 获取用户
     final long userId = 8;
-    final User user = userDao.findById(userId);
+    final User2 user = userDao.findById(userId);
 
     // 将用户名更新为 "test_update"
     user.setUsername("test_update");
