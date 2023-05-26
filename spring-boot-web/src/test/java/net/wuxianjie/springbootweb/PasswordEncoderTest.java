@@ -12,6 +12,6 @@ public class PasswordEncoderTest {
 
     final String hashedPassword = new BCryptPasswordEncoder().encode(rawPassword);
 
-    Console.log("原密码: {}, 编码后: {}", rawPassword, hashedPassword);
+    Console.log("原密码: {}\n哈希密码: {}", rawPassword, hashedPassword);
   }
 }
