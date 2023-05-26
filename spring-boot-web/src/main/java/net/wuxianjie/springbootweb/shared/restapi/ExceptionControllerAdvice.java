@@ -201,15 +201,9 @@ public class ExceptionControllerAdvice {
    */
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<ErrorResponse> handleException(final MethodArgumentTypeMismatchException e) {
-    return handleApiException(new ApiException(
-      HttpStatus.BAD_REQUEST,
-      StrUtil.format(
-        "参数值有误 [{}={}]",
-        e.getName(),
-        e.getValue()
-      ),
-      e
-    ));
+    final String message = StrUtil.format("参数值有误 [{}={}]", e.getName(), e.getValue());
+
+    return handleApiException(new ApiException(HttpStatus.BAD_REQUEST, message, e));
   }
 
   /**
