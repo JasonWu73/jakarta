@@ -3,6 +3,7 @@ package net.wuxianjie.springbootweb.test.rest;
 import jakarta.annotation.PostConstruct;
 import net.wuxianjie.springbootweb.test.jpa.User2;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +28,10 @@ public class StudentController {
   @GetMapping("/users")
   public List<User2> getUsers() {
     return users;
+  }
+
+  @GetMapping("/users/{id}")
+  public User2 getUser(@PathVariable final int id) {
+    return users.get(id);
   }
 }
