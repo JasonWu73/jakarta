@@ -11,10 +11,10 @@ import org.springframework.validation.annotation.Validated;
  *
  * @author 吴仙杰
  **/
-@Data
-@Validated
 @Configuration
 @ConfigurationProperties(prefix = "auth")
+@Data
+@Validated
 public class AuthProps {
 
   /**

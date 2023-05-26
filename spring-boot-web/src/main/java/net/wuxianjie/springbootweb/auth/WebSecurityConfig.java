@@ -22,44 +22,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 /**
  * Spring Security 配置。
  *
- * <p>业务程序还可参考以下示例代码定义拥有上下级层级关系的功能权限：
- *
- * <pre>{@code
- *  @Bean
- *  public RoleHierarchy roleHierarchy() {
- *     final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
- *     final String roleHierarchyStr = """
- *       root > user
- *       user > user_view
- *       user > user_add
- *       user > user_edit
- *       user > user_del
- *       root > role
- *       role > role_view
- *       role > role_add
- *       role > role_edit
- *       role > role_del
- *       """;
- *     roleHierarchy.setHierarchy(roleHierarchyStr);
- *     return roleHierarchy;
- *   }
- * }</pre>
- * <p>
- * Controller 使用示例：
- *
- * <pre>{@code
- *   @RestController
- *   @RequestMapping("/api/v1")
- *   public class SecurityTestController {
- *
- *     @GetMapping("/user")
- *     @PreAuthorize("hasAuthority('user_view')")
- *     public String getUser() {
- *       return "user data";
- *     }
- *   }
- * }</pre>
- *
  * @author 吴仙杰
  **/
 @Configuration
@@ -93,23 +55,23 @@ public class WebSecurityConfig {
   /**
    * 配置 Spring Security 的过滤器链。
    *
-   * @param http {@link HttpSecurity}
+   * @param http HTTP 安全配置器
    * @return 配置后的过滤器链
    * @throws Exception 当配置失败时抛出
    */
   @Bean
   public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
-    // 以下配置仅对 API 请求生效
+    // 以下配置仅对 API 请求（即以 `/api/` 为前缀的 Path）生效
     http
       .securityMatcher("/api/**")
       // 按顺序比较，符合则退出后续比较
       .authorizeHttpRequests()
       // 开放获取鉴权信息相关 API
       .requestMatchers("/api/v1/token/**").permitAll()
-      // 开放测试相关 API
-      .requestMatchers("/api/v1/test/**").permitAll()
       // 开放获取项目版本号 API
       .requestMatchers("/api/v1/version").permitAll()
+      // 开放测试相关 API
+      .requestMatchers("/api/v1/test/**").permitAll()
       // 默认所有 API 都需要登录才能访问
       .requestMatchers("/**").authenticated().and()
       // 在进入 Spring Security 身份验证过滤器前添加自定义的 Token 身份验证过滤器
@@ -133,30 +95,12 @@ public class WebSecurityConfig {
       .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
       // 处理 401 及 403 HTTP 状态码
       .exceptionHandling()
-      .authenticationEntryPoint((request, response, authException) ->
-        handlerExceptionResolver.resolveException(
-          request,
-          response,
-          null,
-          new ApiException(
-            HttpStatus.UNAUTHORIZED,
-            "授权失败",
-            authException
-          )
-        )
-      )
-      .accessDeniedHandler((request, response, accessDeniedException) ->
-        handlerExceptionResolver.resolveException(
-          request,
-          response,
-          null,
-          new ApiException(
-            HttpStatus.FORBIDDEN,
-            "权限不足",
-            accessDeniedException
-          )
-        )
-      );
+      // 未通过身份验证 401
+      .authenticationEntryPoint((req, resp, exc) -> handlerExceptionResolver.resolveException(
+          req, resp, null, new ApiException(HttpStatus.UNAUTHORIZED, "授权失败", exc)))
+      // 通过身份验证，但权限不足 403
+      .accessDeniedHandler((req, resp, exc) -> handlerExceptionResolver.resolveException(
+          req, resp, null, new ApiException(HttpStatus.FORBIDDEN, "权限不足", exc)));
 
     return http.build();
   }
@@ -169,19 +113,21 @@ public class WebSecurityConfig {
   @Bean
   public CorsFilter corsFilter() {
     final CorsConfiguration config = new CorsConfiguration();
+
     config.setAllowCredentials(true);
     config.addAllowedOriginPattern("*");
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
 
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
     source.registerCorsConfiguration("/**", config);
 
     return new CorsFilter(source);
   }
 
   /**
-   * 将 Bcrypt 密码哈希算法作为 Spring Security 身份验证管理的密码编码器。
+   * 将 Bcrypt 哈希算法作为 Spring Security 身份验证管理的密码编码器。
    *
    * @return Bcrypt 密码编码器
    */

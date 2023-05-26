@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
- * 自定义 Spring Security Token 认证过滤器。
+ * 自定义 Spring Security Token 身份验证过滤器。
  *
  * <ul>
  *   <li>实现自定义的 {@link TokenAuth} 接口，定义对 Access Token 的身份验证，即登录逻辑</li>
@@ -30,7 +31,11 @@ import java.util.Optional;
 public class TokenAuthFilter extends OncePerRequestFilter {
 
   /**
-   * 携带 Token 授权信息的请求头值前缀：{@code Authorization: Bearer {{accessToken}}}。
+   * 携带 Token 授权信息的请求头值前缀：
+   *
+   * <pre>{@code
+   *   Authorization: "Bearer {{accessToken}}"
+   * }</pre>
    */
   public static final String BEARER_PREFIX = "Bearer ";
 
@@ -39,53 +44,47 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-    final HttpServletRequest request,
-    final HttpServletResponse response,
-    final FilterChain filterChain
+    @NonNull final HttpServletRequest req,
+    @NonNull final HttpServletResponse resp,
+    @NonNull final FilterChain chain
   ) throws ServletException, IOException {
     // 从请求头中获取 Access Token
-    final Optional<String> bearerTokenOpt = Optional.ofNullable(
-      JakartaServletUtil.getHeaderIgnoreCase(request, HttpHeaders.AUTHORIZATION)
+    final Optional<String> bearerOpt = Optional.ofNullable(
+      JakartaServletUtil.getHeaderIgnoreCase(req, HttpHeaders.AUTHORIZATION)
     );
 
-    if (bearerTokenOpt.isEmpty()) {
-      filterChain.doFilter(request, response);
+    if (bearerOpt.isEmpty()) {
+      chain.doFilter(req, resp);
+
       return;
     }
 
-    if (!StrUtil.startWith(bearerTokenOpt.get(), BEARER_PREFIX)) {
-      resolveError(request, response, "授权信息格式有误");
+    if (!StrUtil.startWith(bearerOpt.get(), BEARER_PREFIX)) {
+      resolveUnauthorizedError(req, resp, "授权信息格式有误");
+
       return;
     }
 
-    final String accessToken = StrUtil.removePrefix(bearerTokenOpt.get(), BEARER_PREFIX);
+    final String token = StrUtil.removePrefix(bearerOpt.get(), BEARER_PREFIX);
 
     // 执行 Access Token 身份验证，并获取用户数据
-    final AuthData authData;
+    final AuthData auth;
     try {
-      authData = tokenAuth.authenticate(accessToken);
+      auth = tokenAuth.authenticate(token);
     } catch (Exception e) {
-      resolveError(request, response, e.getMessage());
+      resolveUnauthorizedError(req, resp, e.getMessage());
+
       return;
     }
 
     // 将登录信息写入 Spring Security Context 中
-    tokenAuth.setAuthenticatedContext(authData, request);
+    tokenAuth.setAuthenticatedContext(auth, req);
 
     // 继续执行下一个过滤器
-    filterChain.doFilter(request, response);
+    chain.doFilter(req, resp);
   }
 
-  private void resolveError(
-    final HttpServletRequest request,
-    final HttpServletResponse response,
-    final String error
-  ) {
-    handlerExceptionResolver.resolveException(
-      request,
-      response,
-      null,
-      new ApiException(HttpStatus.UNAUTHORIZED, error)
-    );
+  private void resolveUnauthorizedError(final HttpServletRequest req, final HttpServletResponse resp, final String err) {
+    handlerExceptionResolver.resolveException(req, resp, null, new ApiException(HttpStatus.UNAUTHORIZED, err));
   }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * 系统所包含的权限值。
+ * 系统所关心的功能权限。
  *
  * <p>常用权限主要有以下几类：
  *
@@ -27,9 +27,9 @@ import java.util.Optional;
  *
  * @author 吴仙杰
  */
+@RequiredArgsConstructor
 @Getter
 @ToString
-@RequiredArgsConstructor
 public enum Authority {
 
   /**
@@ -61,6 +61,8 @@ public enum Authority {
   /**
    * 获取符合 {@link RoleHierarchyImpl} 的权限字符串。
    *
+   * <p>注意：修改权限枚举时，也要修改本方法。
+   *
    * @return 符合 {@link RoleHierarchyImpl} 的权限字符串
    */
   public static String getHierarchy() {
@@ -83,34 +85,30 @@ public enum Authority {
    * 权限 id。
    */
   private final String id;
-
   /**
    * 父权限 id。
    */
   private final String parentId;
-
   /**
-   * 权限名称，用于展示说明。
+   * 权限名称，用于 UI 展示。
    */
   private final String name;
-
   /**
-   * 权限代码，用于前后端代码中的权限匹配依据。
+   * 权限代码，用于代码判断。
    */
   private final String code;
 
   /**
-   * 获取完整权限树列表。
+   * 获取完整权限树。
    *
-   * @return 包含全部数据的权限树列表
+   * @return 包含完整权限节点的权限树
    */
   public static Tree<String> getTree() {
-    final List<TreeNode<String>> nodes = Arrays.stream(values())
-      .map(auth ->
+    final List<TreeNode<String>> nodes = Arrays.stream(values()).map(auth ->
+        // "weight": 1 // 节点权重，即顺序，越小优先级越高
         new TreeNode<>(auth.id, auth.parentId, auth.name, 1)
           .setExtra(Map.of("code", auth.code))
-      )
-      .toList();
+      ).toList();
 
     return TreeUtil.build(nodes, ROOT.parentId).get(0);
   }
@@ -118,37 +116,33 @@ public enum Authority {
   /**
    * 检查节点是否为下级节点，即判断是否拥有指定权限。
    *
-   * @param parentCode 比较的父节点 code
-   * @param checkedCode 被检查的下级节点 code
+   * @param parentCode 用于比较的父节点 code
+   * @param checkedCode 需要被检查的下级节点 code
    * @return {@code checkedCode} 是否为 {@code parentCode} 的下级节点
    * @throws IllegalArgumentException 当 code 解析失败时
    */
-  public static boolean isSubNode(
-    final String parentCode,
-    final String checkedCode
-  ) throws IllegalArgumentException {
-    final String parentId = resolve(parentCode)
-      .map(Authority::getId)
+  public static boolean isSubNode(final String parentCode, final String checkedCode) throws IllegalArgumentException {
+    final String parentId = resolve(parentCode).map(Authority::getId)
       .orElseThrow(() -> new IllegalArgumentException("无法识别 parentCode: " + parentCode));
 
-    final String checkedId = resolve(checkedCode)
-      .map(Authority::getId)
+    final String checkedId = resolve(checkedCode).map(Authority::getId)
       .orElseThrow(() -> new IllegalArgumentException("无法识别 checkedCode: " + checkedCode));
 
-    return checkedId.startsWith(parentId + "."); // 下级
+    // id 是有意设计的，故可通过 `id.` 前缀，即可判断是否为下级
+    return checkedId.startsWith(parentId + ".");
   }
 
   /**
    * 解析枚举值。
    *
-   * @param code 需要解析的权限代码
-   * @return 权限枚举值
+   * @param code 需要被解析为枚举值的 code
+   * @return 枚举值
    */
   public static Optional<Authority> resolve(final String code) {
     try {
-      // 定义时保证常量名与 `code` 保持一致，故可采用 `valueOf()` 方法解析
+      // 定义时保证了常量名与 `code` 保持一致，故可采用 `valueOf()` 方法解析
       return Optional.of(valueOf(code.toUpperCase()));
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException ignore) {
       return Optional.empty();
     }
   }

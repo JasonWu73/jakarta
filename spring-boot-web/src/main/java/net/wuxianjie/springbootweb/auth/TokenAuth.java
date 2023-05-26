@@ -22,7 +22,7 @@ public interface TokenAuth {
    *
    * <ol>
    *   <li>验证 JWT Token 本身（格式）是否合法</li>
-   *   <li>解析 JWT Token 获取用户名及类型</li>
+   *   <li>解析 JWT Token 获取载荷</li>
    *   <li>Token 类型必须为 {@link AuthProps#TOKEN_TYPE_ACCESS}</li>
    *   <li>通过用户名获取用户数据，并判断账号是否启用等信息</li>
    * </ol>

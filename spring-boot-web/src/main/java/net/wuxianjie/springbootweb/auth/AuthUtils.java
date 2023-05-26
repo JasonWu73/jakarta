@@ -15,9 +15,9 @@ import java.util.Optional;
 public class AuthUtils {
 
   /**
-   * 获取当前登录用户。
+   * 获取当前登录用户数据。
    *
-   * @return 登录用户详细数据
+   * @return 当前登录用户数据
    */
   public static Optional<AuthData> getCurrentUser() {
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();

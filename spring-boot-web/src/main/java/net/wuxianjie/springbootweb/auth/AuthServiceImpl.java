@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
     // 解析 JWT Token 获取载荷
     final TokenPayload payload = tokenService.parse(refreshToken);
 
-    // 判断 Token 是否为 Refresh Token
+    // 校验 Token 是否为 Refresh Token
     if (!Objects.equals(payload.getType(), AuthProps.TOKEN_TYPE_REFRESH)) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "刷新请使用 Refresh Token");
     }
@@ -120,7 +120,7 @@ public class AuthServiceImpl implements AuthService {
     // 添加 Token 身份认证缓存
     accessTokenCache.put(auth.getUsername(), auth);
 
-    // 填充 Spring Security Context 以便记录登录日志进可获取用户名
+    // 将登录信息写入 Spring Security Context 中，以便记录登录日志进可获取用户名
     tokenAuth.setAuthenticatedContext(auth, ServletUtils.getCurrentRequest().orElseThrow());
 
     return new TokenResponse(

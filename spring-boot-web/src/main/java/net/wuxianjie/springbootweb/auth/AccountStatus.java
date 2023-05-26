@@ -22,11 +22,11 @@ public enum AccountStatus implements EnumType {
   /**
    * 禁用。
    */
-  DISABLED(0, "账号已被管理员禁用"),
+  DISABLED(0),
   /**
    * 启用。
    */
-  ENABLED(1, "账号可正常使用");
+  ENABLED(1);
 
   private static final AccountStatus[] VALUES;
 
@@ -34,10 +34,11 @@ public enum AccountStatus implements EnumType {
     VALUES = values();
   }
 
+  /**
+   * 代表枚举值的常量值。
+   */
   @JsonValue
   private final int code;
-
-  private final String description;
 
   /**
    * 解析枚举值。

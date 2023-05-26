@@ -18,37 +18,40 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TokenAuthImpl implements TokenAuth {
 
-  private final TimedCache<String, AuthData> accessTokenCache;
   private final TokenService tokenService;
+  private final TimedCache<String, AuthData> accessTokenCache;
 
   @Override
   public AuthData authenticate(final String accessToken) {
     // 验证 JWT Token 本身（格式）是否合法
     final boolean legalToken = tokenService.isLegal(accessToken);
+
     if (!legalToken) {
       throw new IllegalArgumentException("Token 不合法");
     }
 
-    // 解析 JWT Token 获取用户名及类型
+    // 解析 JWT Token 获取载荷
     final TokenPayload payload = tokenService.parse(accessToken);
 
-    // 判断 Token 是否为 Access Token
+    // 校验 Token 是否为 Access Token
     if (!Objects.equals(payload.getType(), AuthProps.TOKEN_TYPE_ACCESS)) {
       throw new IllegalArgumentException("API 鉴权请使用 Access Token");
     }
 
-    // 通过用户名获取用户数据，并判断账号是否启用等信息
-    final AuthData authData = Optional.ofNullable(accessTokenCache.get(payload.getUsername()))
+    // 检索登录缓存获取用户数据
+    final AuthData cachedAuth = Optional.ofNullable(accessTokenCache.get(payload.getUsername()))
       .orElseThrow(() -> new RuntimeException("Token 已失效"));
 
-    if (!Objects.equals(authData.getAccessToken(), accessToken)) {
+    // 校验 Access Token 是否匹配
+    if (!Objects.equals(cachedAuth.getAccessToken(), accessToken)) {
       throw new RuntimeException("Token 已废弃");
     }
 
-    if (authData.getStatus() == AccountStatus.DISABLED) {
+    // 验证账号是否可用
+    if (cachedAuth.getStatus() == AccountStatus.DISABLED) {
       throw new RuntimeException("账号已禁用");
     }
 
-    return authData;
+    return cachedAuth;
   }
 }
