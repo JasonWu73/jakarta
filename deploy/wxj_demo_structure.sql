@@ -23,7 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `op_log`;
 CREATE TABLE `op_log` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `request_time` datetime DEFAULT NULL,
+  `req_time` datetime DEFAULT NULL,
   `client_ip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `message` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
