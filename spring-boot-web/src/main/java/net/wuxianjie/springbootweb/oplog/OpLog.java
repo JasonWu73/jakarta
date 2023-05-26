@@ -16,22 +16,18 @@ public class OpLog {
    * 操作日志 id。
    */
   private Long id;
-
   /**
    * 请求时间。
    */
-  private LocalDateTime requestTime;
-
+  private LocalDateTime reqTime;
   /**
    * 客户端 IP。
    */
   private String clientIp;
-
   /**
    * 用户名。
    */
   private String username;
-
   /**
    * 操作描述。
    */

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.oplog.dto.GetOpLogRequest;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationParam;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationResult;
-import net.wuxianjie.springbootweb.shared.util.StringUtils;
+import net.wuxianjie.springbootweb.shared.util.StrUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,32 +22,34 @@ public class OpLogService {
   private final OpLogMapper opLogMapper;
 
   /**
-   * 获取操作日志列表。
+   * 获取操作日志分页列表。
    *
-   * @param pagination 分页请求参数
-   * @param request 请求参数
+   * @param pag 分页参数
+   * @param query 查询参数
    * @return 操作日志分页列表
    */
-  public ResponseEntity<PaginationResult<OpLog>> getLogs(
-    final PaginationParam pagination,
-    final GetOpLogRequest request
-  ) {
+  public ResponseEntity<PaginationResult<OpLog>> getLogs(final PaginationParam pag, final GetOpLogRequest query) {
     // 设置模糊查询参数
-    request.setClientIp(StringUtils.toNullableLikeValue(request.getClientIp()));
-    request.setMessage(StringUtils.toNullableLikeValue(request.getMessage()));
+    setFuzzyQueryParams(query);
 
-    // 查询数据库获取列表数据
-    final List<OpLog> logs = opLogMapper.selectByQueryOrderByUpdatedAtDesc(pagination, request);
+    // 检索数据库获取数据列表
+    final List<OpLog> list = opLogMapper.selectByQueryOrderByRequestTimeDescLimit(pag, query);
 
-    // 查询数据库获取总条目数
-    final long total = opLogMapper.countByQuery(request);
+    // 检索数据库获取总数
+    final long total = opLogMapper.countByQuery(query);
 
-    // 构造分页结果
+    // 构造分页查询结果
     return ResponseEntity.ok(new PaginationResult<>(
-      pagination.getPageNumber(),
-      pagination.getPageSize(),
+      pag.getPageNum(),
+      pag.getPageSize(),
       total,
-      logs
+      list
     ));
+  }
+
+  private void setFuzzyQueryParams(final GetOpLogRequest query) {
+    query.setUsername(StrUtils.toNullableLikeValue(query.getUsername()));
+    query.setClientIp(StrUtils.toNullableLikeValue(query.getClientIp()));
+    query.setMessage(StrUtils.toNullableLikeValue(query.getMessage()));
   }
 }

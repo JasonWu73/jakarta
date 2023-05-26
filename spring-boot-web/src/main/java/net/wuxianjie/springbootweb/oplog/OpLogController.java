@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 操作日志相关 REST API。
+ * 操作日志 REST API。
  *
  * @author 吴仙杰
  */
@@ -24,18 +24,18 @@ public class OpLogController {
   private final OpLogService opLogService;
 
   /**
-   * 获取操作日志列表。
+   * 获取操作日志分页列表。
    *
-   * @param pagination 分页请求参数
-   * @param request 请求参数
+   * @param pag 分页参数
+   * @param query 查询参数
    * @return 操作日志分页列表
    */
   @GetMapping("/op-logs")
   @PreAuthorize("hasAuthority('op_log_view')")
   public ResponseEntity<PaginationResult<OpLog>> getLogs(
-    @Valid final PaginationParam pagination,
-    @Valid final GetOpLogRequest request
+    @Valid final PaginationParam pag,
+    @Valid final GetOpLogRequest query
   ) {
-    return opLogService.getLogs(pagination, request);
+    return opLogService.getLogs(pag, query);
   }
 }

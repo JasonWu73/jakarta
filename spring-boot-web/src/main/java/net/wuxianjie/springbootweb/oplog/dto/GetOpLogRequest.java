@@ -16,24 +16,26 @@ import java.time.LocalDateTime;
 public class GetOpLogRequest {
 
   /**
-   * 请求开始时间，必填。
+   * 请求起始时间，必填。
    */
-  @NotNull(message = "请求开始时间不能为 null")
+  @NotNull(message = "请求起始时间不能为 null")
   @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
   private LocalDateTime startTime;
-
   /**
-   * 请求结束时间，必填。
+   * 请求截止时间，必填。
    */
-  @NotNull(message = "请求结束时间不能为 null")
+  @NotNull(message = "请求截止时间不能为 null")
   @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
   private LocalDateTime endTime;
 
   /**
+   * 用户名。
+   */
+  private String username;
+  /**
    * 客户端 IP。
    */
   private String clientIp;
-
   /**
    * 操作描述。
    */

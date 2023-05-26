@@ -11,7 +11,7 @@ import java.util.Optional;
  *
  * @author 吴仙杰
  */
-public class StringUtils {
+public class StrUtils {
 
   /**
    * 按如下规则生成数据库 LIKE 值：

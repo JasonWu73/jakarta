@@ -655,7 +655,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 12 May 2023 05:37:34 GMT"
+									"value": "Fri, 26 May 2023 12:50:45 GMT"
 								},
 								{
 									"key": "Keep-Alive",
@@ -667,7 +667,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": \"1\", // id\n    \"parentId\": \"0\", // 父 id\n    \"weight\": 1, // 节点权重，即顺序，越小优先级越高\n    \"name\": \"根权限\", // 权限名称，用于 UI 展示\n    \"code\": \"root\", // 权限代码，用于代码判断\n    \"children\": [ // 下级节点\n        {\n            \"id\": \"1.1\",\n            \"parentId\": \"1\",\n            \"weight\": 1,\n            \"name\": \"用户管理\",\n            \"code\": \"user\",\n            \"children\": [\n                {\n                    \"id\": \"1.1.1\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"查看用户\",\n                    \"code\": \"user_view\"\n                },\n                {\n                    \"id\": \"1.1.2\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"新增用户\",\n                    \"code\": \"user_add\"\n                },\n                {\n                    \"id\": \"1.1.3\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"编辑用户\",\n                    \"code\": \"user_edit\"\n                },\n                {\n                    \"id\": \"1.1.4\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"删除用户\",\n                    \"code\": \"user_del\"\n                },\n                {\n                    \"id\": \"1.1.5\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"重置密码\",\n                    \"code\": \"user_reset\"\n                }\n            ]\n        },\n        {\n            \"id\": \"1.2\",\n            \"parentId\": \"1\",\n            \"weight\": 1,\n            \"name\": \"角色管理\",\n            \"code\": \"role\",\n            \"children\": [\n                {\n                    \"id\": \"1.2.1\",\n                    \"parentId\": \"1.2\",\n                    \"weight\": 1,\n                    \"name\": \"查看角色\",\n                    \"code\": \"role_view\"\n                },\n                {\n                    \"id\": \"1.2.2\",\n                    \"parentId\": \"1.2\",\n                    \"weight\": 1,\n                    \"name\": \"新增角色\",\n                    \"code\": \"role_add\"\n                },\n                {\n                    \"id\": \"1.2.3\",\n                    \"parentId\": \"1.2\",\n                    \"weight\": 1,\n                    \"name\": \"编辑角色\",\n                    \"code\": \"role_edit\"\n                },\n                {\n                    \"id\": \"1.2.4\",\n                    \"parentId\": \"1.2\",\n                    \"weight\": 1,\n                    \"name\": \"删除角色\",\n                    \"code\": \"role_del\"\n                }\n            ]\n        },\n        {\n            \"id\": \"1.3\",\n            \"parentId\": \"1\",\n            \"weight\": 1,\n            \"name\": \"操作日志\",\n            \"code\": \"op_log\",\n            \"children\": [\n                {\n                    \"id\": \"1.3.1\",\n                    \"parentId\": \"1.3\",\n                    \"weight\": 1,\n                    \"name\": \"查看日志\",\n                    \"code\": \"op_log_view\"\n                }\n            ]\n        }\n    ]\n}"
+							"body": "{\n    \"id\": \"1\", // 权限 id\n    \"parentId\": \"0\", // 父权限 id\n    \"weight\": 1, // 节点权重，即顺序，越小优先级越高\n    \"name\": \"根权限\", // 权限名称，用于 UI 展示\n    \"code\": \"root\", // 权限代码，用于代码判断\n    \"children\": [ // 下级节点\n        {\n            \"id\": \"1.1\",\n            \"parentId\": \"1\",\n            \"weight\": 1,\n            \"name\": \"用户管理\",\n            \"code\": \"user\",\n            \"children\": [\n                {\n                    \"id\": \"1.1.1\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"查看用户\",\n                    \"code\": \"user_view\"\n                },\n                {\n                    \"id\": \"1.1.2\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"新增用户\",\n                    \"code\": \"user_add\"\n                },\n                {\n                    \"id\": \"1.1.3\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"编辑用户\",\n                    \"code\": \"user_edit\"\n                },\n                {\n                    \"id\": \"1.1.4\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"删除用户\",\n                    \"code\": \"user_del\"\n                },\n                {\n                    \"id\": \"1.1.5\",\n                    \"parentId\": \"1.1\",\n                    \"weight\": 1,\n                    \"name\": \"重置密码\",\n                    \"code\": \"user_reset\"\n                }\n            ]\n        },\n        {\n            \"id\": \"1.2\",\n            \"parentId\": \"1\",\n            \"weight\": 1,\n            \"name\": \"角色管理\",\n            \"code\": \"role\",\n            \"children\": [\n                {\n                    \"id\": \"1.2.1\",\n                    \"parentId\": \"1.2\",\n                    \"weight\": 1,\n                    \"name\": \"查看角色\",\n                    \"code\": \"role_view\"\n                },\n                {\n                    \"id\": \"1.2.2\",\n                    \"parentId\": \"1.2\",\n                    \"weight\": 1,\n                    \"name\": \"新增角色\",\n                    \"code\": \"role_add\"\n                },\n                {\n                    \"id\": \"1.2.3\",\n                    \"parentId\": \"1.2\",\n                    \"weight\": 1,\n                    \"name\": \"编辑角色\",\n                    \"code\": \"role_edit\"\n                },\n                {\n                    \"id\": \"1.2.4\",\n                    \"parentId\": \"1.2\",\n                    \"weight\": 1,\n                    \"name\": \"删除角色\",\n                    \"code\": \"role_del\"\n                }\n            ]\n        },\n        {\n            \"id\": \"1.3\",\n            \"parentId\": \"1\",\n            \"weight\": 1,\n            \"name\": \"操作日志\",\n            \"code\": \"op_log\",\n            \"children\": [\n                {\n                    \"id\": \"1.3.1\",\n                    \"parentId\": \"1.3\",\n                    \"weight\": 1,\n                    \"name\": \"查看日志\",\n                    \"code\": \"op_log_view\"\n                }\n            ]\n        }\n    ]\n}"
 						}
 					]
 				}
@@ -677,7 +677,7 @@
 			"name": "操作日志",
 			"item": [
 				{
-					"name": "获取操作日志列表",
+					"name": "获取操作日志分页列表",
 					"event": [
 						{
 							"listen": "test",
@@ -768,7 +768,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/op-logs?pageNumber=1&pageSize=10&startTime=1970-01-01 00:00:00&endTime=2093-12-31 23:59:59",
+							"raw": "{{base_url}}/api/v1/op-logs?pageNum=1&pageSize=1&startTime=1970-01-01 00:00:00&endTime=2093-12-31 23:59:59",
 							"host": [
 								"{{base_url}}"
 							],
@@ -779,24 +779,30 @@
 							],
 							"query": [
 								{
-									"key": "pageNumber",
+									"key": "pageNum",
 									"value": "1",
 									"description": "页码，必填，值 >= 1"
 								},
 								{
 									"key": "pageSize",
-									"value": "10",
+									"value": "1",
 									"description": "每页显示条目个数，必填，值 >= 1"
 								},
 								{
 									"key": "startTime",
 									"value": "1970-01-01 00:00:00",
-									"description": "请求开始时间，必填"
+									"description": "请求起始时间，必填"
 								},
 								{
 									"key": "endTime",
 									"value": "2093-12-31 23:59:59",
-									"description": "请求结束时间，必填"
+									"description": "请求截止时间，必填"
+								},
+								{
+									"key": "username",
+									"value": "jason",
+									"description": "用户名",
+									"disabled": true
 								},
 								{
 									"key": "clientIp",
@@ -826,7 +832,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/v1/op-logs?pageNumber=1&pageSize=2&startTime=1970-01-01 00:00:00&endTime=2093-12-31 23:59:59&clientIp=127&message=登录",
+									"raw": "{{base_url}}/api/v1/op-logs?pageNum=1&pageSize=1&startTime=1970-01-01 00:00:00&endTime=2093-12-31 23:59:59&username=jason&clientIp=127&message=登录",
 									"host": [
 										"{{base_url}}"
 									],
@@ -837,24 +843,29 @@
 									],
 									"query": [
 										{
-											"key": "pageNumber",
+											"key": "pageNum",
 											"value": "1",
 											"description": "页码，必填，值 >= 1"
 										},
 										{
 											"key": "pageSize",
-											"value": "2",
+											"value": "1",
 											"description": "每页显示条目个数，必填，值 >= 1"
 										},
 										{
 											"key": "startTime",
 											"value": "1970-01-01 00:00:00",
-											"description": "请求开始时间，必填"
+											"description": "请求起始时间，必填"
 										},
 										{
 											"key": "endTime",
 											"value": "2093-12-31 23:59:59",
-											"description": "请求结束时间，必填"
+											"description": "请求截止时间，必填"
+										},
+										{
+											"key": "username",
+											"value": "jason",
+											"description": "用户名"
 										},
 										{
 											"key": "clientIp",
@@ -915,7 +926,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Thu, 11 May 2023 02:47:37 GMT"
+									"value": "Fri, 26 May 2023 12:57:25 GMT"
 								},
 								{
 									"key": "Keep-Alive",
@@ -927,7 +938,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"pageNumber\": 1, // 页码\n    \"pageSize\": 2, // 每页显示条目个数\n    \"total\": 2, // 总条目数\n    \"list\": [ // 数据列表\n        {\n            \"id\": 2, // 操作日志 id\n            \"requestTime\": \"2023-05-11 10:46:02\", // 请求时间\n            \"clientIp\": \"127.0.0.1\", // 客户端 IP\n            \"username\": \"wxj\", // 用户名\n            \"message\": \"登录系统\" // 操作描述\n        },\n        {\n            \"id\": 1,\n            \"requestTime\": \"2023-05-10 18:38:20\",\n            \"clientIp\": \"127.0.0.1\",\n            \"username\": \"wxj\",\n            \"message\": \"登录系统\"\n        }\n    ]\n}"
+							"body": "{\n    \"pageNum\": 1, // 页码\n    \"pageSize\": 1, // 每页条数\n    \"total\": 13, // 总条数\n    \"list\": [ // 日志列表\n        {\n            \"id\": 109, // 操作日志 id\n            \"reqTime\": \"2023-05-21 11:48:00\", // 请求时间\n            \"clientIp\": \"127.0.0.1\", // 客户端 IP\n            \"username\": \"jason\", // 用户名\n            \"message\": \"登录系统\" // 操作描述\n        }\n    ]\n}"
 						}
 					]
 				}
@@ -3452,7 +3463,8 @@
 					{
 						"key": "Authorization",
 						"value": "Bearer {{accessToken}}",
-						"type": "default"
+						"type": "default",
+						"disabled": true
 					}
 				],
 				"url": {

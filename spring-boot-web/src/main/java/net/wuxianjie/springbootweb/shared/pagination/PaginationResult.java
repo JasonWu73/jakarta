@@ -1,21 +1,35 @@
 package net.wuxianjie.springbootweb.shared.pagination;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 /**
  * 分页查询结果。
  *
- * @param pageNumber 页码
- * @param pageSize 每页显示条目个数
- * @param total 总条目数
- * @param list 数据列表
- * @param <E> 列表项数据类型
  * @author 吴仙杰
  */
-public record PaginationResult<E>(
-  int pageNumber,
-  int pageSize,
-  long total,
-  List<E> list
-) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class PaginationResult<E> {
+
+  /**
+   * 页码。
+   */
+  private int pageNum;
+  /**
+   * 每页条数。
+   */
+  private int pageSize;
+  /**
+   * 总条数。
+   */
+  private long total;
+  /**
+   * 数据列表。
+   */
+  private List<E> list;
 }

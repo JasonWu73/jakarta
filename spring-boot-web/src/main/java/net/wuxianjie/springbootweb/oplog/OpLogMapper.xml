@@ -2,32 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.wuxianjie.springbootweb.oplog.OpLogMapper">
   <insert id="insert">
-    insert into op_log (request_time, client_ip, username, message)
-    values (#{requestTime}, #{clientIp}, #{username}, #{message})
+    insert into op_log (req_time, client_ip, username, message)
+    values (#{reqTime}, #{clientIp}, #{username}, #{message})
   </insert>
 
   <sql id="whereQuery">
     <where>
-      request_time &gt;= #{q.startTime}
-      and request_time &lt;= #{q.endTime}
-      <if test="q.clientIp != null">
-        and client_ip like #{q.clientIp}
-      </if>
-      <if test="q.message != null">
-        and message like #{q.message}
-      </if>
+      req_time &gt;= #{q.startTime} and req_time &lt;= #{q.endTime}
+      <if test="q.username != null">and username like #{q.username}</if>
+      <if test="q.clientIp != null">and client_ip like #{q.clientIp}</if>
+      <if test="q.message != null">and message like #{q.message}</if>
     </where>
   </sql>
 
-  <select id="selectByQueryOrderByUpdatedAtDesc" resultType="net.wuxianjie.springbootweb.oplog.OpLog">
+  <select id="selectByQueryOrderByRequestTimeDescLimit" resultType="net.wuxianjie.springbootweb.oplog.OpLog">
     select id,
-    request_time as requestTime,
-    client_ip as clientIp,
-    username,
-    message
+           req_time as reqTime,
+           client_ip as clientIp,
+           username,
+           message
     from op_log
     <include refid="whereQuery"/>
-    order by requestTime desc
+    order by reqTime desc
     limit #{p.offset}, #{p.pageSize}
   </select>
 

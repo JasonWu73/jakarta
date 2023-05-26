@@ -7,7 +7,7 @@ import net.wuxianjie.springbootweb.auth.AuthUtils;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationParam;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationResult;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
-import net.wuxianjie.springbootweb.shared.util.StringUtils;
+import net.wuxianjie.springbootweb.shared.util.StrUtils;
 import net.wuxianjie.springbootweb.user.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +45,9 @@ public class UserService {
     final GetUserRequest request
   ) {
     // 设置模糊查询参数
-    request.setUsername(StringUtils.toNullableLikeValue(request.getUsername()));
-    request.setNickname(StringUtils.toNullableLikeValue(request.getNickname()));
-    request.setRoleName(StringUtils.toNullableLikeValue(request.getRoleName()));
+    request.setUsername(StrUtils.toNullableLikeValue(request.getUsername()));
+    request.setNickname(StrUtils.toNullableLikeValue(request.getNickname()));
+    request.setRoleName(StrUtils.toNullableLikeValue(request.getRoleName()));
 
     // 获取当前登录用户的角色完整路径以便查找其下级角色的用户
     final long userId = AuthUtils.getCurrentUser().orElseThrow().getUserId();
@@ -62,7 +62,7 @@ public class UserService {
 
     // 构造分页结果
     return ResponseEntity.ok(new PaginationResult<>(
-      pagination.getPageNumber(),
+      pagination.getPageNum(),
       pagination.getPageSize(),
       total,
       list
