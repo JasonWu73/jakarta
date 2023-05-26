@@ -1,6 +1,10 @@
 package net.wuxianjie.springbootweb.auth.dto;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AccountStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -9,34 +13,62 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 通过身份验证后的 Token 详细数据。
+ * 通过身份验证后的详细数据。
  *
- * @param userId 用户 id
- * @param username 用户名
- * @param nickname 用户昵称
- * @param status 账号状态
- * @param authorities 权限列表
- * @param accessToken Access Token
- * @param refreshToken Refresh Token
+ * @author 吴仙杰
  */
-public record AuthData(
-  long userId,
-  String username,
-  String nickname,
-  AccountStatus status,
-  List<String> authorities,
-  String accessToken,
-  String refreshToken
-) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class AuthData {
 
   /**
-   * 获取 Spring Security 所需要的权限集合。
-   *
-   * @return Spring Security 权限
+   * 用户 id。
    */
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return AuthorityUtils.createAuthorityList(
-      ArrayUtil.toArray(authorities, String.class)
-    );
+  private long userId;
+  /**
+   * 用户名。
+   */
+  private String username;
+  /**
+   * 哈希密码。
+   */
+  private String hashedPassword;
+  /**
+   * 昵称。
+   */
+  private String nickname;
+  /**
+   * 账号状态。
+   */
+  private AccountStatus status;
+  /**
+   * 功能权限列表。
+   */
+  private List<String> authorities;
+  /**
+   * 用于接口访问的 Access Token。
+   */
+  private String accessToken;
+  /**
+   * 用于刷新的 Refresh Token。
+   */
+  private String refreshToken;
+
+  // 用于 MyBatis 的 ResultMap
+  public AuthData(final long userId, final String username, final String hashedPassword, final String nickname, final int status, final String authorities) {
+    this.userId = userId;
+    this.username = username;
+    this.hashedPassword = hashedPassword;
+    this.nickname = nickname;
+
+    this.status = AccountStatus.resolve(status).orElseThrow();
+
+    this.authorities = StrUtil.split(authorities, StrUtil.COMMA, true, true);
+  }
+
+  // 用于 Spring Security 的权限集合
+  public Collection<? extends GrantedAuthority> getSpringSecurityAuthorities() {
+    return AuthorityUtils.createAuthorityList(ArrayUtil.toArray(authorities, String.class));
   }
 }

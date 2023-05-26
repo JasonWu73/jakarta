@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 身份验证相关 REST API。
+ * 鉴权相关 REST API。
  *
  * @author 吴仙杰
  */
@@ -24,13 +24,13 @@ public class AuthController {
   /**
    * 获取 Access Token。
    *
-   * @param request 请求参数
+   * @param req 请求参数
    * @return Access Token 相关信息
    */
   @Log("登录系统")
   @PostMapping("/token")
-  public ResponseEntity<TokenResponse> getToken(@RequestBody @Valid final GetTokenRequest request) {
-    return authService.getToken(request);
+  public ResponseEntity<TokenResponse> getToken(@RequestBody @Valid final GetTokenRequest req) {
+    return authService.getToken(req);
   }
 
   /**
@@ -38,7 +38,7 @@ public class AuthController {
    *
    * <p>刷新后，旧 Access Token 将不可用。
    *
-   * @param refreshToken 需要刷新的 Access Token
+   * @param refreshToken 用于刷新的 Access Token
    * @return Access Token 相关信息
    */
   @PutMapping("/token/{refreshToken}")

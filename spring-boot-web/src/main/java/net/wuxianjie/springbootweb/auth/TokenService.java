@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * JWT Token 处理。
+ * JWT Token 的处理逻辑。
  *
  * @author 吴仙杰
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenService {
 
   private final AuthProps authProps;
@@ -38,6 +38,7 @@ public class TokenService {
         .validateDate();
     } catch (Exception e) {
       log.warn("Token 不合法 [token={};error={}]", token, e.getMessage());
+
       return false;
     }
 
@@ -53,10 +54,10 @@ public class TokenService {
   public String createToken(final TokenPayload payload) {
     return JWTUtil.createToken(
       Map.ofEntries(
-        Map.entry(AuthProps.JWT_PAYLOAD_USERNAME, payload.username()),
-        Map.entry(AuthProps.JWT_PAYLOAD_TYPE, payload.type()),
-        Map.entry(JWTPayload.ISSUER, payload.iss()),
-        Map.entry(JWTPayload.EXPIRES_AT, payload.exp())
+        Map.entry(AuthProps.JWT_PAYLOAD_USERNAME, payload.getUsername()),
+        Map.entry(AuthProps.JWT_PAYLOAD_TYPE, payload.getType()),
+        Map.entry(JWTPayload.ISSUER, payload.getIss()),
+        Map.entry(JWTPayload.EXPIRES_AT, payload.getExp())
       ),
       authProps.getTokenKey().getBytes()
     );

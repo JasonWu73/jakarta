@@ -57,7 +57,7 @@ public class OpLogAspect {
 
     // 用户名
     final String username = AuthUtils.getCurrentUser()
-      .map(AuthData::username)
+      .map(AuthData::getUsername)
       .orElse(null);
     opLog.setUsername(username);
 

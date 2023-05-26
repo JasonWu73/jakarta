@@ -44,7 +44,7 @@ public class RoleService {
    */
   public ResponseEntity<List<RoleResponse>> getRoles() {
     // 获取当前登录用户的角色完整路径以便查找其下级角色
-    final long userId = AuthUtils.getCurrentUser().orElseThrow().userId();
+    final long userId = AuthUtils.getCurrentUser().orElseThrow().getUserId();
     final String roleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(userId)).orElseThrow();
     final String subRoleLikeFullPath = roleFullPath + ".%";
 
@@ -98,7 +98,7 @@ public class RoleService {
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到父角色数据"));
 
       // 校验新增角色是否为当前用户的下级角色
-      final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.userId()))
+      final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.getUserId()))
         .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
 
       if (!parentRole.getFullPath().startsWith(currentRoleFullPath + ".")) {
@@ -106,11 +106,11 @@ public class RoleService {
       }
     } else {
       // 若父角色 id 为 null，则表示创建自己的下级角色
-      parentRole = Optional.ofNullable(roleMapper.selectByUserId(currentUser.userId())).orElseThrow();
+      parentRole = Optional.ofNullable(roleMapper.selectByUserId(currentUser.getUserId())).orElseThrow();
     }
 
     // 校验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去除空值、字符串的左右空格，及仅保留父权限）
-    final String sanitizedAuthorities = sanitizeAuthorities(currentUser.authorities(), request.getAuthorities());
+    final String sanitizedAuthorities = sanitizeAuthorities(currentUser.getAuthorities(), request.getAuthorities());
 
     // 保存至数据库
     final Role role = new Role();
@@ -155,7 +155,7 @@ public class RoleService {
     // 校验角色是否为当前用户的下级角色
     final AuthData currentUser = AuthUtils.getCurrentUser().orElseThrow();
 
-    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.userId()))
+    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.getUserId()))
       .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
 
     if (!updatedRole.getFullPath().startsWith(currentRoleFullPath + ".")) {
@@ -212,7 +212,7 @@ public class RoleService {
     // 判断是否需要更新权限
     if (!Objects.equals(updatedRole.getAuthorities(), request.getAuthorities())) {
       // 校验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去除空值、字符串的左右空格，及仅保留父权限）
-      final String sanitizedAuthorities = sanitizeAuthorities(currentUser.authorities(), request.getAuthorities());
+      final String sanitizedAuthorities = sanitizeAuthorities(currentUser.getAuthorities(), request.getAuthorities());
       updatedRole.setAuthorities(sanitizedAuthorities);
     }
 
@@ -243,7 +243,7 @@ public class RoleService {
     // 校验角色是否为当前用户的下级角色
     final AuthData currentUser = AuthUtils.getCurrentUser().orElseThrow();
 
-    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.userId()))
+    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.getUserId()))
       .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
 
     if (!role.getFullPath().startsWith(currentRoleFullPath + ".")) {
@@ -318,7 +318,7 @@ public class RoleService {
 
   private boolean isNotSubordinateRole(final String subordinateRoleFullPath) {
     final AuthData currentUser = AuthUtils.getCurrentUser().orElseThrow();
-    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.userId()))
+    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUser.getUserId()))
       .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
     return !subordinateRoleFullPath.startsWith(currentRoleFullPath + ".");
   }

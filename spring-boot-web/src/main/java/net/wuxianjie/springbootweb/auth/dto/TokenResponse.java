@@ -1,21 +1,43 @@
 package net.wuxianjie.springbootweb.auth.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 /**
  * 通过身份验证后的 Token 详细数据。
  *
- * @param accessToken 用于接口访问的 Access Token
- * @param refreshToken 用于刷新的 Refresh Token
- * @param expiresInSec Token 多少秒后过期
- * @param username 用户名
- * @param nickname 昵称
- * @param authorities 以英文逗号分隔的功能权限字符串
+ * @author 吴仙杰
  */
-public record TokenResponse(
-  String accessToken,
-  String refreshToken,
-  int expiresInSec,
-  String username,
-  String nickname,
-  String authorities
-) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TokenResponse {
+
+  /**
+   * 用于接口访问的 Access Token。
+   */
+  private String accessToken;
+  /**
+   * 用于刷新的 Refresh Token。
+   */
+  private String refreshToken;
+  /**
+   * Token 多少秒后过期。
+   */
+  private int expiresInSec;
+  /**
+   * 用户名。
+   */
+  private String username;
+  /**
+   * 昵称。
+   */
+  private String nickname;
+  /**
+   * 功能权限列表。
+   */
+  private List<String> authorities;
 }

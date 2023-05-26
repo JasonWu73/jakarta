@@ -29,7 +29,7 @@ public class User {
   private String nickname;
 
   /**
-   * 编码后的密码。
+   * 哈希密码。
    */
   private String hashedPassword;
 

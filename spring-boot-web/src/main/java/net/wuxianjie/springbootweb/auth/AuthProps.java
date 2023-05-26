@@ -26,12 +26,10 @@ public class AuthProps {
    * JWT Payload - Token 类型。
    */
   public static final String JWT_PAYLOAD_TYPE = "type";
-
   /**
    * JWT Payload - Access Token 类型值。
    */
   public static final String TOKEN_TYPE_ACCESS = "access";
-
   /**
    * JWT Payload - Refresh Token 类型值。
    */
@@ -40,7 +38,7 @@ public class AuthProps {
   /**
    * Token 过期时间，单位：秒。
    */
-  public static final int TOKEN_EXPIRATION_SEC = 1800;
+  public static final int TOKEN_EXP_SEC = 1800;
 
   /**
    * Token 签发者，即当前系统名。

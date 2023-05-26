@@ -10,7 +10,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 
 /**
- * 授权管理相关配置。
+ * 鉴权相关配置。
  *
  * @author 吴仙杰
  */
@@ -25,7 +25,7 @@ public class AuthConfig {
   @Bean
   public TimedCache<String, AuthData> accessTokenCache() {
     // 创建 Token 定时缓存
-    final int timeoutMs = AuthProps.TOKEN_EXPIRATION_SEC * 1000;
+    final int timeoutMs = AuthProps.TOKEN_EXP_SEC * 1000;
     final TimedCache<String, AuthData> cache = CacheUtil.newTimedCache(timeoutMs);
 
     // 启动定时任务，每到过期时间时清理一次过期条目
@@ -44,9 +44,11 @@ public class AuthConfig {
    */
   @Bean
   public RoleHierarchy roleHierarchy() {
-    final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-    roleHierarchy.setHierarchy(Authority.getHierarchy());
-    return roleHierarchy;
+    final RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+
+    hierarchy.setHierarchy(Authority.getHierarchy());
+
+    return hierarchy;
   }
 
   /**
@@ -56,8 +58,10 @@ public class AuthConfig {
    */
   @Bean
   public DefaultMethodSecurityExpressionHandler expressionHandler() {
-    final DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-    expressionHandler.setRoleHierarchy(roleHierarchy());
-    return expressionHandler;
+    final DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+
+    handler.setRoleHierarchy(roleHierarchy());
+
+    return handler;
   }
 }

@@ -14,17 +14,17 @@ public interface AuthService {
   /**
    * 获取 Access Token。
    *
-   * @param request 请求参数
+   * @param req 请求参数
    * @return Access Token 相关信息
    */
-  ResponseEntity<TokenResponse> getToken(final GetTokenRequest request);
+  ResponseEntity<TokenResponse> getToken(final GetTokenRequest req);
 
   /**
    * 刷新 Access Token。
    *
    * <p>刷新后，旧 Access Token 将不可用。
    *
-   * @param refreshToken 需要刷新的 Access Token
+   * @param refreshToken 用于刷新的 Access Token
    * @return Access Token 相关信息
    */
   ResponseEntity<TokenResponse> updateToken(final String refreshToken);

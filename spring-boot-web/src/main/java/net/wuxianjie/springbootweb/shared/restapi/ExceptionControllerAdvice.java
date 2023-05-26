@@ -5,7 +5,6 @@ import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.wuxianjie.springbootweb.shared.util.ServletUtils;
 import org.apache.catalina.connector.ClientAbortException;
@@ -35,9 +34,8 @@ import java.util.Optional;
  *
  * @author 吴仙杰
  */
-@Slf4j
 @ControllerAdvice
-@RequiredArgsConstructor
+@Slf4j
 public class ExceptionControllerAdvice {
 
   /**

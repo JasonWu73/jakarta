@@ -50,7 +50,7 @@ public class UserService {
     request.setRoleName(StringUtils.toNullableLikeValue(request.getRoleName()));
 
     // 获取当前登录用户的角色完整路径以便查找其下级角色的用户
-    final long userId = AuthUtils.getCurrentUser().orElseThrow().userId();
+    final long userId = AuthUtils.getCurrentUser().orElseThrow().getUserId();
     final String roleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(userId)).orElseThrow();
     final String subRoleLikeFullPath = roleFullPath + ".%";
 
@@ -192,7 +192,7 @@ public class UserService {
    */
   public ResponseEntity<Void> updateSelf(final UpdateSelfRequest request) {
     // 获取当前登录的用户信息
-    final long userId = AuthUtils.getCurrentUser().orElseThrow().userId();
+    final long userId = AuthUtils.getCurrentUser().orElseThrow().getUserId();
     final User user = Optional.ofNullable(userMapper.selectById(userId)).orElseThrow();
 
     // 更新记录修改时间
@@ -288,7 +288,7 @@ public class UserService {
   }
 
   private boolean isNotCurrentUserSubRole(final String roleFullPath) {
-    final long currentUserId = AuthUtils.getCurrentUser().orElseThrow().userId();
+    final long currentUserId = AuthUtils.getCurrentUser().orElseThrow().getUserId();
 
     final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUserId))
       .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));

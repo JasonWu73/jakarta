@@ -14,16 +14,15 @@ import java.util.Optional;
  *
  * @author 吴仙杰
  */
+@RequiredArgsConstructor
 @Getter
 @ToString
-@RequiredArgsConstructor
 public enum AccountStatus implements EnumType {
 
   /**
    * 禁用。
    */
   DISABLED(0, "账号已被管理员禁用"),
-
   /**
    * 启用。
    */
@@ -50,7 +49,6 @@ public enum AccountStatus implements EnumType {
     return Optional.ofNullable(code)
       .flatMap(c -> Arrays.stream(VALUES)
         .filter(v -> v.code == c)
-        .findFirst()
-      );
+        .findFirst());
   }
 }

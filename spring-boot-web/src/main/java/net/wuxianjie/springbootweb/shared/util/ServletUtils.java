@@ -3,8 +3,8 @@ package net.wuxianjie.springbootweb.shared.util;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
+import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -24,9 +24,9 @@ public class ServletUtils {
    */
   public static Optional<HttpServletRequest> getCurrentRequest() {
     return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
-      .map(attributes -> {
-        if (attributes instanceof ServletRequestAttributes attr) {
-          return attr.getRequest();
+      .map(attr -> {
+        if (attr instanceof ServletRequestAttributes serAttr) {
+          return serAttr.getRequest();
         }
 
         return null;
@@ -41,16 +41,11 @@ public class ServletUtils {
   public static String getClientInfo() {
     final HttpServletRequest request = ServletUtils.getCurrentRequest().orElseThrow();
 
-    final String username = AuthUtils.getCurrentUser()
-      .map(AuthData::username)
-      .orElse(null);
+    final String username = AuthUtils.getCurrentUser().map(AuthData::getUsername).orElse(null);
 
-    return StrUtil.format(
-      "api=[{} {}];client={};user={}",
-      request.getMethod(),
-      request.getRequestURI(),
+    return StrUtil.format("api=[{} {}];client={};user={}",
+      request.getMethod(), request.getRequestURI(),
       JakartaServletUtil.getClientIP(request),
-      username
-    );
+      username);
   }
 }

@@ -33,19 +33,19 @@ public class TokenAuthImpl implements TokenAuth {
     final TokenPayload payload = tokenService.parse(accessToken);
 
     // 判断 Token 是否为 Access Token
-    if (!Objects.equals(payload.type(), AuthProps.TOKEN_TYPE_ACCESS)) {
+    if (!Objects.equals(payload.getType(), AuthProps.TOKEN_TYPE_ACCESS)) {
       throw new IllegalArgumentException("API 鉴权请使用 Access Token");
     }
 
     // 通过用户名获取用户数据，并判断账号是否启用等信息
-    final AuthData authData = Optional.ofNullable(accessTokenCache.get(payload.username()))
+    final AuthData authData = Optional.ofNullable(accessTokenCache.get(payload.getUsername()))
       .orElseThrow(() -> new RuntimeException("Token 已失效"));
 
-    if (!Objects.equals(authData.accessToken(), accessToken)) {
+    if (!Objects.equals(authData.getAccessToken(), accessToken)) {
       throw new RuntimeException("Token 已废弃");
     }
 
-    if (authData.status() == AccountStatus.DISABLED) {
+    if (authData.getStatus() == AccountStatus.DISABLED) {
       throw new RuntimeException("账号已禁用");
     }
 

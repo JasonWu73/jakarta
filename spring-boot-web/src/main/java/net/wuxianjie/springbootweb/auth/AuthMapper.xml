@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.wuxianjie.springbootweb.auth.AuthMapper">
-  <select id="selectByUsername" resultType="net.wuxianjie.springbootweb.auth.dto.RawAuthData">
-    select u.id              as userId,
+  <resultMap id="authDataMap" type="net.wuxianjie.springbootweb.auth.dto.AuthData">
+    <constructor>
+      <idArg column="id" javaType="_long"/>
+      <arg column="username" javaType="string"/>
+      <arg column="hashed_password" javaType="string"/>
+      <arg column="nickname" javaType="string"/>
+      <arg column="status" javaType="_int"/>
+      <arg column="authorities" javaType="string"/>
+    </constructor>
+  </resultMap>
+
+  <select id="selectByUsername" resultMap="authDataMap">
+    select u.id,
            u.username,
+           u.hashed_password,
            u.nickname,
-           u.hashed_password as hashedPassword,
            u.status,
-           r.id              as roleId,
            r.authorities
     from user u
-           join role r on u.role_id = r.id
+      join role r on u.role_id = r.id
     where u.username = #{username}
   </select>
 </mapper>
