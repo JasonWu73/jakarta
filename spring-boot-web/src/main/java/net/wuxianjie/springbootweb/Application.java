@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author 吴仙杰
  */
+@SpringBootApplication
 @RestController
 @RequestMapping("/api/v1")
-@SpringBootApplication
 public class Application {
 
   public static void main(final String[] args) {
@@ -31,11 +31,7 @@ public class Application {
    */
   @GetMapping("/version")
   public ResponseEntity<Version> getVersion() {
-    return ResponseEntity.ok(new Version(
-      "v1.0.0",
-      AuthProps.TOKEN_ISSUER,
-      "吴仙杰"
-    ));
+    return ResponseEntity.ok(new Version("v1.0.0", AuthProps.TOKEN_ISSUER, "吴仙杰"));
   }
 
   /**
@@ -45,6 +41,5 @@ public class Application {
    * @param appName 应用名
    * @param developer 开发者
    */
-  private record Version(String version, String appName, String developer) {
-  }
+  private record Version(String version, String appName, String developer) {}
 }
