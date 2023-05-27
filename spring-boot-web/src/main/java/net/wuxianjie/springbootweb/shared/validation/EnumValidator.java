@@ -14,9 +14,9 @@ import static java.lang.annotation.ElementType.*;
  * 枚举值校验注解，例如：
  *
  * <pre>{@code
+ *   @RequiredArgsConstructor
  *   @Getter
  *   @ToString
- *   @RequiredArgsConstructor
  *   public enum Type {
  *
  *     ME(1);

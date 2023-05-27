@@ -32,13 +32,17 @@ public class EnumValidatorImpl implements ConstraintValidator<EnumValidator, Obj
         .forEach(theEnum -> {
           try {
             final Method method = theEnum.getClass().getDeclaredMethod("getCode");
+
             method.setAccessible(true);
+
             values.add(method.invoke(theEnum));
           } catch (NoSuchMethodException e) {
             isPassed = true;
+
             log.warn("忽略枚举值校验 [{} 不存在 getCode() 方法]", enumClass.getName());
           } catch (InvocationTargetException | IllegalAccessException e) {
             isPassed = true;
+
             log.warn("忽略枚举值校验 [{}.getCode() 方法执行出错]", enumClass.getName());
           }
         })
@@ -46,10 +50,7 @@ public class EnumValidatorImpl implements ConstraintValidator<EnumValidator, Obj
   }
 
   @Override
-  public boolean isValid(
-    final Object value,
-    final ConstraintValidatorContext context
-  ) {
+  public boolean isValid(final Object value, final ConstraintValidatorContext context) {
     return isPassed || value == null || values.contains(value);
   }
 }
