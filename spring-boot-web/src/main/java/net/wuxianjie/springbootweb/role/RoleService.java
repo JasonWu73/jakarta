@@ -1,5 +1,7 @@
 package net.wuxianjie.springbootweb.role;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
@@ -17,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -150,7 +151,7 @@ public class RoleService {
     final Role roleToUpdate = new Role();
     roleToUpdate.setId(id);
 
-    if (!Objects.equals(oldRole.getName(), req.getName())) {
+    if (!StrUtil.equals(oldRole.getName(), req.getName())) {
       roleToUpdate.setName(req.getName());
 
       // 判断数据库是否已存在同名角色
@@ -161,11 +162,11 @@ public class RoleService {
     }
 
     // 判断是否需要更新父角色
-    if (!Objects.equals(oldRole.getParentId(), req.getParentId())) {
+    if (!NumberUtil.equals(oldRole.getParentId(), req.getParentId())) {
       roleToUpdate.setParentId(req.getParentId());
 
       // 判断是否将自身作为了父角色
-      if (Objects.equals(req.getParentId(), id)) {
+      if (NumberUtil.equals(req.getParentId(), id)) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "不能将自己作为自己的上级");
       }
 
@@ -183,7 +184,7 @@ public class RoleService {
       // 判断用于更新的父角色是否为需要更新的角色的下级角色
       final String oldFullPathPrefix = oldRole.getFullPath() + StrUtil.DOT;
 
-      if (parent.getFullPath().startsWith(oldFullPathPrefix)) {
+      if (StrUtil.startWith(parent.getFullPath(), oldFullPathPrefix)) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "下级角色不能作为父角色");
       }
 
@@ -194,7 +195,7 @@ public class RoleService {
     }
 
     // 判断是否需要更新功能权限
-    if (!Objects.equals(oldRole.getAuthorities(), req.getAuthorities())) {
+    if (!CollUtil.isEqualList(oldRole.getAuthorities(), req.getAuthorities())) {
       // 判断新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
       final String sanitizedAuthorities = toSanitizeAuthorityCommaSeparatorStr(req.getAuthorities());
 
@@ -252,7 +253,7 @@ public class RoleService {
   private boolean isNotSubordinateRole(final String checkFullPath) {
     final String fullPathPrefix = getCurrentUserRoleFullPathPrefix();
 
-    return !checkFullPath.startsWith(fullPathPrefix);
+    return !StrUtil.startWith(checkFullPath, fullPathPrefix);
   }
 
   private void checkNameUniqueness(final String roleName) {
@@ -307,7 +308,7 @@ public class RoleService {
     final boolean isIllegal = ownedAuthorities.stream().noneMatch(own -> {
       try {
         // 本级或下级
-        return Objects.equals(own, authCode) || Authority.isSubNode(own, authCode);
+        return StrUtil.equals(own, authCode) || Authority.isSubNode(own, authCode);
       } catch (IllegalArgumentException e) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "权限代码不合法", e);
       }

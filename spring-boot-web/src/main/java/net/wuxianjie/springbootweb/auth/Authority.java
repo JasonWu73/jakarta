@@ -134,7 +134,7 @@ public enum Authority {
       .orElseThrow(() -> new IllegalArgumentException("无法识别 checkedCode: " + checkedCode));
 
     // id 是有意设计的，故可通过 `id.` 前缀，即可判断是否为下级
-    return checkedId.startsWith(parentId + StrUtil.DOT);
+    return StrUtil.startWith(checkedId, parentId + StrUtil.DOT);
   }
 
   /**

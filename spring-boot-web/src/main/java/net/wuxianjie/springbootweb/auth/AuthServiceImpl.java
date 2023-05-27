@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.auth;
 
 import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import net.wuxianjie.springbootweb.auth.dto.GetTokenRequest;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
     final TokenPayload payload = tokenService.parse(refreshToken);
 
     // 判断 Token 类型是否为 Refresh Token
-    if (!Objects.equals(payload.getType(), AuthProps.TOKEN_TYPE_REFRESH)) {
+    if (!StrUtil.equals(payload.getType(), AuthProps.TOKEN_TYPE_REFRESH)) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "刷新请使用 Refresh Token");
     }
 
@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
       .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Token 已失效"));
 
     // 判断 Refresh Token 是否与登录缓存中的一致
-    if (!Objects.equals(cachedAuth.getRefreshToken(), refreshToken)) {
+    if (!StrUtil.equals(cachedAuth.getRefreshToken(), refreshToken)) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "Token 已废弃");
     }
 

@@ -1,12 +1,12 @@
 package net.wuxianjie.springbootweb.auth;
 
 import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.dto.AuthData;
 import net.wuxianjie.springbootweb.auth.dto.TokenPayload;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -34,7 +34,7 @@ public class TokenAuthImpl implements TokenAuth {
     final TokenPayload payload = tokenService.parse(accessToken);
 
     // 判断 Token 类型是否为 Access Token
-    if (!Objects.equals(payload.getType(), AuthProps.TOKEN_TYPE_ACCESS)) {
+    if (!StrUtil.equals(payload.getType(), AuthProps.TOKEN_TYPE_ACCESS)) {
       throw new IllegalArgumentException("API 鉴权请使用 Access Token");
     }
 
@@ -43,7 +43,7 @@ public class TokenAuthImpl implements TokenAuth {
       .orElseThrow(() -> new RuntimeException("Token 已失效"));
 
     // 判断 Access Token 是否与登录缓存中的一致
-    if (!Objects.equals(cachedAuth.getAccessToken(), accessToken)) {
+    if (!StrUtil.equals(cachedAuth.getAccessToken(), accessToken)) {
       throw new RuntimeException("Token 已废弃");
     }
 

@@ -1,5 +1,6 @@
 package net.wuxianjie.springbootweb.user;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AccountStatus;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -159,7 +159,7 @@ public class UserService {
     }
 
     // 判断是否需要更新用户的角色
-    if (!Objects.equals(updatedUser.getRoleId(), request.getRoleId())) {
+    if (!NumberUtil.equals(updatedUser.getRoleId(), request.getRoleId())) {
       // 更新的目标角色存在性校验
       final String newUpdatedRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(request.getRoleId()))
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到更新用户的角色"));
@@ -293,6 +293,7 @@ public class UserService {
     final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUserId))
       .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
 
-    return !roleFullPath.startsWith(currentRoleFullPath + StrUtil.DOT); // 下级
+    // 下级
+    return !StrUtil.startWith(roleFullPath, currentRoleFullPath + StrUtil.DOT);
   }
 }
