@@ -61,12 +61,9 @@ public class LocalDateTypeHandler extends BaseTypeHandler<LocalDate> {
     return toNullableLocalDate(callableStatement.getString(columnIndex));
   }
 
-  private static LocalDate toNullableLocalDate(String dateString) {
-    return Optional.ofNullable(dateString)
-      .map(s -> LocalDateTimeUtil.parseDate(
-        dateString,
-        DateTimeFormatter.ISO_DATE
-      ))
+  private static LocalDate toNullableLocalDate(String dateStr) {
+    return Optional.ofNullable(dateStr)
+      .map(s -> LocalDateTimeUtil.parseDate(dateStr, DateTimeFormatter.ISO_DATE))
       .orElse(null);
   }
 }

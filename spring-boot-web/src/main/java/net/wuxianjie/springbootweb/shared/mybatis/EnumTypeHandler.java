@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * 枚举类型与数据库 int 类型的类型转换器.
+ * 枚举类型与数据库 int 类型的类型转换器。
  *
  * <p>需在配置文件（`application.[properties|yml]`）中指定：
  *

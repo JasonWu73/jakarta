@@ -68,6 +68,7 @@ public class JsonConfig {
   private void setDateConverter(final Jackson2ObjectMapperBuilder builder) {
     // 序列化
     final SimpleDateFormat dateFormat = new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN);
+
     builder.serializers(new DateSerializer(false, dateFormat));
 
     // 反序列化
@@ -92,6 +93,7 @@ public class JsonConfig {
   private void setLocalDateConverter(final Jackson2ObjectMapperBuilder builder) {
     // 序列化
     final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATE_PATTERN);
+
     builder.serializers(new LocalDateSerializer(dateTimeFormatter));
 
     // 反序列化
@@ -110,6 +112,7 @@ public class JsonConfig {
   private void setLocalDateTimeConverter(final Jackson2ObjectMapperBuilder builder) {
     // 序列化
     final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN);
+
     builder.serializers(new LocalDateTimeSerializer(dateTimeFormatter));
 
     // 反序列化

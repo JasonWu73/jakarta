@@ -34,7 +34,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
    * 携带 Token 授权信息的请求头值前缀：
    *
    * <pre>{@code
-   *   Authorization: "Bearer {{accessToken}}"
+   *   "Authorization: Bearer {{accessToken}}"
    * }</pre>
    */
   public static final String BEARER_PREFIX = "Bearer ";

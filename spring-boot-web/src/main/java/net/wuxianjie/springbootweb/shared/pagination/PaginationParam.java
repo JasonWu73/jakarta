@@ -18,7 +18,6 @@ public class PaginationParam {
    */
   @Min(value = 1, message = "页码不能小于 1")
   private int pageNum;
-
   /**
    * 每页条数，必填，值 >= 1。
    */
