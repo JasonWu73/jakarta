@@ -15,11 +15,11 @@ import java.util.List;
 @Mapper
 public interface OpLogMapper {
 
-  int insert(OpLog opLog);
-
   List<OpLog> selectByQueryOrderByRequestTimeDescLimit(
     @Param("p") PaginationParam pag,
     @Param("q") GetOpLogRequest query);
 
   long countByQuery(@Param("q") final GetOpLogRequest query);
+
+  int insert(OpLog opLog);
 }

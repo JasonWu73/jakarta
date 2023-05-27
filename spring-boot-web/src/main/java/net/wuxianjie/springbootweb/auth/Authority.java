@@ -3,6 +3,7 @@ package net.wuxianjie.springbootweb.auth;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -104,11 +105,13 @@ public enum Authority {
    * @return 包含完整权限节点的权限树
    */
   public static Tree<String> getTree() {
-    final List<TreeNode<String>> nodes = Arrays.stream(values()).map(auth ->
+    final List<TreeNode<String>> nodes = Arrays.stream(values())
+      .map(auth ->
         // "weight": 1 // 节点权重，即顺序，越小优先级越高
         new TreeNode<>(auth.id, auth.parentId, auth.name, 1)
           .setExtra(Map.of("code", auth.code))
-      ).toList();
+      )
+      .toList();
 
     return TreeUtil.build(nodes, ROOT.parentId).get(0);
   }
@@ -122,14 +125,16 @@ public enum Authority {
    * @throws IllegalArgumentException 当 code 解析失败时
    */
   public static boolean isSubNode(final String parentCode, final String checkedCode) throws IllegalArgumentException {
-    final String parentId = resolve(parentCode).map(Authority::getId)
+    final String parentId = resolve(parentCode)
+      .map(Authority::getId)
       .orElseThrow(() -> new IllegalArgumentException("无法识别 parentCode: " + parentCode));
 
-    final String checkedId = resolve(checkedCode).map(Authority::getId)
+    final String checkedId = resolve(checkedCode)
+      .map(Authority::getId)
       .orElseThrow(() -> new IllegalArgumentException("无法识别 checkedCode: " + checkedCode));
 
     // id 是有意设计的，故可通过 `id.` 前缀，即可判断是否为下级
-    return checkedId.startsWith(parentId + ".");
+    return checkedId.startsWith(parentId + StrUtil.DOT);
   }
 
   /**

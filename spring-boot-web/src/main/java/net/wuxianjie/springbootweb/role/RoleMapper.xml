@@ -1,70 +1,67 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.wuxianjie.springbootweb.role.RoleMapper">
-  <select id="selectById" resultType="net.wuxianjie.springbootweb.role.Role">
-    select id,
-           name,
-           authorities,
-           parent_id   as parentId,
-           parent_name as parentName,
-           full_path   as fullPath,
-           created_at  as createdAt,
-           updated_at  as updatedAt,
-           remark
-    from role
-    where id = #{id}
+  <resultMap id="baseMap" type="net.wuxianjie.springbootweb.role.dto.RoleBaseInfo">
+    <constructor>
+      <idArg column="id" javaType="_long"/>
+      <arg column="name" javaType="string"/>
+      <arg column="authorities" javaType="string"/>
+      <arg column="parent_id" javaType="long"/>
+      <arg column="parent_name" javaType="string"/>
+      <arg column="full_path" javaType="string"/>
+      <arg column="updated_at" javaType="java.time.LocalDateTime"/>
+      <arg column="remark" javaType="string"/>
+    </constructor>
+  </resultMap>
+
+  <sql id="selectDetail">
+    select ${alias}.id,
+           ${alias}.name,
+           ${alias}.authorities,
+           ${alias}.parent_id,
+           ${alias}.parent_name,
+           ${alias}.full_path,
+           ${alias}.updated_at,
+           ${alias}.remark
+  </sql>
+
+  <select id="selectBaseById" resultMap="baseMap">
+    <include refid="selectDetail">
+      <property name="alias" value="r"/>
+    </include>
+    from role r
+    where r.id = #{roleId}
   </select>
 
-  <select id="selectRoleDetailById" resultType="net.wuxianjie.springbootweb.role.dto.RoleDetailResponse">
-    select id,
-           name,
-           authorities,
-           parent_id   as parentId,
-           parent_name as parentName,
-           full_path   as fullPath,
-           updated_at  as updatedAt,
-           remark
-    from role
-    where id = #{id}
-  </select>
-
-  <select id="selectByUserId" resultType="net.wuxianjie.springbootweb.role.Role">
-    select r.id,
-           r.name,
-           r.authorities,
-           r.parent_id   as parentId,
-           r.parent_name as parentName,
-           r.full_path   as fullPath,
-           r.created_at  as createdAt,
-           r.updated_at  as updatedAt,
-           r.remark
+  <select id="selectBaseByUserId" resultMap="baseMap">
+    <include refid="selectDetail">
+      <property name="alias" value="r"/>
+    </include>
     from role r
            join user u on r.id = u.role_id
     where u.id = #{userId}
   </select>
 
-  <select id="existsByName" resultType="boolean">
+  <select id="existsRoleByName" resultType="boolean">
     select exists(select 1 from role where name = #{name})
   </select>
 
-  <select id="existsByFullPathLike" resultType="boolean">
-    select exists(select 1 from role where full_path like #{subRoleLikeFullPath})
+  <select id="existsRoleByFullPathLike" resultType="boolean">
+    select exists(select 1 from role where full_path like #{fullPath})
   </select>
 
-  <select id="existsUserById" resultType="boolean">
-    select exists(select 1 from user where role_id = #{id})
+  <select id="existsUserByRoleId" resultType="boolean">
+    select exists(select 1 from user where role_id = #{roleId})
   </select>
 
-  <select id="selectAllByFullPathLikeOrderByUpdatedAt" resultType="net.wuxianjie.springbootweb.role.dto.RoleResponse">
+  <select id="selectByFullPathLikeOrderByUpdatedAtDesc" resultType="net.wuxianjie.springbootweb.role.dto.RoleItemResponse">
     select id,
            name,
-           authorities,
            parent_id   as parentId,
            parent_name as parentName,
-           updated_at  as updatedAt,
-           remark
+           updated_at  as updatedAt
     from role
-    where full_path like #{subRoleLikeFullPath}
+    where full_path like concat(#{fullPath}, '%')
     order by updatedAt desc
   </select>
 
@@ -75,34 +72,35 @@
 
   <update id="update">
     update role
-    set name        = #{name},
-        authorities = #{authorities},
-        parent_id   = #{parentId},
-        parent_name = #{parentName},
-        full_path   = #{fullPath},
-        created_at  = #{createdAt},
-        updated_at  = #{updatedAt},
-        remark      = #{remark}
+    <set>
+      updated_at = now(),
+      <if test="name != null">name = #{name},</if>
+      <if test="authorities != null">authorities = #{authorities},</if>
+      <if test="parentId != null">parent_id = #{parentId},</if>
+      <if test="parentName != null">parent_name = #{parentName},</if>
+      <if test="fullPath != null">full_path = #{fullPath},</if>
+      <if test="remark != null">remark = #{remark},</if>
+    </set>
     where id = #{id}
   </update>
 
   <update id="updateParentNameByParentId">
     update role
-    set parent_name = #{name},
-        updated_at  = now()
-    where parent_id = #{id}
+    set updated_at  = now(),
+        parent_name = #{parentName}
+    where parent_id = #{parentId}
   </update>
 
-  <update id="updateSubFullPath">
+  <update id="updateFullPathByFullPathLike">
     update role
-    set full_path  = replace(full_path, #{oldFullPath}, #{newFullPath}),
-        updated_at = now()
+    set updated_at = now(),
+      full_path  = replace(full_path, #{oldFullPath}, #{newFullPath})
     where full_path like concat(#{oldFullPath}, '%')
   </update>
 
   <delete id="deleteById">
     delete
     from role
-    where id = #{id}
+    where id = #{roleId}
   </delete>
 </mapper>

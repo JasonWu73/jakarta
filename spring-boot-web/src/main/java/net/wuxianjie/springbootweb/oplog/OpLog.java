@@ -1,6 +1,8 @@
 package net.wuxianjie.springbootweb.oplog;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
  * @author 吴仙杰
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OpLog {
 
   /**

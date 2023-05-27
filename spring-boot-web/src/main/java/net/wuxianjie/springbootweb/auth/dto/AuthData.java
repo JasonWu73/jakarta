@@ -56,13 +56,19 @@ public class AuthData {
   private String refreshToken;
 
   // 用于 MyBatis 的 ResultMap
-  public AuthData(final long userId, final String username, final String hashedPassword, final String nickname, final int status, final String authorities) {
+  public AuthData(
+    final long userId,
+    final String username,
+    final String hashedPassword,
+    final String nickname,
+    final AccountStatus status,
+    final String authorities
+  ) {
     this.userId = userId;
     this.username = username;
     this.hashedPassword = hashedPassword;
     this.nickname = nickname;
-
-    this.status = AccountStatus.resolve(status).orElseThrow();
+    this.status = status;
 
     this.authorities = StrUtil.split(authorities, StrUtil.COMMA, true, true);
   }

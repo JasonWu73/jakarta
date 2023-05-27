@@ -2562,7 +2562,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 12 May 2023 03:37:33 GMT"
+									"value": "Sat, 27 May 2023 07:27:57 GMT"
 								},
 								{
 									"key": "Keep-Alive",
@@ -2574,7 +2574,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "[\n    {\n        \"id\": 2, // 角色 id\n        \"name\": \"管理员\", // 角色名\n        \"authorities\": \"user,role\", // 以英文逗号分隔的功能权限字符串\n        \"parentId\": 1, // 父角色 id\n        \"parentName\": \"超级管理员\", // 父角色名\n        \"updatedAt\": \"2023-05-11 15:55:57\", // 更新时间\n        \"remark\": null // 备注\n    },\n    {\n        \"id\": 3,\n        \"name\": \"用户\",\n        \"authorities\": \"user,role\",\n        \"parentId\": 2,\n        \"parentName\": \"管理员\",\n        \"updatedAt\": \"2023-05-11 15:52:00\",\n        \"remark\": null\n    }\n]"
+							"body": "[\n    {\n        \"id\": 15, // 角色 id\n        \"name\": \"测试管理员\", // 角色名\n        \"parentId\": 13, // 父角色 id\n        \"parentName\": \"测试管理员\", // 父角色名\n        \"updatedAt\": \"2023-05-21 11:55:06\" // 更新时间\n    }\n]"
 						}
 					]
 				},
@@ -2670,7 +2670,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/roles/2",
+							"raw": "{{base_url}}/api/v1/roles/13",
 							"host": [
 								"{{base_url}}"
 							],
@@ -2678,7 +2678,7 @@
 								"api",
 								"v1",
 								"roles",
-								"2"
+								"13"
 							]
 						}
 					},
@@ -2695,7 +2695,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/v1/roles/2",
+									"raw": "{{base_url}}/api/v1/roles/15",
 									"host": [
 										"{{base_url}}"
 									],
@@ -2703,7 +2703,7 @@
 										"api",
 										"v1",
 										"roles",
-										"2"
+										"15"
 									]
 								}
 							},
@@ -2753,7 +2753,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Tue, 23 May 2023 07:03:39 GMT"
+									"value": "Sat, 27 May 2023 08:02:23 GMT"
 								},
 								{
 									"key": "Keep-Alive",
@@ -2765,7 +2765,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": 2, // 角色 id\n    \"name\": \"管理员\", // 角色名\n    \"authorities\": \"root\", // 以英文逗号分隔的功能权限字符串\n    \"parentId\": 1, // 父角色 id\n    \"parentName\": \"超级管理员\", // 父角色名\n    \"fullPath\": \"1.2\", // 角色全路径\n    \"updatedAt\": \"2023-05-15 11:53:57\", // 更新旱\n    \"remark\": null // 备注\n}"
+							"body": "{\n    \"id\": 15, // 角色 id\n    \"name\": \"测试管理员22\", // 角色名\n    \"authorities\": [ // 功能权限列表\n        \"user\",\n        \"role\"\n    ],\n    \"parentId\": 13, // 父角色 id\n    \"parentName\": \"测试管理员\", // 父角色名\n    \"fullPath\": \"1.13.15\", // 角色全路径\n    \"updatedAt\": \"2023-05-21 11:55:06\", // 更新时间\n    \"remark\": null // 备注\n}"
 						}
 					]
 				},
@@ -2862,7 +2862,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_view,user_add,user_edit,user_del,role,role_view,role_add,role_edit,op_log,op_log_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": null, // 父角色 id\n  \"remark\": null // 备注\n}",
+							"raw": "{\n  \"name\": \"测试员\", // 角色名，必填\n  \"authorities\": [ // 功能权限列表\n    \"user\",\n    \"user_view\",\n    \"role_view\",\n    \"role\"\n  ],\n  \"parentId\": null, // 父角色 id\n  \"remark\": null // 备注\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2895,7 +2895,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_view,user_add,user_edit,user_del,role,role_view,role_add,role_edit,op_log,op_log_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": null, // 父角色 id\n  \"remark\": null // 备注\n}",
+									"raw": "{\n  \"name\": \"测试员\", // 角色名，必填\n  \"authorities\": [ // 功能权限列表\n    \"user\",\n    \"user_view\",\n    \"role_view\",\n    \"role\"\n  ],\n  \"parentId\": null, // 父角色 id\n  \"remark\": null // 备注\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2956,7 +2956,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 12 May 2023 07:04:17 GMT"
+									"value": "Sat, 27 May 2023 08:18:15 GMT"
 								},
 								{
 									"key": "Keep-Alive",
@@ -3065,7 +3065,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_del,role,role_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": 3, // 父角色 id，必填\n  \"remark\": null // 备注\n}",
+							"raw": "{\n  \"name\": \"测试员\", // 角色名，必填\n  \"authorities\": null, // 功能权限列表\n  \"parentId\": 1, // 父角色 id，必填\n  \"remark\": null // 备注\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3073,7 +3073,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/roles/4",
+							"raw": "{{base_url}}/api/v1/roles/35",
 							"host": [
 								"{{base_url}}"
 							],
@@ -3081,7 +3081,7 @@
 								"api",
 								"v1",
 								"roles",
-								"4"
+								"35"
 							]
 						}
 					},
@@ -3099,7 +3099,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"name\": \"测试管理员\", // 角色名，必填\n  \"authorities\": \"user,user_del,role,role_view\", // 以英文逗号分隔的功能权限字符串\n  \"parentId\": 3, // 父角色 id\n  \"remark\": null // 备注\n}",
+									"raw": "{\n  \"name\": \"测试员\", // 角色名，必填\n  \"authorities\": [], // 功能权限列表\n  \"parentId\": 16, // 父角色 id，必填\n  \"remark\": null // 备注\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3107,7 +3107,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/api/v1/roles/4",
+									"raw": "{{base_url}}/api/v1/roles/13",
 									"host": [
 										"{{base_url}}"
 									],
@@ -3115,7 +3115,7 @@
 										"api",
 										"v1",
 										"roles",
-										"4"
+										"13"
 									]
 								}
 							},
@@ -3157,7 +3157,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 12 May 2023 09:13:10 GMT"
+									"value": "Sat, 27 May 2023 08:35:37 GMT"
 								},
 								{
 									"key": "Keep-Alive",
@@ -3451,7 +3451,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"version\": \"v1.0.0\", // 版本号\n    \"appName\": \"吴仙杰演示系统\", // 应用号\n    \"developer\": \"吴仙杰\" // 开发者\n}"
+					"body": "{\n    \"version\": \"v1.0.0\", // 版本号\n    \"appName\": \"吴仙杰演示系统\", // 应用名\n    \"developer\": \"吴仙杰\" // 开发者\n}"
 				}
 			]
 		},

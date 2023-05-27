@@ -1,114 +1,45 @@
 package net.wuxianjie.springbootweb.role;
 
-import net.wuxianjie.springbootweb.role.dto.RoleDetailResponse;
-import net.wuxianjie.springbootweb.role.dto.RoleResponse;
+import net.wuxianjie.springbootweb.role.dto.RoleBaseInfo;
+import net.wuxianjie.springbootweb.role.dto.RoleItemResponse;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
- * 角色相关的 SQL 语句。
+ * 角色所需的 SQL 语句。
  *
  * @author 吴仙杰
  */
 @Mapper
 public interface RoleMapper {
 
-  /**
-   * 根据角色 id 获取角色数据。
-   *
-   * @param id 需要查找的角色 id
-   * @return 角色数据
-   */
-  Role selectById(long id);
+  RoleBaseInfo selectBaseById(long roleId);
 
-  /**
-   * 根据角色 id 获取角色详细数据。
-   *
-   * @param id 需要查找的角色 id
-   * @return 角色详细数据
-   */
-  RoleDetailResponse selectRoleDetailById(long id);
+  RoleBaseInfo selectBaseByUserId(long userId);
 
-  /**
-   * 根据用户 id 获取角色数据。
-   *
-   * @param userId 需要查找的用户 id
-   * @return 角色数据
-   */
-  Role selectByUserId(long userId);
+  boolean existsRoleByName(String name);
 
-  /**
-   * 判断角色名是否存在。
-   *
-   * @param name 需要查找的角色名
-   * @return 角色名是否存在
-   */
-  boolean existsByName(String name);
+  boolean existsRoleByFullPathLike(String fullPath);
 
-  /**
-   * 判断是否存在下级角色。
-   *
-   * @param subRoleLikeFullPath 下级角色的完整路径前缀
-   * @return 是否存在下级角色
-   */
-  boolean existsByFullPathLike(String subRoleLikeFullPath);
+  boolean existsUserByRoleId(long roleId);
 
-  /**
-   * 判断是否存在指定角色的用户。
-   *
-   * @param id 需要查找的角色 id
-   * @return 是否存指定角色的用户
-   */
-  boolean existsUserById(long id);
+  List<RoleItemResponse> selectByFullPathLikeOrderByUpdatedAtDesc(String fullPath);
 
-  /**
-   * 获取所有下级角色。
-   *
-   * @param subRoleLikeFullPath 下级角色的完整路径前缀
-   * @return 所有下级角色
-   */
-  List<RoleResponse> selectAllByFullPathLikeOrderByUpdatedAt(String subRoleLikeFullPath);
-
-  /**
-   * 新增角色。
-   *
-   * @param role 需要新增的角色数据
-   * @return 新增记录数
-   */
   int insert(Role role);
 
-  /**
-   * 更新角色。
-   *
-   * @param role 需要更新的角色数据
-   * @return 更新记录数
-   */
   int update(Role role);
 
-  /**
-   * 更新下级的父角色名。
-   *
-   * @param name 父角色名
-   * @param id 父角色 id
-   * @return 更新记录数
-   */
-  int updateParentNameByParentId(String name, long id);
+  int updateParentNameByParentId(
+    @Param("parentName") String parentName,
+    @Param("parentId") long parentId
+  );
 
-  /**
-   * 更新所有下节角色的完整路径。
-   *
-   * @param newFullPath 新的完整路径，以 {@code .} 结尾
-   * @param oldFullPath 旧的完整路径，以 {@code .} 结尾
-   * @return 更新记录数
-   */
-  int updateSubFullPath(String newFullPath, String oldFullPath);
+  int updateFullPathByFullPathLike(
+    @Param("newFullPath") String newFullPath,
+    @Param("oldFullPath") String oldFullPath
+  );
 
-  /**
-   * 删除角色。
-   *
-   * @param id 需要删除的角色 id
-   * @return 删除记录数
-   */
-  int deleteById(long id);
+  int deleteById(long roleId);
 }

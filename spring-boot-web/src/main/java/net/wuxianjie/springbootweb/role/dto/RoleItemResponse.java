@@ -1,4 +1,4 @@
-package net.wuxianjie.springbootweb.role;
+package net.wuxianjie.springbootweb.role.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,27 +7,23 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 角色数据库表实体类。
+ * 角色列表项响应数据。
  *
  * @author 吴仙杰
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+public class RoleItemResponse {
 
   /**
    * 角色 id。
    */
-  private Long id;
+  private long id;
   /**
    * 角色名。
    */
   private String name;
-  /**
-   * 以英文逗号分隔的功能权限字符串。
-   */
-  private String authorities;
   /**
    * 父角色 id。
    */
@@ -37,19 +33,7 @@ public class Role {
    */
   private String parentName;
   /**
-   * 节点全路径，以 {@code .} 分隔的角色 id。
-   */
-  private String fullPath;
-  /**
-   * 创建时间。
-   */
-  private LocalDateTime createdAt;
-  /**
    * 更新时间。
    */
   private LocalDateTime updatedAt;
-  /**
-   * 备注。
-   */
-  private String remark;
 }

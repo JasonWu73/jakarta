@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 通过身份验证后的 Token 详细数据。
+ * 通过身份验证后的 Token 响应数据。
  *
  * @author 吴仙杰
  */

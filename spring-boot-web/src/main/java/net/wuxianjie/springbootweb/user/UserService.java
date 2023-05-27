@@ -293,6 +293,6 @@ public class UserService {
     final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUserId))
       .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
 
-    return !roleFullPath.startsWith(currentRoleFullPath + "."); // 下级
+    return !roleFullPath.startsWith(currentRoleFullPath + StrUtil.DOT); // 下级
   }
 }

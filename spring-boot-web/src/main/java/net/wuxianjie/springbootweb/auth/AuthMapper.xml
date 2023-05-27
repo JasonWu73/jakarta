@@ -7,7 +7,7 @@
       <arg column="username" javaType="string"/>
       <arg column="hashed_password" javaType="string"/>
       <arg column="nickname" javaType="string"/>
-      <arg column="status" javaType="_int"/>
+      <arg column="status" javaType="net.wuxianjie.springbootweb.auth.AccountStatus"/>
       <arg column="authorities" javaType="string"/>
     </constructor>
   </resultMap>
