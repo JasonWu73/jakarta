@@ -32,13 +32,13 @@ public class AuthServiceImpl implements AuthService {
   private final AuthMapper authMapper;
 
   public ResponseEntity<TokenResponse> getToken(final GetTokenRequest req) {
-    // 检索数据库获取用户数据
+    // 从数据库中获取用户数据
     final String username = req.getUsername();
 
     final AuthData auth = Optional.ofNullable(authMapper.selectByUsername(username))
       .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误"));
 
-    // 校验登录密码是否正确
+    // 判断登录密码是否正确
     if (!passwordEncoder.matches(req.getPassword(), auth.getHashedPassword())) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误");
     }
@@ -63,23 +63,23 @@ public class AuthServiceImpl implements AuthService {
     // 解析 JWT Token 获取载荷
     final TokenPayload payload = tokenService.parse(refreshToken);
 
-    // 校验 Token 是否为 Refresh Token
+    // 判断 Token 类型是否为 Refresh Token
     if (!Objects.equals(payload.getType(), AuthProps.TOKEN_TYPE_REFRESH)) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "刷新请使用 Refresh Token");
     }
 
-    // 检索登录缓存获取用户数据
+    // 从登录缓存中获取用户数据
     final String username = payload.getUsername();
 
     final AuthData cachedAuth = Optional.ofNullable(accessTokenCache.get(username))
       .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Token 已失效"));
 
-    // 校验 Refresh Token 是否匹配
+    // 判断 Refresh Token 是否与登录缓存中的一致
     if (!Objects.equals(cachedAuth.getRefreshToken(), refreshToken)) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "Token 已废弃");
     }
 
-    // 检索数据库获取用户数据
+    // 从数据库中获取最新的用户数据
     final AuthData auth = Optional.ofNullable(authMapper.selectByUsername(username))
       .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "无效的 Token"));
 
@@ -117,7 +117,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   private TokenResponse addLoginCache(final AuthData auth) {
-    // 添加 Token 身份认证缓存
+    // 添加 Token 身份验证缓存
     accessTokenCache.put(auth.getUsername(), auth);
 
     // 将登录信息写入 Spring Security Context 中，以便记录登录日志进可获取用户名

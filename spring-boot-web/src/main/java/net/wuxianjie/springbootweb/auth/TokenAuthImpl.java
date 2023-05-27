@@ -33,21 +33,21 @@ public class TokenAuthImpl implements TokenAuth {
     // 解析 JWT Token 获取载荷
     final TokenPayload payload = tokenService.parse(accessToken);
 
-    // 校验 Token 是否为 Access Token
+    // 判断 Token 类型是否为 Access Token
     if (!Objects.equals(payload.getType(), AuthProps.TOKEN_TYPE_ACCESS)) {
       throw new IllegalArgumentException("API 鉴权请使用 Access Token");
     }
 
-    // 检索登录缓存获取用户数据
+    // 从登录缓存中获取用户数据
     final AuthData cachedAuth = Optional.ofNullable(accessTokenCache.get(payload.getUsername()))
       .orElseThrow(() -> new RuntimeException("Token 已失效"));
 
-    // 校验 Access Token 是否匹配
+    // 判断 Access Token 是否与登录缓存中的一致
     if (!Objects.equals(cachedAuth.getAccessToken(), accessToken)) {
       throw new RuntimeException("Token 已废弃");
     }
 
-    // 验证账号是否可用
+    // 判断账号是否已被禁用
     if (cachedAuth.getStatus() == AccountStatus.DISABLED) {
       throw new RuntimeException("账号已禁用");
     }

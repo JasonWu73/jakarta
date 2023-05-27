@@ -41,10 +41,10 @@ public class RoleService {
    * @return 角色列表
    */
   public ResponseEntity<List<RoleItemResponse>> getRoles() {
-    // 获取当前用户的角色全路径
+    // 获取当前登录用户的角色全路径
     final String fullPathPrefix = getCurrentUserRoleFullPathPrefix();
 
-    // 检索数据库获取下级角色数据
+    // 从数据库中获取当前登录用户的所有下级角色
     return ResponseEntity.ok(roleMapper.selectByFullPathLikeOrderByUpdatedAtDesc(fullPathPrefix));
   }
 
@@ -57,11 +57,11 @@ public class RoleService {
    * @return 角色详情数据
    */
   public ResponseEntity<RoleBaseInfo> getRoleDetail(final long id) {
-    // 检查数据库获取角色详情数据
+    // 从数据库中获取角色数据
     final RoleBaseInfo role = Optional.ofNullable(roleMapper.selectBaseById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到角色数据"));
 
-    // 校验查看详情的角色是否为当前用户的下级角色
+    // 判断要查看详情的角色是否为当前登录用户的下级角色
     if (isNotSubordinateRole(role.getFullPath())) {
       throw new ApiException(HttpStatus.FORBIDDEN, "只允许查看下级角色");
     }
@@ -79,7 +79,7 @@ public class RoleService {
    */
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> addRole(final AddRoleRequest req) {
-    // 角色名唯一性校验
+    // 判断数据库是否已存在同名角色
     checkNameUniqueness(req.getName());
 
     // 判断是否设置了新增角色的父角色
@@ -90,7 +90,7 @@ public class RoleService {
       // 当不指定新增角色的父角色时，即代表使用当前用户的角色作为上级角色
       parent = Optional.ofNullable(roleMapper.selectBaseByUserId(getCurrentUserId())).orElseThrow();
     } else {
-      // 校验新增角色的父角色是否为当前用户的下级角色
+      // 用户仅可创建其角色的下级角色
       parent = Optional.ofNullable(roleMapper.selectBaseById(parentId))
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到父角色数据"));
 
@@ -99,7 +99,7 @@ public class RoleService {
       }
     }
 
-    // 校验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
+    // 判断新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
     final String sanitizedAuthorities = toSanitizeAuthorityCommaSeparatorStr(req.getAuthorities());
 
     // 插入数据库
@@ -109,7 +109,7 @@ public class RoleService {
     role.setParentId(parent.getId());
     role.setParentName(parent.getName());
 
-    // 还需要拼接当前新增角色的 id
+    // 对于节点全路径还需要拼接当前新增角色的 id
     role.setFullPath(parent.getFullPath() + StrUtil.DOT);
 
     role.setCreatedAt(LocalDateTime.now());
@@ -137,11 +137,11 @@ public class RoleService {
    */
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> updateRole(final long id, final UpdateRoleRequest req) {
-    // 校验需要更新的角色是否存在
+    // 判断需要更新的角色是否存在
     final RoleBaseInfo oldRole = Optional.ofNullable(roleMapper.selectBaseById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到角色数据"));
 
-    // 校验需要更新的角色是否为当前用户的下级角色
+    // 判断需要更新的角色是否为当前登录用户的下级角色
     if (isNotSubordinateRole(oldRole.getFullPath())) {
       throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新下级角色");
     }
@@ -151,40 +151,41 @@ public class RoleService {
     roleToUpdate.setId(id);
 
     if (!Objects.equals(oldRole.getName(), req.getName())) {
-      // 角色名唯一性校验
-      checkNameUniqueness(req.getName());
-
       roleToUpdate.setName(req.getName());
 
-      // 更新其下级的父角色名
+      // 判断数据库是否已存在同名角色
+      checkNameUniqueness(req.getName());
+
+      // 更新其子角色的父角色名
       roleMapper.updateParentNameByParentId(req.getName(), id);
     }
 
     // 判断是否需要更新父角色
     if (!Objects.equals(oldRole.getParentId(), req.getParentId())) {
-      // 校验父角色不能是自己
+      roleToUpdate.setParentId(req.getParentId());
+
+      // 判断是否将自身作为了父角色
       if (Objects.equals(req.getParentId(), id)) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "不能将自己作为自己的上级");
       }
 
-      // 校验修改后的父角色是否存在
+      // 判断用于更新的父角色是否存在
       final RoleBaseInfo parent = Optional.ofNullable(roleMapper.selectBaseById(req.getParentId()))
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到父角色数据"));
 
-      // 校验修改后的父角色是否为当前用户的下级角色
+      roleToUpdate.setParentName(parent.getName());
+
+      // 判断用于更新的父角色是否为当前登录用户角色的下级角色
       if (isNotSubordinateRole(parent.getFullPath())) {
         throw new ApiException(HttpStatus.FORBIDDEN, "父角色不是当前用户的下级角色");
       }
 
-      // 校验修改后的父角色是否为要更新角色的下级角色
+      // 判断用于更新的父角色是否为需要更新的角色的下级角色
       final String oldFullPathPrefix = oldRole.getFullPath() + StrUtil.DOT;
 
       if (parent.getFullPath().startsWith(oldFullPathPrefix)) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "下级角色不能作为父角色");
       }
-
-      roleToUpdate.setParentId(parent.getId());
-      roleToUpdate.setParentName(parent.getName());
 
       // 更新其所有下级角色的全路径
       roleToUpdate.setFullPath(parent.getFullPath() + StrUtil.DOT + id);
@@ -194,7 +195,7 @@ public class RoleService {
 
     // 判断是否需要更新功能权限
     if (!Objects.equals(oldRole.getAuthorities(), req.getAuthorities())) {
-      // 校验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
+      // 判断新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
       final String sanitizedAuthorities = toSanitizeAuthorityCommaSeparatorStr(req.getAuthorities());
 
       roleToUpdate.setAuthorities(sanitizedAuthorities);
@@ -217,19 +218,19 @@ public class RoleService {
    * @return 204 HTTP 状态码
    */
   public ResponseEntity<Void> deleteRole(final long id) {
-    // 校验需要删除的角色是否存在
+    // 判断需要删除的角色是否存在
     final RoleBaseInfo role = Optional.ofNullable(roleMapper.selectBaseById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到角色数据"));
 
-    // 校验需要删除的角色是否为当前用户的下级角色
+    // 判断需要删除的角色是否为当前用户角色的下级角色
     if (isNotSubordinateRole(role.getFullPath())) {
       throw new ApiException(HttpStatus.FORBIDDEN, "只允许删除下级角色");
     }
 
-    // 不可删除存在下级的角色
+    // 判断需要删除的角色是否还存在下级角色
     checkNotExistsSubordinateRole(role.getFullPath());
 
-    // 不可删除已被用户绑定的角色
+    // 判断需要删除的角色是否关联着用户
     checkNotExistsUser(id);
 
     // 删除数据库中的用色
@@ -273,7 +274,7 @@ public class RoleService {
       return "";
     }
 
-    // 校验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值，及字符串的左右空格）
+    // 判断新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值，及字符串的左右空格）
     final List<String> sanitizedAuthorities = newAuthorities.stream()
       .filter(s -> StrUtil.trimToNull(s) != null)
       .map(s -> {
@@ -321,7 +322,7 @@ public class RoleService {
     final boolean existsSub = roleMapper.existsRoleByFullPathLike(fullPath + ".%");
 
     if (existsSub) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "不可删除存在下级的角色");
+      throw new ApiException(HttpStatus.FORBIDDEN, "不可删除还存在下级的角色");
     }
   }
 
@@ -329,7 +330,7 @@ public class RoleService {
     final boolean existsUser = roleMapper.existsUserByRoleId(roleId);
 
     if (existsUser) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "不可删除已被用户绑定的角色");
+      throw new ApiException(HttpStatus.FORBIDDEN, "不可删除已关联用户的角色");
     }
   }
 }
