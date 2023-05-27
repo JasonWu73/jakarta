@@ -27,9 +27,9 @@ public class FileUtils {
   }
 
   /**
-   * 以 {@code filePath} 的结尾路径分隔符 ({@code /} 或 {@code \}) 作为分隔符拼接多个路径。
+   * 以 {@code filePath} 的结尾路径分隔符 ({@value StrUtil#SLASH} 或 {@value StrUtil#BACKSLASH}) 作为分隔符拼接多个路径。
    *
-   * <p>当 {@code filePath} 不以 {@code /} 或 {@code \} 结尾时，则会使用当前系统的文件路径分隔符进行拼接。
+   * <p>当 {@code filePath} 不以 {@value StrUtil#SLASH} 或 {@value StrUtil#BACKSLASH} 结尾时，则会使用当前系统的文件路径分隔符进行拼接。
    *
    * @param filePath 起始文件路径
    * @param names 需要合并至 {@code filePath} 的目录或文件名

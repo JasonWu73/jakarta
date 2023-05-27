@@ -69,6 +69,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
     // 执行 Access Token 身份验证，并获取用户数据
     final AuthData auth;
+
     try {
       auth = tokenAuth.authenticate(token);
     } catch (Exception e) {

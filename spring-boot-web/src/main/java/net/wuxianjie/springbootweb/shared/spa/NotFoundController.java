@@ -32,12 +32,10 @@ public class NotFoundController {
    * 处理“404 未找到”请求的 URI。
    */
   public static final String URI_NOT_FOUND = "/404";
-
   /**
    * 处理 REST API 请求的 URI 前缀。
    */
   public static final String URI_PREFIX_API = "/api/";
-
   /**
    * SPA 首页。
    */
@@ -47,7 +45,7 @@ public class NotFoundController {
    * 配置 Web 服务器工厂：
    *
    * <ul>
-   *   <li>将“404 未找”到重定向至自定义 Controller {@link #URI_NOT_FOUND}</li>
+   *   <li>将“404 未找”到重定向至自定义 Controller {@value #URI_NOT_FOUND}</li>
    * </ul>
    *
    * @return 自定义配置后的 Web 服务器工厂。
@@ -63,25 +61,25 @@ public class NotFoundController {
    * <p>返回 JSON 数据：
    *
    * <ol>
-   *   <li>请求头 {@link HttpHeaders#ACCEPT} 中存在 {@link MediaType#APPLICATION_JSON_VALUE}</li>
-   *   <li>请求 URI 以 {@link #URI_PREFIX_API} 开头</li>
+   *   <li>请求头 {@value HttpHeaders#ACCEPT} 中存在 {@value MediaType#APPLICATION_JSON_VALUE}</li>
+   *   <li>请求 URI 以 {@value #URI_PREFIX_API} 开头</li>
    * </ol>
    *
    * <p>其他情况一律返回页面，因为前端 SPA 单页面应用已作为静态资源打包在了 Jar 中。
    *
    * <p>Spring Boot 默认会将 {@code src/main/resources/static/} 中的内容作为静态资源提供。
    *
-   * <p>约定 SPA 的页面入口：{@link #PAGE_SPA_INDEX}。
+   * <p>约定 SPA 的页面入口：{@value #PAGE_SPA_INDEX}。
    *
    * @return JSON 数据或 SPA 首页
    */
   @RequestMapping(URI_NOT_FOUND)
   public ResponseEntity<?> handleNotFoundRequest() {
-    // API 或 JSON 数据请求返回 JSON 数据
-    final HttpServletRequest request = ServletUtils.getCurrentRequest().orElseThrow();
-    final String originalUri = request.getAttribute(RequestDispatcher.FORWARD_SERVLET_PATH).toString();
+    // 若 API 或 JSON 数据请求，则返回 JSON 数据
+    final HttpServletRequest req = ServletUtils.getCurrentRequest().orElseThrow();
+    final String originalUri = req.getAttribute(RequestDispatcher.FORWARD_SERVLET_PATH).toString();
 
-    if (isJsonRequest(request, originalUri)) {
+    if (isJsonRequest(req, originalUri)) {
       return ResponseEntity
         .status(HttpStatus.NOT_FOUND)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
