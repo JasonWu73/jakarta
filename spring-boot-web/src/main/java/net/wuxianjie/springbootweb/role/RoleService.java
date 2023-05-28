@@ -100,7 +100,7 @@ public class RoleService {
       }
     }
 
-    // 判断新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
+    // 检验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
     final String sanitizedAuthorities = toSanitizeAuthorityCommaSeparatorStr(req.getAuthorities());
 
     // 添加角色到数据库
@@ -155,7 +155,7 @@ public class RoleService {
     if (!StrUtil.equals(oldRole.getName(), req.getName())) {
       roleToUpdate.setName(req.getName());
 
-      // 判断数据库是否已存在同名角色
+      // 检验数据库是否已存在同名角色
       checkNameUniqueness(req.getName());
 
       // 更新其子角色的父角色名
@@ -197,7 +197,7 @@ public class RoleService {
 
     // 若需要更新功能权限，则检验功能权限是否合法
     if (!CollUtil.isEqualList(oldRole.getAuthorities(), req.getAuthorities())) {
-      // 判断新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
+      // 检验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
       final String sanitizedAuthorities = toSanitizeAuthorityCommaSeparatorStr(req.getAuthorities());
 
       roleToUpdate.setAuthorities(sanitizedAuthorities);
@@ -251,9 +251,9 @@ public class RoleService {
   }
 
   /**
-   * 判断角色全路径是否不是为当前用户的下级角色。
+   * 检查角色全路径是否不是为当前用户的下级角色。
    *
-   * @param checkedFullPath 需要判断的角色全路径
+   * @param checkedFullPath 需要检查的角色全路径
    * @return 是否不是为当前用户的下级角色
    */
   public boolean isNotSubordinateRole(final String checkedFullPath) {
@@ -285,7 +285,7 @@ public class RoleService {
       return "";
     }
 
-    // 判断新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值，及字符串的左右空格）
+    // 检验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值，及字符串的左右空格）
     final List<String> sanitizedAuthorities = newAuthorities.stream()
       .filter(s -> StrUtil.trimToNull(s) != null)
       .map(s -> {

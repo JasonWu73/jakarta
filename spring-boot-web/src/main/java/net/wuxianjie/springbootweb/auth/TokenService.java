@@ -26,9 +26,9 @@ public class TokenService {
   private final AuthProps authProps;
 
   /**
-   * 判断 Token 是否合法。
+   * 检查 Token 是否合法。
    *
-   * @param token 需要判断的 Token
+   * @param token 需要检查的 Token
    * @return Token 是否合法
    */
   public boolean isLegal(final String token) {

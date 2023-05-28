@@ -117,10 +117,10 @@ public enum Authority {
   }
 
   /**
-   * 判断节点是否为下级节点，即判断是否拥有指定权限。
+   * 检查节点是否为下级节点，即检查是否拥有指定权限。
    *
    * @param parentCode 用于比较的父节点 code
-   * @param checkedCode 需要被判断的下级节点 code
+   * @param checkedCode 需要被检查的下级节点 code
    * @return {@code checkedCode} 是否为 {@code parentCode} 的下级节点
    * @throws IllegalArgumentException 当 code 解析失败时
    */
@@ -133,7 +133,7 @@ public enum Authority {
       .map(Authority::getId)
       .orElseThrow(() -> new IllegalArgumentException("无法识别 checkedCode: " + checkedCode));
 
-    // id 是有意设计的，故可通过 `id.` 前缀，即可判断是否为下级
+    // id 是有意设计的，故可通过 `id.` 前缀，即可实现是否为下级的判断
     return StrUtil.startWith(checkedId, parentId + StrUtil.DOT);
   }
 

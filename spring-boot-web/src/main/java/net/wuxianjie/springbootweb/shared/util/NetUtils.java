@@ -20,9 +20,9 @@ import java.util.Optional;
 public class NetUtils {
 
   /**
-   * 判断 IP（支持 IPv4 和 IPv6）地址是否合法。
+   * 检查 IP（支持 IPv4 和 IPv6）地址是否合法。
    *
-   * @param ip 需要判断的 IP 地址
+   * @param ip 需要检查的 IP 地址
    * @return IP 地址是否合法
    */
   public static boolean isValidIp(final String ip) {
@@ -30,9 +30,9 @@ public class NetUtils {
   }
 
   /**
-   * 判断端口号是否合法。
+   * 检查端口号是否合法。
    *
-   * @param port 需要判断的端口号
+   * @param port 需要检查的端口号
    * @return 端口号是否合法
    */
   public static boolean isValidPort(final int port) {

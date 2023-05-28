@@ -48,7 +48,7 @@ public class FileUtils {
   }
 
   /**
-   * 判断上传的文件是否为 MP3。
+   * 检查上传的文件是否为 MP3。
    *
    * @param file HTTP 请求上传的文件
    * @return 上传的文件是否为 MP3
@@ -65,7 +65,7 @@ public class FileUtils {
   }
 
   /**
-   * 判断上传的文件是否为 MP4。
+   * 检查上传的文件是否为 MP4。
    *
    * @param file HTTP 请求上传的文件
    * @return 上传的文件是否为 MP4

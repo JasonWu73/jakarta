@@ -9,7 +9,7 @@ public class OsUtils {
 
 
   /**
-   * 判断当前系统是否为 Linux。
+   * 检查当前系统是否为 Linux。
    *
    * @return 是否为 Linux
    */
@@ -18,7 +18,7 @@ public class OsUtils {
   }
 
   /**
-   * 判断当前系统是否为 Windows。
+   * 检查当前系统是否为 Windows。
    *
    * @return 是否为 Windows
    */
