@@ -6,17 +6,17 @@ import net.wuxianjie.springbootweb.auth.AccountStatus;
 import java.time.LocalDateTime;
 
 /**
- * 用户详情响应数据。
+ * 用户的基础数据。
  *
  * @author 吴仙杰
  */
 @Data
-public class UserDetailResponse {
+public class UserBaseInfo {
 
   /**
    * 用户 id。
    */
-  private long id;
+  private Long id;
   /**
    * 用户名。
    */
@@ -26,21 +26,17 @@ public class UserDetailResponse {
    */
   private String nickname;
   /**
+   * 哈希密码。
+   */
+  private String hashedPassword;
+  /**
    * 账号状态。
    */
   private AccountStatus status;
   /**
    * 角色 id。
    */
-  private long roleId;
-  /**
-   * 角色名。
-   */
-  private String roleName;
-  /**
-   * 角色全路径。
-   */
-  private String fullPath;
+  private Long roleId;
   /**
    * 更新时间。
    */

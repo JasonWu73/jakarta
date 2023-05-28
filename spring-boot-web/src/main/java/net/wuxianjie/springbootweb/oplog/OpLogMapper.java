@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 操作日志所需的 SQL 语句。
+ * 操作日志相关的 SQL 语句。
  *
  * @author 吴仙杰
  */
@@ -17,9 +17,10 @@ public interface OpLogMapper {
 
   List<OpLog> selectByQueryOrderByRequestTimeDescLimit(
     @Param("p") PaginationParam pag,
-    @Param("q") GetOpLogRequest query);
+    @Param("q") GetOpLogRequest query
+  );
 
-  long countByQuery(@Param("q") final GetOpLogRequest query);
+  long countByQuery(@Param("q") GetOpLogRequest query);
 
   int insert(OpLog opLog);
 }

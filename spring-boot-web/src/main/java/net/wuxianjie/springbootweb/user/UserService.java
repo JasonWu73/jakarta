@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.auth.AccountStatus;
 import net.wuxianjie.springbootweb.auth.AuthUtils;
+import net.wuxianjie.springbootweb.role.RoleService;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationParam;
 import net.wuxianjie.springbootweb.shared.pagination.PaginationResult;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
@@ -30,40 +31,37 @@ public class UserService {
 
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
+  private final RoleService roleService;
 
   /**
-   * 获取用户列表。
+   * 获取用户分页列表。
    *
    * <p>用户仅可查看其下级角色的用户。
    *
-   * @param pagination 分页请求参数
-   * @param request 请求参数
+   * @param pag 分页参数
+   * @param query 查询参数
    * @return 用户分页列表
    */
-  public ResponseEntity<PaginationResult<UserResponse>> getUsers(
-    final PaginationParam pagination,
-    final GetUserRequest request
+  public ResponseEntity<PaginationResult<UserItemResponse>> getUsers(
+    final PaginationParam pag,
+    final GetUserRequest query
   ) {
     // 设置模糊查询参数
-    request.setUsername(StrUtils.toNullableLikeValue(request.getUsername()));
-    request.setNickname(StrUtils.toNullableLikeValue(request.getNickname()));
-    request.setRoleName(StrUtils.toNullableLikeValue(request.getRoleName()));
+    setFuzzyQueryParams(query);
 
-    // 获取当前登录用户的角色完整路径以便查找其下级角色的用户
-    final long userId = AuthUtils.getCurrentUser().orElseThrow().getUserId();
-    final String roleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(userId)).orElseThrow();
-    final String subRoleLikeFullPath = roleFullPath + ".%";
+    // 获取当前用户的角色全路径
+    final String roleFullPathPrefix = roleService.getCurrentUserRoleFullPathPrefix();
 
-    // 查询数据库获取列表数据
-    final List<UserResponse> list = userMapper.selectByQueryOrderByUpdatedAt(pagination, request, subRoleLikeFullPath);
+    // 检索数据库，获取用户分页列表，并按更新时间降序排列
+    final List<UserItemResponse> list = userMapper.selectByQueryOrderByUpdatedAtDescLimit(pag, query, roleFullPathPrefix);
 
-    // 查询数据库获取总条目数
-    final long total = userMapper.countByQuery(request, subRoleLikeFullPath);
+    // 检索数据库，获取用户总条数
+    final long total = userMapper.countByQuery(query, roleFullPathPrefix);
 
-    // 构造分页结果
+    // 构造分页查询结果
     return ResponseEntity.ok(new PaginationResult<>(
-      pagination.getPageNum(),
-      pagination.getPageSize(),
+      pag.getPageNum(),
+      pag.getPageSize(),
       total,
       list
     ));
@@ -75,63 +73,56 @@ public class UserService {
    * <p>用户仅可查看其下级角色的用户。
    *
    * @param id 需要查找的用户 id
-   * @return 用户详情
+   * @return 用户详情数据
    */
   public ResponseEntity<UserDetailResponse> getUserDetail(final long id) {
-    // 根据用户 id 获取用户详情，若不存在则抛出 404 异常
-    final UserDetailResponse selectedUser = Optional.ofNullable(userMapper.selectUserDetailById(id))
+    // 检索数据库，获取用户数据
+    final UserDetailResponse userInfo = Optional.ofNullable(userMapper.selectUserDetailById(id))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
 
-    // 若查找的用户不是当前用户的下级角色用户，则抛出 403 异常
-    if (isNotCurrentUserSubRole(selectedUser.fullPath())) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "只允许查看下级角色的用户");
+    // 检验是否为当前用户的下级用户
+    if (roleService.isNotSubordinateRole(userInfo.getFullPath())) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许查看下级用户");
     }
 
-    return ResponseEntity.ok(selectedUser);
+    return ResponseEntity.ok(userInfo);
   }
 
   /**
    * 新增用户。
    *
-   * <p>只允许新增当前用户的下级角色用户。
+   * <p>用户仅可创建其下级角色的用户。
    *
-   * @param request 请求参数
+   * @param req 请求参数
    * @return 201 HTTP 状态码
    */
-  public ResponseEntity<Void> addUser(final AddUserRequest request) {
-    // 用户名唯一性校验
-    final boolean existsUsername = userMapper.existsByUsername(request.getUsername());
+  public ResponseEntity<Void> addUser(final AddUserRequest req) {
+    // 检索数据库，检验是否存在相同用户名的用户
+    checkNameUniqueness(req.getUsername());
 
-    if (existsUsername) {
-      throw new ApiException(HttpStatus.CONFLICT, "已存在相同用户名");
-    }
+    // 检验是否为当前用户的下级用户
+    final String oldRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(req.getRoleId()))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到角色数据"));
 
-    // 新增用户的角色存在性校验
-    final String savedRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(request.getRoleId()))
-      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到新增用户的角色"));
-
-    // 校验新增用户的角色是否为当前用户的下级角色
-    if (isNotCurrentUserSubRole(savedRoleFullPath)) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级角色的用户");
+    if (isNotSubordinateRole(oldRoleFullPath)) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级用户");
     }
 
     // 将明文密码进行 Hash 计算后再保存
-    final String hashedPassword = passwordEncoder.encode(request.getPassword());
+    final String hashedPassword = passwordEncoder.encode(req.getPassword());
 
     // 保存至数据库
     final User user = new User();
-    user.setUsername(request.getUsername());
-    user.setNickname(request.getNickname());
+    user.setUsername(req.getUsername());
+    user.setNickname(req.getNickname());
     user.setHashedPassword(hashedPassword);
-    user.setStatus(AccountStatus.resolve(request.getStatus()).orElseThrow());
-    user.setRoleId(request.getRoleId());
+    user.setStatus(AccountStatus.resolve(req.getStatus()).orElseThrow());
+    user.setRoleId(req.getRoleId());
     user.setCreatedAt(LocalDateTime.now());
     user.setUpdatedAt(LocalDateTime.now());
-    user.setRemark(request.getRemark());
+    user.setRemark(req.getRemark());
 
-    if (userMapper.insert(user) == 0) {
-      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "新增用户失败");
-    }
+    userMapper.insert(user);
 
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
@@ -139,47 +130,45 @@ public class UserService {
   /**
    * 更新用户。
    *
-   * <p>只允许更新当前用户的下级角色用户。
+   * <p>用户仅可更新其下级角色的用户。
    *
    * @param id 需要更新的用户 id
-   * @param request 请求参数
+   * @param req 请求参数
    * @return 204 HTTP 状态码
    */
-  public ResponseEntity<Void> updateUser(final long id, final UpdateUserRequest request) {
-    // 用户存在性校验
-    final User updatedUser = Optional.ofNullable(userMapper.selectById(id))
-      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要更新的用户"));
+  public ResponseEntity<Void> updateUser(final long id, final UpdateUserRequest req) {
+    // 检索数据库，获取旧用户数据
+    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(id))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
 
-    // 校验更新的用户是否为当前用户的下级角色的用户
-    final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(updatedUser.getRoleId()))
-      .orElseThrow();
-
-    if (isNotCurrentUserSubRole(updatedUserRoleFullPath)) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新下级角色的用户");
+    // 检验是否为当前用户的下级用户
+    if (isNotSubordinateRole(oldUser.getRoleId())) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新下级用户");
     }
 
-    // 判断是否需要更新用户的角色
-    if (!NumberUtil.equals(updatedUser.getRoleId(), request.getRoleId())) {
-      // 更新的目标角色存在性校验
-      final String newUpdatedRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(request.getRoleId()))
-        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到更新用户的角色"));
+    // 设置需要更新的字段
+    final User userToUpdate = new User();
+    userToUpdate.setId(id);
+    userToUpdate.setNickname(req.getNickname());
+    userToUpdate.setStatus(AccountStatus.resolve(req.getStatus()).orElseThrow());
+    userToUpdate.setRemark(req.getRemark());
 
-      // 校验更新的目标角色是否为当前用户的下级角色
-      if (isNotCurrentUserSubRole(newUpdatedRoleFullPath)) {
-        throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新为下级角色的用户");
+    // 若需要更新角色，则检验是否为当前用户的下级角色
+    if (!NumberUtil.equals(oldUser.getRoleId(), req.getRoleId())) {
+      userToUpdate.setRoleId(req.getRoleId());
+
+      final String roleFullPathToUpdate = Optional.ofNullable(
+          userMapper.selectRoleFullPathByRoleId(req.getRoleId())
+        )
+        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到角色数据"));
+
+      if (roleService.isNotSubordinateRole(roleFullPathToUpdate)) {
+        throw new ApiException(HttpStatus.FORBIDDEN, "新角色不是当前用户的下级角色");
       }
     }
 
-    // 更新至数据库
-    updatedUser.setNickname(request.getNickname());
-    updatedUser.setStatus(AccountStatus.resolve(request.getStatus()).orElseThrow());
-    updatedUser.setRoleId(request.getRoleId());
-    updatedUser.setUpdatedAt(LocalDateTime.now());
-    updatedUser.setRemark(request.getRemark());
-
-    if (userMapper.update(updatedUser) == 0) {
-      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新用户失败");
-    }
+    // 更新数据库中的用户
+    userMapper.update(userToUpdate);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
@@ -187,36 +176,34 @@ public class UserService {
   /**
    * 修改本账号信息。
    *
-   * @param request 请求参数
+   * @param req 请求参数
    * @return 204 HTTP 状态码
    */
-  public ResponseEntity<Void> updateSelf(final UpdateSelfRequest request) {
-    // 获取当前登录的用户信息
+  public ResponseEntity<Void> updateSelf(final UpdateSelfRequest req) {
+    // 获取当前用户的用户 id
     final long userId = AuthUtils.getCurrentUser().orElseThrow().getUserId();
-    final User user = Optional.ofNullable(userMapper.selectById(userId)).orElseThrow();
 
-    // 更新记录修改时间
-    user.setUpdatedAt(LocalDateTime.now());
+    // 检索数据库，获取旧用户数据
+    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(userId)).orElseThrow();
 
-    // 修改昵称
-    user.setNickname(request.getNickname());
+    // 设置需要更新的字段
+    final User userToUpdate = new User();
+    userToUpdate.setId(userId);
+    userToUpdate.setNickname(req.getNickname());
 
-    // 判断是否需要修改密码
-    if (!StrUtil.isBlank(request.getOldPassword()) && !StrUtil.isBlank(request.getNewPassword())) {
-      // 校验旧密码是否正确
-      if (!passwordEncoder.matches(request.getOldPassword(), user.getHashedPassword())) {
+    // 若需要修改密码，则检验旧密码是否正确
+    if (!StrUtil.isBlank(req.getOldPassword()) && !StrUtil.isBlank(req.getNewPassword())) {
+      if (!passwordEncoder.matches(req.getOldPassword(), oldUser.getHashedPassword())) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "旧密码错误");
       }
 
       // 将明文密码进行 Hash 计算后再保存
-      final String newHashedPassword = passwordEncoder.encode(request.getNewPassword());
-      user.setHashedPassword(newHashedPassword);
+      final String newHashedPassword = passwordEncoder.encode(req.getNewPassword());
+      userToUpdate.setHashedPassword(newHashedPassword);
     }
 
-    // 更新至数据库
-    if (userMapper.update(user) == 0) {
-      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新账号失败");
-    }
+    // 更新数据库中的用户
+    userMapper.update(userToUpdate);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
@@ -224,36 +211,33 @@ public class UserService {
   /**
    * 重置密码。
    *
-   * <p>无法旧密码即可重置。
+   * <p>无需验证旧密码。
    *
    * @param id 需要重置密码的用户 id
-   * @param request 请求参数
+   * @param req 请求参数
    * @return 204 HTTP 状态码
    */
-  public ResponseEntity<Void> resetPassword(final long id, final ResetPasswordRequest request) {
-    // 更新的用户存在性校验
-    final User user = Optional.ofNullable(userMapper.selectById(id))
-      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要重置密码的用户"));
+  public ResponseEntity<Void> resetPassword(final long id, final ResetPasswordRequest req) {
+    // 检索数据库，获取旧用户数据
+    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(id))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
 
-    // 校验更新的用户是否为当前用户的下级角色的用户
-    final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(user.getRoleId()))
-      .orElseThrow();
-
-    if (isNotCurrentUserSubRole(updatedUserRoleFullPath)) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "只允许重置下级角色的用户密码");
+    // 检验是否为当前用户的下级用户
+    if (isNotSubordinateRole(oldUser.getRoleId())) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许更新下级用户");
     }
 
-    // 更新记录修改时间
-    user.setUpdatedAt(LocalDateTime.now());
+    // 设置需要更新的字段
+    final User userToUpdate = new User();
+    userToUpdate.setId(id);
 
     // 将明文密码进行 Hash 计算后再保存
-    final String newHashedPassword = passwordEncoder.encode(request.getPassword());
-    user.setHashedPassword(newHashedPassword);
+    final String newHashedPassword = passwordEncoder.encode(req.getPassword());
+
+    userToUpdate.setHashedPassword(newHashedPassword);
 
     // 更新至数据库
-    if (userMapper.update(user) == 0) {
-      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "更新用户失败");
-    }
+    userMapper.update(userToUpdate);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
@@ -261,39 +245,48 @@ public class UserService {
   /**
    * 删除用户。
    *
-   * <p>只允许更新当前用户的下级角色用户。
+   * <p>用户仅可删除其下级角色的用户。
    *
    * @param id 需要删除的用户 id
    * @return 204 HTTP 状态码
    */
   public ResponseEntity<Void> deleteUser(final long id) {
-    // 用户存在性校验
-    final User user = Optional.ofNullable(userMapper.selectById(id))
-      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到要删除的用户"));
+    // 检索数据库，获取旧用户数据
+    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(id))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
 
-    // 校验要删除的用户是否为当前用户的下级角色的用户
-    final String updatedUserRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(user.getRoleId()))
-      .orElseThrow();
-
-    if (isNotCurrentUserSubRole(updatedUserRoleFullPath)) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "只允许删除下级角色的用户");
+    // 检验是否为当前用户的下级用户
+    if (isNotSubordinateRole(oldUser.getRoleId())) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许删除下级用户");
     }
 
-    // 从数据库中删除
-    if (userMapper.deleteById(id) == 0) {
-      throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "删除用户失败");
-    }
+    // 更新数据库中的用户
+    userMapper.deleteById(id);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  private boolean isNotCurrentUserSubRole(final String roleFullPath) {
-    final long currentUserId = AuthUtils.getCurrentUser().orElseThrow().getUserId();
+  private void setFuzzyQueryParams(final GetUserRequest query) {
+    query.setUsername(StrUtils.toNullableLikeValue(query.getUsername()));
+    query.setNickname(StrUtils.toNullableLikeValue(query.getNickname()));
+    query.setRoleName(StrUtils.toNullableLikeValue(query.getRoleName()));
+  }
 
-    final String currentRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathById(currentUserId))
-      .orElseThrow(() -> new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "无法获取当前用户的角色信息"));
+  private void checkNameUniqueness(final String username) {
+    final boolean existsUsername = userMapper.existsByUsername(username);
 
-    // 下级
-    return !StrUtil.startWith(roleFullPath, currentRoleFullPath + StrUtil.DOT);
+    if (existsUsername) {
+      throw new ApiException(HttpStatus.CONFLICT, "已存在相同用户名");
+    }
+  }
+
+  private boolean isNotSubordinateRole(final long roleId) {
+    final String oldRoleFullPath = Optional.ofNullable(userMapper.selectRoleFullPathByRoleId(roleId)).orElseThrow();
+
+    return roleService.isNotSubordinateRole(oldRoleFullPath);
+  }
+
+  private boolean isNotSubordinateRole(final String checkedFullPath) {
+    return roleService.isNotSubordinateRole(checkedFullPath);
   }
 }

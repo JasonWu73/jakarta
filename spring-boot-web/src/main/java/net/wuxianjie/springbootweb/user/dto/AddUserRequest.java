@@ -18,38 +18,33 @@ public class AddUserRequest {
   /**
    * 用户名，只能包含中文、数字或 _、且必须以中文或英文开头，必填。
    */
+  @NotBlank(message = "用户名不能为空")
   @Pattern(
     regexp = "(^\\s*$|^[\\u4E00-\\u9FA5A-Za-z][\\u4E00-\\u9FA5A-Za-z\\d_]+$)",
     message = "用户名只能包含中文, 数字或_, 且必须以中文或英文开头"
   )
-  @NotBlank(message = "用户名不能为空")
   private String username;
-
   /**
    * 昵称，必填。
    */
   @NotBlank(message = "昵称不能为空")
   private String nickname;
-
   /**
    * 密码，必填。
    */
   @NotBlank(message = "密码不能为空")
   private String password;
-
   /**
-   * 账号状态，0：禁用，1：启用，必填。
+   * 账号状态，必填。
    */
-  @EnumValidator(value = AccountStatus.class, message = "账号状态不合法")
   @NotNull(message = "账号状态不能为 null")
+  @EnumValidator(value = AccountStatus.class, message = "账号状态不合法")
   private Integer status;
-
   /**
    * 角色 id，必填。
    */
   @NotNull(message = "角色 id 不能为 null")
   private Long roleId;
-
   /**
    * 备注。
    */

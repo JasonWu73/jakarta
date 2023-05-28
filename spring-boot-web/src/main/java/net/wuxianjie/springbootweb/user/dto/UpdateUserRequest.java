@@ -19,20 +19,17 @@ public class UpdateUserRequest {
    */
   @NotBlank(message = "昵称不能为空")
   private String nickname;
-
   /**
-   * 账号状态，0：禁用，1：启用，必填。
+   * 账号状态，必填。
    */
-  @EnumValidator(value = AccountStatus.class, message = "账号状态不合法")
   @NotNull(message = "账号状态不能为 null")
+  @EnumValidator(value = AccountStatus.class, message = "账号状态不合法")
   private Integer status;
-
   /**
    * 角色 id，必填。
    */
   @NotNull(message = "角色 id 不能为 null")
   private Long roleId;
-
   /**
    * 备注。
    */

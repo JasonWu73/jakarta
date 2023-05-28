@@ -16,18 +16,15 @@ public class GetUserRequest {
    * 用户名。
    */
   private String username;
-
   /**
    * 昵称。
    */
   private String nickname;
-
   /**
-   * 账号状态，0：禁用，1：启用。
+   * 账号状态。
    */
   @EnumValidator(value = AccountStatus.class, message = "账号状态不合法")
   private Integer status;
-
   /**
    * 角色名。
    */

@@ -6,12 +6,12 @@ import net.wuxianjie.springbootweb.auth.AccountStatus;
 import java.time.LocalDateTime;
 
 /**
- * 用户详情响应数据。
+ * 用户列表项响应数据。
  *
  * @author 吴仙杰
  */
 @Data
-public class UserDetailResponse {
+public class UserItemResponse {
 
   /**
    * 用户 id。
@@ -38,15 +38,7 @@ public class UserDetailResponse {
    */
   private String roleName;
   /**
-   * 角色全路径。
-   */
-  private String fullPath;
-  /**
    * 更新时间。
    */
   private LocalDateTime updatedAt;
-  /**
-   * 备注。
-   */
-  private String remark;
 }

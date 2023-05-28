@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.wuxianjie.springbootweb.user.UserMapper">
-  <select id="selectById" resultType="net.wuxianjie.springbootweb.user.User">
+  <select id="selectBaseById" resultType="net.wuxianjie.springbootweb.user.dto.UserBaseInfo">
     select id,
            username,
            nickname,
            hashed_password as hashedPassword,
            status,
            role_id         as roleId,
-           created_at      as createdAt,
            updated_at      as updatedAt,
            remark
     from user
-    where id = #{id}
+    where id = #{userId}
   </select>
 
   <select id="selectUserDetailById" resultType="net.wuxianjie.springbootweb.user.dto.UserDetailResponse">
@@ -26,8 +25,8 @@
            u.updated_at as updatedAt,
            u.remark
     from user u
-           join role r on r.id = u.role_id
-    where u.id = #{id}
+      join role r on r.id = u.role_id
+    where u.id = #{userId}
   </select>
 
   <select id="selectRoleFullPathByRoleId" resultType="java.lang.String">
@@ -40,7 +39,7 @@
     select r.full_path
     from role r
            join user u on r.id = u.role_id
-    where u.id = #{id}
+    where u.id = #{userId}
   </select>
 
   <select id="existsByUsername" resultType="boolean">
@@ -49,32 +48,24 @@
 
   <sql id="whereQuery">
     <where>
-      r.full_path like #{subRoleLikeFullPath}
-      <if test="q.username != null">
-        and u.username like #{q.username}
-      </if>
-      <if test="q.nickname != null">
-        and u.nickname like #{q.nickname}
-      </if>
-      <if test="q.roleName != null">
-        and r.name like #{q.roleName}
-      </if>
-      <if test="q.status != null">
-        and u.status = #{q.status}
-      </if>
+      r.full_path like concat(#{fullPath}, '%')
+      <if test="q.username != null">and u.username like #{q.username}</if>
+      <if test="q.nickname != null">and u.nickname like #{q.nickname}</if>
+      <if test="q.roleName != null">and r.name like #{q.roleName}</if>
+      <if test="q.status != null">and u.status = #{q.status}</if>
     </where>
   </sql>
 
-  <select id="selectByQueryOrderByUpdatedAt" resultType="net.wuxianjie.springbootweb.user.dto.UserResponse">
+  <select id="selectByQueryOrderByUpdatedAtDescLimit" resultType="net.wuxianjie.springbootweb.user.dto.UserItemResponse">
     select u.id,
-    u.username,
-    u.nickname,
-    u.status,
-    r.id as roleId,
-    r.name as roleName,
-    u.updated_at as updatedAt,
-    u.remark
-    from user u join role r on r.id = u.role_id
+           u.username,
+           u.nickname,
+           u.status,
+           r.id as roleId,
+           r.name as roleName,
+           u.updated_at as updatedAt
+    from user u
+      join role r on u.role_id = r.id
     <include refid="whereQuery"/>
     order by updatedAt desc
     limit #{p.offset}, #{p.pageSize}
@@ -82,7 +73,8 @@
 
   <select id="countByQuery" resultType="long">
     select count(1)
-    from user u join role r on u.role_id = r.id
+    from user u
+      join role r on u.role_id = r.id
     <include refid="whereQuery"/>
   </select>
 
@@ -93,14 +85,15 @@
 
   <update id="update">
     update user
-    set username       = #{username},
-        nickname       = #{nickname},
-        hashed_password=#{hashedPassword},
-        status         = #{status},
-        role_id        = #{roleId},
-        created_at     = #{createdAt},
-        updated_at     = #{updatedAt},
-        remark         = #{remark}
+    <set>
+      updated_at = now(),
+      <if test="username != null">username = #{username},</if>
+      <if test="nickname != null">nickname = #{nickname},</if>
+      <if test="hashedPassword != null">hashed_password = #{hashedPassword},</if>
+      <if test="status != null">status = #{status},</if>
+      <if test="roleId != null">role_id = #{roleId},</if>
+      <if test="remark != null">remark = #{remark},</if>
+    </set>
     where id = #{id}
   </update>
 

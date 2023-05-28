@@ -117,10 +117,10 @@ public enum Authority {
   }
 
   /**
-   * 检查节点是否为下级节点，即判断是否拥有指定权限。
+   * 判断节点是否为下级节点，即判断是否拥有指定权限。
    *
    * @param parentCode 用于比较的父节点 code
-   * @param checkedCode 需要被检查的下级节点 code
+   * @param checkedCode 需要被判断的下级节点 code
    * @return {@code checkedCode} 是否为 {@code parentCode} 的下级节点
    * @throws IllegalArgumentException 当 code 解析失败时
    */

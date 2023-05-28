@@ -32,10 +32,10 @@ public class OpLogService {
     // 设置模糊查询参数
     setFuzzyQueryParams(query);
 
-    // 从数据库中获取操作日志分页列表，且按请求时间降序排列
+    // 检索数据库，获取操作日志分页列表，并按请求时间降序排列
     final List<OpLog> list = opLogMapper.selectByQueryOrderByRequestTimeDescLimit(pag, query);
 
-    // 从数据库中获取操作日志的总条数
+    // 检索数据库，获取操作日志总条数
     final long total = opLogMapper.countByQuery(query);
 
     // 构造分页查询结果

@@ -32,29 +32,34 @@ public class AuthServiceImpl implements AuthService {
   private final AuthMapper authMapper;
 
   public ResponseEntity<TokenResponse> getToken(final GetTokenRequest req) {
-    // 从数据库中获取用户数据
-    final String username = req.getUsername();
-
-    final AuthData auth = Optional.ofNullable(authMapper.selectByUsername(username))
+    // 检索数据库，获取用户
+    final AuthData auth = Optional.ofNullable(authMapper.selectByUsername(req.getUsername()))
       .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误"));
 
-    // 判断登录密码是否正确
+    // 检验账号是否已被禁用
+    if (auth.getStatus() == AccountStatus.DISABLED) {
+      throw new ApiException(HttpStatus.UNAUTHORIZED, "账号已禁用");
+    }
+
+    // 检验登录密码是否正确
     if (!passwordEncoder.matches(req.getPassword(), auth.getHashedPassword())) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误");
     }
 
     // 创建 Token
-    final TokenData tokenData = createToken(username);
+    final TokenData tokenData = createToken(req.getUsername());
 
-    // 添加登录缓存
+    // 添加 Access Token 信息到登录缓存
     auth.setAccessToken(tokenData.accessToken);
     auth.setRefreshToken(tokenData.refreshToken);
 
-    return ResponseEntity.ok(addLoginCache(auth));
+    final TokenResponse resp = addLoginCache(auth);
+
+    return ResponseEntity.ok(resp);
   }
 
   public ResponseEntity<TokenResponse> updateToken(final String refreshToken) {
-    // 验证 JWT Token 本身（格式）是否合法
+    // 检验 JWT Token 本身（格式）是否合法
     final boolean legalToken = tokenService.isLegal(refreshToken);
     if (!legalToken) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "Token 不合法");
@@ -63,34 +68,39 @@ public class AuthServiceImpl implements AuthService {
     // 解析 JWT Token 获取载荷
     final TokenPayload payload = tokenService.parse(refreshToken);
 
-    // 判断 Token 类型是否为 Refresh Token
+    // 检验 Token 类型是否为 Refresh Token
     if (!StrUtil.equals(payload.getType(), AuthProps.TOKEN_TYPE_REFRESH)) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "刷新请使用 Refresh Token");
     }
 
-    // 从登录缓存中获取用户数据
-    final String username = payload.getUsername();
-
-    final AuthData cachedAuth = Optional.ofNullable(accessTokenCache.get(username))
+    // 检索登录缓存，获取用户
+    final AuthData cachedAuth = Optional.ofNullable(accessTokenCache.get(payload.getUsername()))
       .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Token 已失效"));
 
-    // 判断 Refresh Token 是否与登录缓存中的一致
+    // 检验 Refresh Token 是否与登录缓存中的一致
     if (!StrUtil.equals(cachedAuth.getRefreshToken(), refreshToken)) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, "Token 已废弃");
     }
 
-    // 从数据库中获取最新的用户数据
-    final AuthData auth = Optional.ofNullable(authMapper.selectByUsername(username))
+    // 检索数据库，获取新增的用户数据
+    final AuthData auth = Optional.ofNullable(authMapper.selectByUsername(payload.getUsername()))
       .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "无效的 Token"));
 
-    // 创建 Token
-    final TokenData tokenData = createToken(username);
+    // 检验账号是否已被禁用
+    if (auth.getStatus() == AccountStatus.DISABLED) {
+      throw new ApiException(HttpStatus.UNAUTHORIZED, "账号已禁用");
+    }
 
-    // 添加登录缓存
+    // 创建 Token
+    final TokenData tokenData = createToken(payload.getUsername());
+
+    // 添加 Access Token 信息到登录缓存
     auth.setAccessToken(tokenData.accessToken);
     auth.setRefreshToken(tokenData.refreshToken);
 
-    return ResponseEntity.ok(addLoginCache(auth));
+    final TokenResponse resp = addLoginCache(auth);
+
+    return ResponseEntity.ok(resp);
   }
 
   private TokenData createToken(final String username) {

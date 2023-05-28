@@ -23,7 +23,7 @@ public class TokenAuthImpl implements TokenAuth {
 
   @Override
   public AuthData authenticate(final String accessToken) {
-    // 验证 JWT Token 本身（格式）是否合法
+    // 检验 JWT Token 本身（格式）是否合法
     final boolean legalToken = tokenService.isLegal(accessToken);
 
     if (!legalToken) {
@@ -33,21 +33,21 @@ public class TokenAuthImpl implements TokenAuth {
     // 解析 JWT Token 获取载荷
     final TokenPayload payload = tokenService.parse(accessToken);
 
-    // 判断 Token 类型是否为 Access Token
+    // 检验 Token 类型是否为 Access Token
     if (!StrUtil.equals(payload.getType(), AuthProps.TOKEN_TYPE_ACCESS)) {
       throw new IllegalArgumentException("API 鉴权请使用 Access Token");
     }
 
-    // 从登录缓存中获取用户数据
+    // 检索登录缓存，获取用户
     final AuthData cachedAuth = Optional.ofNullable(accessTokenCache.get(payload.getUsername()))
       .orElseThrow(() -> new RuntimeException("Token 已失效"));
 
-    // 判断 Access Token 是否与登录缓存中的一致
+    // 检验 Access Token 是否与登录缓存中的一致
     if (!StrUtil.equals(cachedAuth.getAccessToken(), accessToken)) {
       throw new RuntimeException("Token 已废弃");
     }
 
-    // 判断账号是否已被禁用
+    // 检验账号是否已被禁用
     if (cachedAuth.getStatus() == AccountStatus.DISABLED) {
       throw new RuntimeException("账号已禁用");
     }

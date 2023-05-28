@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 角色所需的 SQL 语句。
+ * 角色相关的 SQL 语句。
  *
  * @author 吴仙杰
  */

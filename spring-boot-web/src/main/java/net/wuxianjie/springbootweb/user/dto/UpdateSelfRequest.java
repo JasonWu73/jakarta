@@ -16,12 +16,10 @@ public class UpdateSelfRequest {
    */
   @NotBlank(message = "昵称不能为空")
   private String nickname;
-
   /**
    * 旧密码。
    */
   private String oldPassword;
-
   /**
    * 新密码。
    */
