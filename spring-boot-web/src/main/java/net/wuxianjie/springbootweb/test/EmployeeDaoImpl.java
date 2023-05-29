@@ -19,4 +19,21 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     return query.getResultList();
   }
+
+  @Override
+  public Employee selectById(final int employeeId) {
+    return entityManager.find(Employee.class, employeeId);
+  }
+
+  @Override
+  public Employee saveOrUpdate(final Employee employee) {
+    return entityManager.merge(employee);
+  }
+
+  @Override
+  public void deleteById(final int employeeId) {
+    final Employee employeeToDel = selectById(employeeId);
+
+    entityManager.remove(employeeToDel);
+  }
 }
