@@ -34,9 +34,15 @@ spring:
     hibernate:
       # 仅检查实体类是否正确映射数据库表，且不修改数据库表
       ddl-auto: validate
+  # HATEOAS 配置
   data:
     rest:
+      # @RepositoryRestResource(path="resource-name-plural")
       base-path: /api/v1
+      # 页码 `?page=0&size=1`，`page` 从 0 开始，即第一页为 0
+      # 排序 `?sort=name,desc`
+      default-page-size: 10
+      max-page-size: 100
 mybatis:
   type-handlers-package: net.wuxianjie.springbootweb.shared.mybatis
   mapper-locations: classpath:**/*Mapper.xml
