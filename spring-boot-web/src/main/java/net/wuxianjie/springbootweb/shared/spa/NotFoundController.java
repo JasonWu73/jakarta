@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Optional;
+
 /**
  * 兼容 SPA 单页面应用和 REST API 服务。
  *
@@ -77,7 +79,9 @@ public class NotFoundController {
   public ResponseEntity<?> handleNotFoundRequest() {
     // 若 API 或 JSON 数据请求，则返回 JSON 数据
     final HttpServletRequest req = ServletUtils.getCurrentRequest().orElseThrow();
-    final String originalUri = req.getAttribute(RequestDispatcher.FORWARD_SERVLET_PATH).toString();
+    final String originalUri = Optional.ofNullable(req.getAttribute(RequestDispatcher.FORWARD_SERVLET_PATH))
+      .map(Object::toString)
+      .orElse("");
 
     if (isJsonRequest(req, originalUri)) {
       return ResponseEntity
