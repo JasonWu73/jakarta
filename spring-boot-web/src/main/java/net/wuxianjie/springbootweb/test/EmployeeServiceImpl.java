@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public Employee addEmployee(final Employee employee) {
     return employeeDao.saveOrUpdate(employee);
   }
