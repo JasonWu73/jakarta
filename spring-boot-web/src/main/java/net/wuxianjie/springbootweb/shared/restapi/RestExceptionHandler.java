@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Controller 层全局异常处理。
+ * Rest API Controller 层全局异常处理。
  *
  * @author 吴仙杰
  */
 @ControllerAdvice
 @Slf4j
-public class ExceptionControllerAdvice {
+public class RestExceptionHandler {
 
   /**
    * 处理因客户端请主动终止请求而引发的异常。
