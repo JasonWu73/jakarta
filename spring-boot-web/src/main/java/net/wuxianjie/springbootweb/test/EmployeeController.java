@@ -12,10 +12,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
 
-  private final EmployeeDao employeeDao;
+  private final EmployeeService employeeService;
 
   @GetMapping
   public List<Employee> getEmployees() {
-    return employeeDao.findAll();
+    return employeeService.getEmployees();
   }
 }

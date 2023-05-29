@@ -2,7 +2,7 @@ package net.wuxianjie.springbootweb.test;
 
 import java.util.List;
 
-public interface EmployeeDao {
+public interface EmployeeService {
 
-  List<Employee> selectAll();
+  List<Employee> getEmployees();
 }
