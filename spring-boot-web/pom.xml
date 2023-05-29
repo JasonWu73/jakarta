@@ -52,17 +52,6 @@
       <version>${jasypt.version}</version>
     </dependency>
 
-    <!-- JPA 用于测试学习，更推荐 MyBatis -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <!-- 需结合 `spring-boot-starter-data-jpa`，通过扫描 `JpaRepository` 自动生成 REST API -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-rest</artifactId>
-    </dependency>
-
     <!-- MyBatis -->
     <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
