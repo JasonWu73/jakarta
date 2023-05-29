@@ -1,9 +1,12 @@
 package net.wuxianjie.springbootweb.test;
 
 import lombok.RequiredArgsConstructor;
+import net.wuxianjie.springbootweb.shared.restapi.ApiException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +21,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   public Employee getEmployee(final int employeeId) {
-    return employeeDao.selectById(employeeId);
+    return Optional.ofNullable(employeeDao.selectById(employeeId))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "not found employee"));
   }
 
   @Override
