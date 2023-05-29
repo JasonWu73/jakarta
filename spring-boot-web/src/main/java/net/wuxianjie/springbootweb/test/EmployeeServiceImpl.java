@@ -39,7 +39,10 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public void deleteEmployee(final int employeeId) {
+  @Transactional(rollbackFor = Exception.class)
+  public String deleteEmployee(final int employeeId) {
     employeeDao.deleteById(employeeId);
+
+    return "delete employee id - " + employeeId;
   }
 }

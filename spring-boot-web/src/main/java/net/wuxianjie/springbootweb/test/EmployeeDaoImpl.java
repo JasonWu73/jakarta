@@ -3,8 +3,9 @@ package net.wuxianjie.springbootweb.test;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import net.wuxianjie.springbootweb.shared.restapi.ApiException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
   @Override
   public void deleteById(final int employeeId) {
     final Employee employeeToDel = selectById(employeeId);
+
+    if (employeeToDel == null) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "not found employee id - " + employeeId);
+    }
 
     entityManager.remove(employeeToDel);
   }
