@@ -1,10 +1,10 @@
 package net.wuxianjie.springbootweb.test;
 
-import cn.hutool.core.date.DateUtil;
 import jakarta.annotation.PostConstruct;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +36,5 @@ public class StudentController {
     }
 
     return students.get(id);
-  }
-
-  @ExceptionHandler(StudentNotFoundException.class)
-  public ResponseEntity<StudentErrorResponse> handleException(final StudentNotFoundException exc) {
-    final StudentErrorResponse error = new StudentErrorResponse();
-
-    error.setStatus(HttpStatus.NOT_FOUND.value());
-    error.setMessage(exc.getMessage());
-    error.setTimestamp(DateUtil.current());
-
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
   }
 }
