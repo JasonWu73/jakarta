@@ -26,4 +26,9 @@ public class EmployeeController {
   public Employee addEmployee(@RequestBody final Employee employee) {
     return employeeService.addEmployee(employee);
   }
+
+  @PutMapping
+  public Employee updateEmployee(@RequestBody final Employee employee) {
+    return employeeService.updateEmployee(employee);
+  }
 }
