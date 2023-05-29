@@ -31,7 +31,6 @@
       <artifactId>jave-core</artifactId>
       <version>${jave.version}</version>
     </dependency>
-
     <!-- JAVE 仅用于一个平台，本例为 MacOS 64 位 -->
     <dependency>
       <groupId>ws.schild</groupId>
@@ -57,6 +56,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <!-- 需结合 `spring-boot-starter-data-jpa`，通过扫描 `JpaRepository` 自动生成 REST API -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-rest</artifactId>
     </dependency>
 
     <!-- MyBatis -->
