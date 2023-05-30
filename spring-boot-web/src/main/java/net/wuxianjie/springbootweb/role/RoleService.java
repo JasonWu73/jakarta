@@ -45,7 +45,7 @@ public class RoleService {
     // 获取当前用户的角色全路径
     final String roleFullPath = getCurrentUserRoleFullPath();
 
-    // 检索数据库，获取当前用户的角色及其所有下级角色
+    // 检索数据库，获取当前用户的角色及其所有下级角色，并按节点全路径升序排列
     return ResponseEntity.ok(roleMapper.selectByFullPathEqOrLikeOrderByFullPath(roleFullPath));
   }
 
