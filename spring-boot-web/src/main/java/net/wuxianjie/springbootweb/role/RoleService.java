@@ -146,7 +146,7 @@ public class RoleService {
     if (!StrUtil.equals(oldRole.getName(), req.getName())) {
       roleToUpdate.setName(req.getName());
 
-      // 检验数据库是否已存在同名角色
+      // 检索数据库，检验是否存在同名角色
       checkNameUniqueness(req.getName());
 
       // 更新其子角色的父角色名

@@ -43,5 +43,5 @@ public interface UserMapper {
 
   int update(User user);
 
-  int deleteById(long id);
+  int deleteById(long userId);
 }

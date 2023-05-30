@@ -100,6 +100,6 @@
   <delete id="deleteById">
     delete
     from user
-    where id = #{id}
+    where id = #{userId}
   </delete>
 </mapper>
