@@ -25,6 +25,15 @@ public class EmployeeController {
 		return "employees/list-employees";
 	}
 
+	@GetMapping("/showFormForAdd")
+	public String showFormForAdd(final Model model) {
+		final Employee employee = new Employee();
+
+		model.addAttribute("employee", employee);
+
+		return "employees/employee-form";
+	}
+
 	@GetMapping
 	public String redirectToEmployeeListPage() {
 		return "redirect:/employees/list";
