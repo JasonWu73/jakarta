@@ -39,7 +39,14 @@ public class WebSecurityConfig {
    * <p>因为 Spring Security 会对所有经过其过滤器链的请求设置为不缓存，
    * <br>即在 HTTP 响应头中添加 {@code Cache-Control: no-cache, no-store, max-age=0, must-revalidate}。
    *
-   * <p>Spring Boot 静态资源目录：{@code src/main/resources/static/}。
+   * <p>Spring Boot Web 静态资源查找目录，由优先级高到低排序：
+   *
+   * <ol>
+   *   <li>{@code src/main/resources/META-INF/resources/}</li>
+   *   <li>{@code src/main/resources/resources/}</li>
+   *   <li>{@code src/main/resources/static/}</li>
+   *   <li>{@code src/main/resources/public/}</li>
+   * </ol>
    *
    * @return 配置静态资源
    */

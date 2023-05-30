@@ -1,10 +1,12 @@
 package net.wuxianjie.springbootweb.shared.spa;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import net.wuxianjie.springbootweb.shared.restapi.ErrorResponse;
 import net.wuxianjie.springbootweb.shared.util.ServletUtils;
 import org.springframework.boot.web.server.ErrorPage;
@@ -28,6 +30,7 @@ import java.util.Optional;
  */
 @Controller
 @Configuration
+@Slf4j
 public class NotFoundController {
 
   /**
@@ -41,7 +44,7 @@ public class NotFoundController {
   /**
    * SPA 首页。
    */
-  public static final String PAGE_SPA_INDEX = "classpath:/static/index.html";
+  public static final String SPA_INDEX_PAGE = "classpath:/static/index.html";
 
   /**
    * 配置 Web 服务器工厂：
@@ -69,9 +72,9 @@ public class NotFoundController {
    *
    * <p>其他情况一律返回页面，因为前端 SPA 单页面应用已作为静态资源打包在了 Jar 中。
    *
-   * <p>Spring Boot 默认会将 {@code src/main/resources/static/} 中的内容作为静态资源提供。
+   * <p>Spring Boot 默认会将 {@code src/main/resources/static/} 中的内容作为 Web 静态资源提供。
    *
-   * <p>约定 SPA 的页面入口：{@value #PAGE_SPA_INDEX}。
+   * <p>约定 SPA 的页面入口：{@value #SPA_INDEX_PAGE}。
    *
    * @return JSON 数据或 SPA 首页
    */
@@ -91,10 +94,15 @@ public class NotFoundController {
     }
 
     // 返回 SPA 首页，由前端处理 404
+    if (!FileUtil.exist(SPA_INDEX_PAGE)) {
+      log.warn("SPA 首页 [{}] 不存在，故返回 404 HTTP 状态码", SPA_INDEX_PAGE);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
     return ResponseEntity
       .status(HttpStatus.OK)
       .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-      .body(ResourceUtil.getResourceObj(PAGE_SPA_INDEX).readUtf8Str());
+      .body(ResourceUtil.getResourceObj(SPA_INDEX_PAGE).readUtf8Str());
   }
 
   private boolean isJsonRequest(final HttpServletRequest request, final String originalUri) {
