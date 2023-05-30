@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.shared.spa;
 
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.NoResourceException;
+import cn.hutool.core.io.resource.Resource;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
@@ -94,15 +95,18 @@ public class NotFoundController {
     }
 
     // 返回 SPA 首页，由前端处理 404
-    if (!FileUtil.exist(SPA_INDEX_PAGE)) {
-      log.warn("SPA 首页 [{}] 不存在，故返回 404 HTTP 状态码", SPA_INDEX_PAGE);
+    final Resource spaIndexPage;
+    try {
+      spaIndexPage = ResourceUtil.getResourceObj(SPA_INDEX_PAGE);
+    } catch (NoResourceException e) {
+      log.warn("SPA 首页 [{}] 不存在: {}", SPA_INDEX_PAGE, e.getMessage());
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     return ResponseEntity
       .status(HttpStatus.OK)
       .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-      .body(ResourceUtil.getResourceObj(SPA_INDEX_PAGE).readUtf8Str());
+      .body(spaIndexPage.readUtf8Str());
   }
 
   private boolean isJsonRequest(final HttpServletRequest request, final String originalUri) {
