@@ -17,15 +17,13 @@ public interface RoleMapper {
 
   RoleBaseInfo selectBaseById(long roleId);
 
-  RoleBaseInfo selectBaseByUserId(long userId);
-
   boolean existsRoleByName(String name);
 
   boolean existsRoleByFullPathLike(String fullPath);
 
   boolean existsUserByRoleId(long roleId);
 
-  List<RoleItemResponse> selectByFullPathLikeOrderByUpdatedAtDesc(String fullPath);
+  List<RoleItemResponse> selectByFullPathEqOrLikeOrderByFullPath(String fullPath);
 
   int insert(Role role);
 

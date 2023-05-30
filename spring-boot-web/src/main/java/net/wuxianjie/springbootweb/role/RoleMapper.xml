@@ -9,7 +9,7 @@
       <arg column="parent_id" javaType="long"/>
       <arg column="parent_name" javaType="string"/>
       <arg column="full_path" javaType="string"/>
-      <arg column="updated_at" javaType="java.time.LocalDateTime"/>
+      <arg column="updated_at" javaType="java.util.Date"/>
       <arg column="remark" javaType="string"/>
     </constructor>
   </resultMap>
@@ -33,15 +33,6 @@
     where r.id = #{roleId}
   </select>
 
-  <select id="selectBaseByUserId" resultMap="baseMap">
-    <include refid="selectDetail">
-      <property name="alias" value="r"/>
-    </include>
-    from role r
-           join user u on r.id = u.role_id
-    where u.id = #{userId}
-  </select>
-
   <select id="existsRoleByName" resultType="boolean">
     select exists(select 1 from role where name = #{name})
   </select>
@@ -54,15 +45,15 @@
     select exists(select 1 from user where role_id = #{roleId})
   </select>
 
-  <select id="selectByFullPathLikeOrderByUpdatedAtDesc" resultType="net.wuxianjie.springbootweb.role.dto.RoleItemResponse">
+  <select id="selectByFullPathEqOrLikeOrderByFullPath" resultType="net.wuxianjie.springbootweb.role.dto.RoleItemResponse">
     select id,
            name,
            parent_id   as parentId,
            parent_name as parentName,
            updated_at  as updatedAt
     from role
-    where full_path like concat(#{fullPath}, '%')
-    order by updatedAt desc
+    where full_path = #{fullPath} or full_path like concat(#{fullPath}, '.%')
+    order by full_path
   </select>
 
   <insert id="insert" useGeneratedKeys="true" keyProperty="id">

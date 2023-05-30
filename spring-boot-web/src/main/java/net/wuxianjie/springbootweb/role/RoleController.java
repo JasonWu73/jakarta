@@ -28,7 +28,7 @@ public class RoleController {
   /**
    * 获取角色列表。
    *
-   * <p>用户仅可查看其下级角色。
+   * <p>用户仅可查看自己及其下级角色。
    *
    * @return 角色列表
    */

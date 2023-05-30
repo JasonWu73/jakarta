@@ -37,16 +37,16 @@ public class RoleService {
   /**
    * 获取角色列表。
    *
-   * <p>用户仅可查看其下级角色。
+   * <p>用户仅可查看自己及其下级角色。
    *
    * @return 角色列表
    */
   public ResponseEntity<List<RoleItemResponse>> getRoles() {
     // 获取当前用户的角色全路径
-    final String roleFullPathPrefix = getCurrentUserRoleFullPathPrefix();
+    final String roleFullPath = getCurrentUserRoleFullPath();
 
-    // 检索数据库，获取当前用户的所有下级角色
-    return ResponseEntity.ok(roleMapper.selectByFullPathLikeOrderByUpdatedAtDesc(roleFullPathPrefix));
+    // 检索数据库，获取当前用户的角色及其所有下级角色
+    return ResponseEntity.ok(roleMapper.selectByFullPathEqOrLikeOrderByFullPath(roleFullPath));
   }
 
   /**
@@ -83,21 +83,12 @@ public class RoleService {
     // 检索数据库，检验是否存在同名角色
     checkNameUniqueness(req.getName());
 
-    // 检验父角色是否为当前用户的下级角色
-    final Long parentId = req.getParentId();
-    final RoleBaseInfo parent;
+    // 检验父角色是否为当前用户自己或其下级角色
+    final RoleBaseInfo parent = Optional.ofNullable(roleMapper.selectBaseById(req.getParentId()))
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到父角色数据"));
 
-    if (parentId == null) {
-      // 当不指定新增角色的父角色时，即代表使用当前用户的角色作为上级角色
-      parent = Optional.ofNullable(roleMapper.selectBaseByUserId(getCurrentUserId())).orElseThrow();
-    } else {
-      // 检验父角色是否为当前用户的下级角色
-      parent = Optional.ofNullable(roleMapper.selectBaseById(parentId))
-        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到父角色数据"));
-
-      if (isNotSubordinateRole(parent.getFullPath())) {
-        throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级角色");
-      }
+    if (isNotSelfAndSubordinateRole(parent.getFullPath())) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "只允许创建下级角色");
     }
 
     // 检验新增权限是否为当前用户的下级权限，并格式化功能权限字符串（去重、去除空值、字符串的左右空格，及仅保留父权限）
@@ -177,9 +168,9 @@ public class RoleService {
 
       roleToUpdate.setParentName(parent.getName());
 
-      // 检验父角色是否为当前用户的下级角色
-      if (isNotSubordinateRole(parent.getFullPath())) {
-        throw new ApiException(HttpStatus.FORBIDDEN, "父角色不是当前用户的下级角色");
+      // 检验父角色是否为当前用户自己或其下级角色
+      if (isNotSelfAndSubordinateRole(parent.getFullPath())) {
+        throw new ApiException(HttpStatus.FORBIDDEN, "父角色不能是当前用户的上级角色");
       }
 
       // 检验父角色是否为需要更新角色的下级角色
@@ -245,9 +236,7 @@ public class RoleService {
    * @return full_path + {@value StrUtil#DOT}
    */
   public String getCurrentUserRoleFullPathPrefix() {
-    return Optional.ofNullable(userMapper.selectRoleFullPathById(getCurrentUserId()))
-      .map(s -> s + StrUtil.DOT)
-      .orElseThrow();
+    return getCurrentUserRoleFullPath() + StrUtil.DOT;
   }
 
   /**
@@ -260,6 +249,17 @@ public class RoleService {
     final String currentFullPathPrefix = getCurrentUserRoleFullPathPrefix();
 
     return !StrUtil.startWith(checkedFullPath, currentFullPathPrefix);
+  }
+
+  private boolean isNotSelfAndSubordinateRole(final String checkedFullPath) {
+    final String currentFullPathPrefix = getCurrentUserRoleFullPathPrefix();
+
+    return !StrUtil.equals(checkedFullPath + StrUtil.DOT, currentFullPathPrefix) &&
+      !StrUtil.startWith(checkedFullPath, currentFullPathPrefix);
+  }
+
+  private String getCurrentUserRoleFullPath() {
+    return Optional.ofNullable(userMapper.selectRoleFullPathById(getCurrentUserId())).orElseThrow();
   }
 
   private long getCurrentUserId() {
