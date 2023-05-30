@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,7 +45,7 @@ public class RoleBaseInfo {
   /**
    * 更新时间。
    */
-  private LocalDateTime updatedAt;
+  private Date updatedAt;
   /**
    * 备注。
    */
@@ -59,7 +59,7 @@ public class RoleBaseInfo {
     final Long parentId,
     final String parentName,
     final String fullPath,
-    final LocalDateTime updatedAt,
+    final Date updatedAt,
     final String remark
   ) {
     this.id = id;

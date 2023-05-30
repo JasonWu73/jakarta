@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 角色数据库表实体类。
@@ -43,11 +43,11 @@ public class Role {
   /**
    * 创建时间。
    */
-  private LocalDateTime createdAt;
+  private Date createdAt;
   /**
    * 更新时间。
    */
-  private LocalDateTime updatedAt;
+  private Date updatedAt;
   /**
    * 备注。
    */

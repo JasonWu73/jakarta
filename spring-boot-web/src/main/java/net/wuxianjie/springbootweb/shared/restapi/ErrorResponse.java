@@ -1,5 +1,6 @@
 package net.wuxianjie.springbootweb.shared.restapi;
 
+import cn.hutool.core.date.DateTime;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 import net.wuxianjie.springbootweb.shared.util.ServletUtils;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 自定义 API 错误结果。
@@ -22,7 +23,7 @@ public class ErrorResponse {
   /**
    * 请求的时间戳。
    */
-  private LocalDateTime timestamp;
+  private Date timestamp;
   /**
    * HTTP 响应状态码。
    */
@@ -44,7 +45,7 @@ public class ErrorResponse {
    * @param path 请求的资源路径
    */
   public ErrorResponse(final HttpStatus status, final String error, final String path) {
-    this(LocalDateTime.now(), status.value(), error, path);
+    this(DateTime.now(), status.value(), error, path);
   }
 
   /**

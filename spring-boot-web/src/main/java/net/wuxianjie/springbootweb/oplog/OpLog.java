@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 操作日志数据库表实体类。
@@ -23,7 +23,7 @@ public class OpLog {
   /**
    * 请求时间。
    */
-  private LocalDateTime reqTime;
+  private Date reqTime;
   /**
    * 客户端 IP。
    */

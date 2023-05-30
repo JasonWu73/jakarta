@@ -1,6 +1,6 @@
 package net.wuxianjie.springbootweb.oplog;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 记录操作日志 AOP。
@@ -37,7 +37,7 @@ public class OpLogAspect {
   @Around("@annotation(Log)")
   public Object recordOperationLog(final ProceedingJoinPoint joinPoint) throws Throwable {
     // 先记录请求的时间
-    final LocalDateTime reqTime = LocalDateTimeUtil.now();
+    final Date reqTime = DateTime.now();
 
     // 执行后续方法，并返回最终结果
     final Object result = joinPoint.proceed();

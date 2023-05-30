@@ -3,7 +3,7 @@ package net.wuxianjie.springbootweb.user.dto;
 import lombok.Data;
 import net.wuxianjie.springbootweb.auth.AccountStatus;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 用户列表项响应数据。
@@ -40,5 +40,5 @@ public class UserItemResponse {
   /**
    * 更新时间。
    */
-  private LocalDateTime updatedAt;
+  private Date updatedAt;
 }

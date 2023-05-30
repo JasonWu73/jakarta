@@ -1,6 +1,7 @@
 package net.wuxianjie.springbootweb.role;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -109,8 +109,8 @@ public class RoleService {
     roleToSave.setAuthorities(sanitizedAuthorities);
     roleToSave.setParentId(parent.getId());
     roleToSave.setParentName(parent.getName());
-    roleToSave.setCreatedAt(LocalDateTime.now());
-    roleToSave.setUpdatedAt(LocalDateTime.now());
+    roleToSave.setCreatedAt(DateTime.now());
+    roleToSave.setUpdatedAt(DateTime.now());
     roleToSave.setRemark(req.getRemark());
 
     // 对于节点全路径还需要拼接当前新增角色的 id

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 角色列表项响应数据。
@@ -35,5 +35,5 @@ public class RoleItemResponse {
   /**
    * 更新时间。
    */
-  private LocalDateTime updatedAt;
+  private Date updatedAt;
 }

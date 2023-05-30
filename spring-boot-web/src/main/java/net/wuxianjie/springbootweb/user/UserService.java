@@ -1,5 +1,6 @@
 package net.wuxianjie.springbootweb.user;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,8 +118,8 @@ public class UserService {
     user.setHashedPassword(hashedPassword);
     user.setStatus(AccountStatus.resolve(req.getStatus()).orElseThrow());
     user.setRoleId(req.getRoleId());
-    user.setCreatedAt(LocalDateTime.now());
-    user.setUpdatedAt(LocalDateTime.now());
+    user.setCreatedAt(DateTime.now());
+    user.setUpdatedAt(DateTime.now());
     user.setRemark(req.getRemark());
 
     userMapper.insert(user);

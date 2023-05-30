@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 获取操作日志请求参数。
@@ -20,13 +20,13 @@ public class GetOpLogRequest {
    */
   @NotNull(message = "请求起始时间不能为 null")
   @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
-  private LocalDateTime startTime;
+  private Date startTime;
   /**
    * 请求截止时间，必填。
    */
   @NotNull(message = "请求截止时间不能为 null")
   @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
-  private LocalDateTime endTime;
+  private Date endTime;
 
   /**
    * 用户名。
