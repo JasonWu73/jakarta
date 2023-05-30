@@ -14,23 +14,17 @@
     </constructor>
   </resultMap>
 
-  <sql id="selectDetail">
-    select ${alias}.id,
-           ${alias}.name,
-           ${alias}.authorities,
-           ${alias}.parent_id,
-           ${alias}.parent_name,
-           ${alias}.full_path,
-           ${alias}.updated_at,
-           ${alias}.remark
-  </sql>
-
   <select id="selectBaseById" resultMap="baseMap">
-    <include refid="selectDetail">
-      <property name="alias" value="r"/>
-    </include>
-    from role r
-    where r.id = #{roleId}
+    select id,
+           name,
+           authorities,
+           parent_id,
+           parent_name,
+           full_path,
+           updated_at,
+           remark
+    from role
+    where id = #{roleId}
   </select>
 
   <select id="existsRoleByName" resultType="boolean">
