@@ -24,6 +24,12 @@
   </properties>
 
   <dependencies>
+    <!-- TODO: Thymeleaf -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+
     <!-- JAVE（Java 音频视频编码器）库，其中对 ffmpeg 程序进行了包装 -->
     <!-- JAVE 核心库 -->
     <dependency>
