@@ -39,16 +39,18 @@ public class WebSecurityConfig {
    * <p>因为 Spring Security 会对所有经过其过滤器链的请求设置为不缓存，
    * <br>即在 HTTP 响应头中添加 {@code Cache-Control: no-cache, no-store, max-age=0, must-revalidate}。
    *
+   * <p>Spring Boot 静态资源目录：{@code src/main/resources/static/}。
+   *
    * @return 配置静态资源
    */
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return web -> web.ignoring().requestMatchers(
       "favicon.ico",
-      "/UEditor/**",
+      "/assets/**",
       "/js/**",
       "/css/**",
-      "/assets/**"
+      "/UEditor/**"
     );
   }
 
