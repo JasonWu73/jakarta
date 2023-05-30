@@ -10,7 +10,7 @@
     </where>
   </sql>
 
-  <select id="selectByQueryOrderByRequestTimeDescLimit" resultType="net.wuxianjie.springbootweb.oplog.OpLog">
+  <select id="selectByQueryOrderByReqTimeDescLimit" resultType="net.wuxianjie.springbootweb.oplog.OpLog">
     select id,
            req_time as reqTime,
            client_ip as clientIp,

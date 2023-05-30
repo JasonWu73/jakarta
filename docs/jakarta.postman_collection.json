@@ -948,7 +948,7 @@
 			"name": "用户管理",
 			"item": [
 				{
-					"name": "获取用户列表",
+					"name": "获取用户分页列表",
 					"event": [
 						{
 							"listen": "test",

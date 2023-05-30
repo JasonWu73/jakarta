@@ -33,7 +33,7 @@ public class OpLogService {
     setFuzzyQueryParams(query);
 
     // 检索数据库，获取操作日志分页列表，并按请求时间降序排列
-    final List<OpLog> list = opLogMapper.selectByQueryOrderByRequestTimeDescLimit(pag, query);
+    final List<OpLog> list = opLogMapper.selectByQueryOrderByReqTimeDescLimit(pag, query);
 
     // 检索数据库，获取操作日志总条数
     final long total = opLogMapper.countByQuery(query);

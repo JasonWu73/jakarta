@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface OpLogMapper {
 
-  List<OpLog> selectByQueryOrderByRequestTimeDescLimit(
+  List<OpLog> selectByQueryOrderByReqTimeDescLimit(
     @Param("p") PaginationParam pag,
     @Param("q") GetOpLogRequest query
   );
