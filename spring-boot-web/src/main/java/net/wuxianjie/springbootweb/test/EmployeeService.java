@@ -12,6 +12,10 @@ public class EmployeeService {
   private final EmployeeRepository employeeRepository;
 
   public List<Employee> getEmployees() {
-    return employeeRepository.findAll();
+    return employeeRepository.findAllByOrderByLastName();
+  }
+
+  public void save(final Employee employee) {
+    employeeRepository.save(employee);
   }
 }
