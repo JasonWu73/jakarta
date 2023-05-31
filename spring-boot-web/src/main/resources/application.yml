@@ -30,6 +30,11 @@ spring:
       max-request-size: 1GB
   main:
     banner-mode: off
+  # Spring Security 默认用户名密码配置，无实际用途，仅仅为了去除 WARN Log
+  security:
+    user:
+      name: user
+      password: pass123
 mybatis:
   type-handlers-package: net.wuxianjie.springbootweb.shared.mybatis
   mapper-locations: classpath:**/*Mapper.xml
