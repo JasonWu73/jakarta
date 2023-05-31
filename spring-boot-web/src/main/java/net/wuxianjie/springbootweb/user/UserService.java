@@ -72,12 +72,12 @@ public class UserService {
    *
    * <p>用户仅可查看其下级角色的用户。
    *
-   * @param id 需要查找的用户 id
+   * @param userId 需要查找的用户 id
    * @return 用户详情数据
    */
-  public ResponseEntity<UserDetailResponse> getUserDetail(final long id) {
+  public ResponseEntity<UserDetailResponse> getUserDetail(final long userId) {
     // 检索数据库，获取用户数据
-    final UserDetailResponse userInfo = Optional.ofNullable(userMapper.selectUserDetailById(id))
+    final UserDetailResponse userInfo = Optional.ofNullable(userMapper.selectUserDetailById(userId))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
 
     // 检验是否为当前用户的下级用户
@@ -132,13 +132,13 @@ public class UserService {
    *
    * <p>用户仅可更新其下级角色的用户。
    *
-   * @param id 需要更新的用户 id
+   * @param userId 需要更新的用户 id
    * @param req 请求参数
    * @return 204 HTTP 状态码
    */
-  public ResponseEntity<Void> updateUser(final long id, final UpdateUserRequest req) {
+  public ResponseEntity<Void> updateUser(final long userId, final UpdateUserRequest req) {
     // 检索数据库，获取旧用户数据
-    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(id))
+    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(userId))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
 
     // 检验是否为当前用户的下级用户
@@ -148,7 +148,7 @@ public class UserService {
 
     // 设置需要更新的字段
     final User userToUpdate = new User();
-    userToUpdate.setId(id);
+    userToUpdate.setId(userId);
     userToUpdate.setNickname(req.getNickname());
     userToUpdate.setStatus(AccountStatus.resolve(req.getStatus()).orElseThrow());
     userToUpdate.setRemark(req.getRemark());
@@ -213,13 +213,13 @@ public class UserService {
    *
    * <p>无需验证旧密码。
    *
-   * @param id 需要重置密码的用户 id
+   * @param userId 需要重置密码的用户 id
    * @param req 请求参数
    * @return 204 HTTP 状态码
    */
-  public ResponseEntity<Void> resetPassword(final long id, final ResetPasswordRequest req) {
+  public ResponseEntity<Void> resetPassword(final long userId, final ResetPasswordRequest req) {
     // 检索数据库，获取旧用户数据
-    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(id))
+    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(userId))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
 
     // 检验是否为当前用户的下级用户
@@ -229,7 +229,7 @@ public class UserService {
 
     // 设置需要更新的字段
     final User userToUpdate = new User();
-    userToUpdate.setId(id);
+    userToUpdate.setId(userId);
 
     // 将明文密码进行 Hash 计算后再保存
     final String newHashedPassword = passwordEncoder.encode(req.getPassword());
@@ -247,12 +247,12 @@ public class UserService {
    *
    * <p>用户仅可删除其下级角色的用户。
    *
-   * @param id 需要删除的用户 id
+   * @param userId 需要删除的用户 id
    * @return 204 HTTP 状态码
    */
-  public ResponseEntity<Void> deleteUser(final long id) {
+  public ResponseEntity<Void> deleteUser(final long userId) {
     // 检索数据库，获取旧用户数据
-    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(id))
+    final UserBaseInfo oldUser = Optional.ofNullable(userMapper.selectBaseById(userId))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到用户数据"));
 
     // 检验是否为当前用户的下级用户
@@ -261,7 +261,7 @@ public class UserService {
     }
 
     // 更新数据库中的用户
-    userMapper.deleteById(id);
+    userMapper.deleteById(userId);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }

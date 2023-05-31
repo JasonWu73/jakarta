@@ -54,12 +54,12 @@ public class RoleService {
    *
    * <p>用户仅可查看其下级角色。
    *
-   * @param id 需要查找的角色 id
+   * @param roleId 需要查找的角色 id
    * @return 角色详情数据
    */
-  public ResponseEntity<RoleBaseInfo> getRoleDetail(final long id) {
+  public ResponseEntity<RoleBaseInfo> getRoleDetail(final long roleId) {
     // 检索数据库，获取角色数据
-    final RoleBaseInfo roleInfo = Optional.ofNullable(roleMapper.selectBaseById(id))
+    final RoleBaseInfo roleInfo = Optional.ofNullable(roleMapper.selectBaseById(roleId))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到角色数据"));
 
     // 检验是否为当前用户的下级角色
@@ -122,14 +122,14 @@ public class RoleService {
    *
    * <p>用户仅可更新其下级角色。
    *
-   * @param id 需要更新的角色 id
+   * @param roleId 需要更新的角色 id
    * @param req 请求参数
    * @return 204 HTTP 状态码
    */
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<Void> updateRole(final long id, final UpdateRoleRequest req) {
+  public ResponseEntity<Void> updateRole(final long roleId, final UpdateRoleRequest req) {
     // 检索数据库，获取旧角色数据
-    final RoleBaseInfo oldRole = Optional.ofNullable(roleMapper.selectBaseById(id))
+    final RoleBaseInfo oldRole = Optional.ofNullable(roleMapper.selectBaseById(roleId))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到角色数据"));
 
     // 检验是否为当前用户的下级角色
@@ -139,7 +139,7 @@ public class RoleService {
 
     // 设置需要更新的字段
     final Role roleToUpdate = new Role();
-    roleToUpdate.setId(id);
+    roleToUpdate.setId(roleId);
     roleToUpdate.setRemark(req.getRemark());
 
     // 若需要更新角色名，则检索数据库，检验是否存在同名角色
@@ -150,7 +150,7 @@ public class RoleService {
       checkNameUniqueness(req.getName());
 
       // 更新其子角色的父角色名
-      roleMapper.updateParentNameByParentId(req.getName(), id);
+      roleMapper.updateParentNameByParentId(req.getName(), roleId);
     }
 
     // 若需要更新父角色，则检验父角色是否合法
@@ -158,7 +158,7 @@ public class RoleService {
       roleToUpdate.setParentId(req.getParentId());
 
       // 检验是否错误地将自身作为父角色
-      if (NumberUtil.equals(req.getParentId(), id)) {
+      if (NumberUtil.equals(req.getParentId(), roleId)) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "不能将自己作为自己的上级");
       }
 
@@ -181,7 +181,7 @@ public class RoleService {
       }
 
       // 更新其所有下级角色的全路径
-      roleToUpdate.setFullPath(parent.getFullPath() + StrUtil.DOT + id);
+      roleToUpdate.setFullPath(parent.getFullPath() + StrUtil.DOT + roleId);
 
       roleMapper.updateFullPathByFullPathLike(roleToUpdate.getFullPath() + StrUtil.DOT, oldFullPathPrefix);
     }
@@ -205,12 +205,12 @@ public class RoleService {
    *
    * <p>用户仅可删除其下级角色。
    *
-   * @param id 需要删除的角色 id
+   * @param roleId 需要删除的角色 id
    * @return 204 HTTP 状态码
    */
-  public ResponseEntity<Void> deleteRole(final long id) {
+  public ResponseEntity<Void> deleteRole(final long roleId) {
     // 检索数据库，获取角色
-    final RoleBaseInfo roleToDel = Optional.ofNullable(roleMapper.selectBaseById(id))
+    final RoleBaseInfo roleToDel = Optional.ofNullable(roleMapper.selectBaseById(roleId))
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "未找到角色数据"));
 
     // 检验是否为当前用户的下级角色
@@ -222,10 +222,10 @@ public class RoleService {
     checkNotExistsSubordinateRole(roleToDel.getFullPath());
 
     // 检验需要删除的角色是否还关联着用户
-    checkNotExistsUser(id);
+    checkNotExistsUser(roleId);
 
     // 删除数据库中的用色
-    roleMapper.deleteById(id);
+    roleMapper.deleteById(roleId);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }

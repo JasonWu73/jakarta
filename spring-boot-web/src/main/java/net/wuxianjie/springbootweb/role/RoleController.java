@@ -43,13 +43,13 @@ public class RoleController {
    *
    * <p>用户仅可查看其下级角色。
    *
-   * @param id 需要查找的角色 id
+   * @param roleId 需要查找的角色 id
    * @return 角色详情数据
    */
-  @GetMapping("/roles/{id}")
+  @GetMapping("/roles/{roleId}")
   @PreAuthorize("hasAuthority('role_view')")
-  public ResponseEntity<RoleBaseInfo> getRoleDetail(@PathVariable final long id) {
-    return roleService.getRoleDetail(id);
+  public ResponseEntity<RoleBaseInfo> getRoleDetail(@PathVariable final long roleId) {
+    return roleService.getRoleDetail(roleId);
   }
 
   /**
@@ -72,18 +72,18 @@ public class RoleController {
    *
    * <p>用户仅可更新其下级角色。
    *
-   * @param id 需要更新的角色 id
+   * @param roleId 需要更新的角色 id
    * @param req 请求参数
    * @return 204 HTTP 状态码
    */
   @Log("更新角色")
-  @PutMapping("/roles/{id}")
+  @PutMapping("/roles/{roleId}")
   @PreAuthorize("hasAuthority('role_edit')")
   public ResponseEntity<Void> updateRole(
-    @PathVariable final long id,
+    @PathVariable final long roleId,
     @RequestBody @Valid final UpdateRoleRequest req
   ) {
-    return roleService.updateRole(id, req);
+    return roleService.updateRole(roleId, req);
   }
 
   /**
@@ -91,13 +91,13 @@ public class RoleController {
    *
    * <p>用户仅可删除其下级角色。
    *
-   * @param id 需要删除的角色 id
+   * @param roleId 需要删除的角色 id
    * @return 204 HTTP 状态码
    */
   @Log("删除角色")
-  @DeleteMapping("/roles/{id}")
+  @DeleteMapping("/roles/{roleId}")
   @PreAuthorize("hasAuthority('role_del')")
-  public ResponseEntity<Void> deleteRole(@PathVariable final long id) {
-    return roleService.deleteRole(id);
+  public ResponseEntity<Void> deleteRole(@PathVariable final long roleId) {
+    return roleService.deleteRole(roleId);
   }
 }

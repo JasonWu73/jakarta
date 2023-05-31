@@ -45,13 +45,13 @@ public class UserController {
    *
    * <p>用户仅可查看其下级角色的用户。
    *
-   * @param id 需要查找的用户 id
+   * @param userId 需要查找的用户 id
    * @return 用户详情数据
    */
-  @GetMapping("/users/{id}")
+  @GetMapping("/users/{userId}")
   @PreAuthorize("hasAuthority('user_view')")
-  public ResponseEntity<UserDetailResponse> getUserDetail(@PathVariable final long id) {
-    return userService.getUserDetail(id);
+  public ResponseEntity<UserDetailResponse> getUserDetail(@PathVariable final long userId) {
+    return userService.getUserDetail(userId);
   }
 
   /**
@@ -74,18 +74,18 @@ public class UserController {
    *
    * <p>用户仅可更新其下级角色的用户。
    *
-   * @param id 需要更新的用户 id
+   * @param userId 需要更新的用户 id
    * @param req 请求参数
    * @return 204 HTTP 状态码
    */
   @Log("更新用户")
-  @PutMapping("/users/{id}")
+  @PutMapping("/users/{userId}")
   @PreAuthorize("hasAuthority('user_edit')")
   public ResponseEntity<Void> updateUser(
-    @PathVariable final long id,
+    @PathVariable final long userId,
     @RequestBody @Valid final UpdateUserRequest req
   ) {
-    return userService.updateUser(id, req);
+    return userService.updateUser(userId, req);
   }
 
   /**
@@ -104,18 +104,18 @@ public class UserController {
    *
    * <p>无需验证旧密码。
    *
-   * @param id 需要重置密码的用户 id
+   * @param userId 需要重置密码的用户 id
    * @param req 请求参数
    * @return 204 HTTP 状态码
    */
   @Log("重置密码")
-  @PutMapping("/users/{id}/reset")
+  @PutMapping("/users/{userId}/reset")
   @PreAuthorize("hasAuthority('user_reset')")
   public ResponseEntity<Void> resetPassword(
-    @PathVariable final long id,
+    @PathVariable final long userId,
     @RequestBody @Valid final ResetPasswordRequest req
   ) {
-    return userService.resetPassword(id, req);
+    return userService.resetPassword(userId, req);
   }
 
   /**
@@ -123,13 +123,13 @@ public class UserController {
    *
    * <p>用户仅可删除其下级角色的用户。
    *
-   * @param id 需要删除的用户 id
+   * @param userId 需要删除的用户 id
    * @return 204 HTTP 状态码
    */
   @Log("删除用户")
-  @DeleteMapping("/users/{id}")
+  @DeleteMapping("/users/{userId}")
   @PreAuthorize("hasAuthority('user_del')")
-  public ResponseEntity<Void> deleteUser(@PathVariable final long id) {
-    return userService.deleteUser(id);
+  public ResponseEntity<Void> deleteUser(@PathVariable final long userId) {
+    return userService.deleteUser(userId);
   }
 }
