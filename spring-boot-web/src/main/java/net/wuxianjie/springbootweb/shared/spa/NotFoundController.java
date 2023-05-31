@@ -77,6 +77,17 @@ public class NotFoundController {
    *
    * <p>约定 SPA 的页面入口：{@value #SPA_INDEX_PAGE}。
    *
+   * <h2>扩展说明</h2>
+   *
+   * <p>Spring Boot Web 静态资源查找目录，由优先级高到低排序：
+   *
+   * <ol>
+   *   <li>{@code src/main/resources/META-INF/resources/}</li>
+   *   <li>{@code src/main/resources/resources/}</li>
+   *   <li>{@code src/main/resources/static/}</li>
+   *   <li>{@code src/main/resources/public/}</li>
+   * </ol>
+   *
    * @return JSON 数据或 SPA 首页
    */
   @RequestMapping(URI_NOT_FOUND)

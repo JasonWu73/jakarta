@@ -34,34 +34,6 @@ public class WebSecurityConfig {
   private final TokenAuth tokenAuth;
 
   /**
-   * <p>静态资源需要排除在 Spring Security 之外，否则会导致浏览器无法缓存。
-   *
-   * <p>因为 Spring Security 会对所有经过其过滤器链的请求设置为不缓存，
-   * <br>即在 HTTP 响应头中添加 {@code Cache-Control: no-cache, no-store, max-age=0, must-revalidate}。
-   *
-   * <p>Spring Boot Web 静态资源查找目录，由优先级高到低排序：
-   *
-   * <ol>
-   *   <li>{@code src/main/resources/META-INF/resources/}</li>
-   *   <li>{@code src/main/resources/resources/}</li>
-   *   <li>{@code src/main/resources/static/}</li>
-   *   <li>{@code src/main/resources/public/}</li>
-   * </ol>
-   *
-   * @return 配置静态资源
-   */
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return web -> web.ignoring().requestMatchers(
-      "favicon.ico",
-      "/assets/**",
-      "/js/**",
-      "/css/**",
-      "/UEditor/**"
-    );
-  }
-
-  /**
    * 配置 Spring Security 的过滤器链。
    *
    * @param http HTTP 安全配置器
