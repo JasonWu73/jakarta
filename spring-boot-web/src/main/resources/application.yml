@@ -40,7 +40,7 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 auth:
   token-key: '=rgd(B`]{Q\4fRA'
-# TODO: delete me
+# 打印 JPA SQL 及参数值
 logging:
   level:
     sql: debug

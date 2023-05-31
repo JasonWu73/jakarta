@@ -24,15 +24,18 @@
   </properties>
 
   <dependencies>
-    <!-- TODO: Thymeleaf -->
+    <!-- Thymeleaf（实际项目更推荐 React SPA) -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
+    <!-- Thymeleaf 与 Spring Security 整合 -->
     <dependency>
       <groupId>org.thymeleaf.extras</groupId>
       <artifactId>thymeleaf-extras-springsecurity6</artifactId>
     </dependency>
+
+    <!-- JPA（实际项目更推荐 MyBatis） -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
