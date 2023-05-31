@@ -15,50 +15,59 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
 
-	private final EmployeeService employeeService;
+  private final EmployeeService employeeService;
 
-	@GetMapping("/employees/list")
-	public String listEmployees(final Model theModel) {
-		final List<Employee> employees =  employeeService.getEmployees();
+  @GetMapping("/employees/list")
+  public String listEmployees(final Model theModel) {
+    final List<Employee> employees = employeeService.getEmployees();
 
-		// add to the spring model
-		theModel.addAttribute("employees", employees);
+    // add to the spring model
+    theModel.addAttribute("employees", employees);
 
-		return "employees/list-employees";
-	}
+    return "employees/list-employees";
+  }
 
-	@GetMapping("/employees/showFormForAdd")
-	public String showFormForAdd(final Model model) {
-		final Employee employee = new Employee();
+  @GetMapping("/employees/showFormForAdd")
+  public String showFormForAdd(final Model model) {
+    final Employee employee = new Employee();
 
-		model.addAttribute("employee", employee);
+    model.addAttribute("employee", employee);
 
-		return "employees/employee-form";
-	}
+    return "employees/employee-form";
+  }
 
-	@GetMapping("/employees/showFormForUpdate")
-	public String showFormForUpdate(final Model model, final int employeeId) {
-		// get the employee from the service
-		final Employee employee = employeeService.getEmployee(employeeId);
+  @GetMapping("/employees/showFormForUpdate")
+  public String showFormForUpdate(final Model model, final int employeeId) {
+    // get the employee from the service
+    final Employee employee = employeeService.getEmployee(employeeId);
 
-		// set employee as a model attribute to pre-populate the form
-		model.addAttribute("employee", employee);
+    // set employee as a model attribute to pre-populate the form
+    model.addAttribute("employee", employee);
 
-		// send over to our form
-		return "employees/employee-form";
-	}
+    // send over to our form
+    return "employees/employee-form";
+  }
 
-	@PostMapping("/employees/save")
-	public String saveEmployee(@ModelAttribute("employee") final Employee employee) {
-		employeeService.save(employee);
+  @PostMapping("/employees/save")
+  public String saveEmployee(@ModelAttribute("employee") final Employee employee) {
+    employeeService.save(employee);
 
-		return "redirect:/employees/list";
-	}
+    return "redirect:/employees/list";
+  }
 
-	@GetMapping
-	public String redirectToEmployeeListPage() {
-		return "redirect:/employees/list";
-	}
+  @GetMapping("/employees/delete")
+  public String deleteEmployee(final int employeeId) {
+    // delete the employee
+    employeeService.deleteEmployee(employeeId);
+
+    // redirect to the /employees/list
+    return "redirect:/employees/list";
+  }
+
+  @GetMapping
+  public String redirectToEmployeeListPage() {
+    return "redirect:/employees/list";
+  }
 }
 
 

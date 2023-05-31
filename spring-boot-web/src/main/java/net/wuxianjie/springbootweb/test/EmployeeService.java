@@ -26,4 +26,8 @@ public class EmployeeService {
     return employeeRepository.findById(employeeId)
       .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "employee not found id - " + employeeId));
   }
+
+  public void deleteEmployee(final int employeeId) {
+    employeeRepository.deleteById(employeeId);
+  }
 }
