@@ -1,6 +1,8 @@
 package net.wuxianjie.springbootweb.test;
 
 import lombok.RequiredArgsConstructor;
+import net.wuxianjie.springbootweb.shared.restapi.ApiException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,5 +19,11 @@ public class EmployeeService {
 
   public void save(final Employee employee) {
     employeeRepository.save(employee);
+  }
+
+  public Employee getEmployee(final int employeeId) {
+    // get employee by id from db
+    return employeeRepository.findById(employeeId)
+      .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "employee not found id - " + employeeId));
   }
 }

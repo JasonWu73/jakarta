@@ -27,12 +27,24 @@ public class EmployeeController {
 		return "employees/list-employees";
 	}
 
-	@GetMapping("/showFormForAdd")
+	@GetMapping("/employees/showFormForAdd")
 	public String showFormForAdd(final Model model) {
 		final Employee employee = new Employee();
 
 		model.addAttribute("employee", employee);
 
+		return "employees/employee-form";
+	}
+
+	@GetMapping("/employees/showFormForUpdate")
+	public String showFormForUpdate(final Model model, final int employeeId) {
+		// get the employee from the service
+		final Employee employee = employeeService.getEmployee(employeeId);
+
+		// set employee as a model attribute to pre-populate the form
+		model.addAttribute("employee", employee);
+
+		// send over to our form
 		return "employees/employee-form";
 	}
 
