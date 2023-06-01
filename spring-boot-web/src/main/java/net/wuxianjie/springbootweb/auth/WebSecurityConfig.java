@@ -9,8 +9,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,6 +34,30 @@ public class WebSecurityConfig {
 
   private final HandlerExceptionResolver handlerExceptionResolver;
   private final TokenAuth tokenAuth;
+
+  // FIXME: 测试完请删除
+  @Bean
+  public InMemoryUserDetailsManager userDetailsManager() {
+    final UserDetails john = User.builder()
+      .username("john")
+      .password("{noop}111")
+      .roles("EMPLOYEE")
+      .build();
+
+    final UserDetails mary = User.builder()
+      .username("mary")
+      .password("{noop}111")
+      .roles("EMPLOYEE", "MANAGER")
+      .build();
+
+    final UserDetails susan = User.builder()
+      .username("susan")
+      .password("{noop}111")
+      .roles("EMPLOYEE", "MANAGER", "ADMIN")
+      .build();
+
+    return new InMemoryUserDetailsManager(john, mary, susan);
+  }
 
   /**
    * 将 Bcrypt 哈希算法作为 Spring Security 身份验证管理的密码编码器，密码有且仅有 60 位字符。
