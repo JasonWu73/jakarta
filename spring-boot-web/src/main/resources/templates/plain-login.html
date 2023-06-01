@@ -6,7 +6,7 @@
     <!-- Responsive meta tag  -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Thymeleaf 首页</title>
+    <title>登录</title>
 
     <link th:href="@{images/favicon.ico}" rel="icon">
 
@@ -15,14 +15,15 @@
   </head>
 
   <body>
-    <div class="container-fluid">
-      <h1 class="text-center">吴仙杰演示系统</h1>
-      <hr>
-      <p class="text-info">欢迎来到 Thymeleaf 首页！</p>
-    </div>
+    <div class="container">
+      <h3>My Custom Login Page</h3>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script th:src="@{/vendor/bootstrap/bootstrap.bundle.min.js}"></script>
+      <form th:action="@{/authenticateTheUser}" method="post">
+        <p>User name: <input type="text" name="username"></p>
+        <p>Password: <input type="password" name="password"></p>
+        <input type="submit" value="Login">
+      </form>
+    </div>
   </body>
 </html>
 

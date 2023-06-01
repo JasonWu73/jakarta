@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/thymeleaf")
-public class TestController {
+public class ThymeleafTestController {
 
   @GetMapping("/")
   public String showHome() {

@@ -37,6 +37,19 @@ public class WebSecurityConfig {
 
   // FIXME: 测试完请删除
   @Bean
+  public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests()
+      .anyRequest().authenticated().and()
+      .formLogin()
+      .loginPage("/showMyLoginPage")
+      .loginProcessingUrl("/authenticateTheUser")
+      .permitAll();
+
+    return http.build();
+  }
+
+  // FIXME: 测试完请删除
+  @Bean
   public InMemoryUserDetailsManager userDetailsManager() {
     final UserDetails john = User.builder()
       .username("john")
