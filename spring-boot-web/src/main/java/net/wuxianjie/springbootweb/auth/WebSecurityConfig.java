@@ -39,7 +39,8 @@ public class WebSecurityConfig {
    * @return 配置后的过滤器链
    * @throws Exception 当配置失败时抛出
    */
-  @Bean
+//  @Bean
+  // FIXME: 测试完后恢复注入
   public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
     // 以下配置仅对 API 请求（即以 `/api/` 为前缀的 Path）生效
     http

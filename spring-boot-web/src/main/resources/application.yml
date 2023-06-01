@@ -34,7 +34,7 @@ spring:
   security:
     user:
       name: user
-      password: pass123
+      password: $2a$10$IPnO6FAD04p5TnYvDvNqn.5A4ZIG9T.0j6GMK3pqkeDoB0ooP1wP.
 mybatis:
   type-handlers-package: net.wuxianjie.springbootweb.shared.mybatis
   mapper-locations: classpath:**/*Mapper.xml
