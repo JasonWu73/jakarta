@@ -43,7 +43,8 @@ public class WebSecurityConfig {
       .formLogin()
       .loginPage("/showMyLoginPage")
       .loginProcessingUrl("/authenticateTheUser")
-      .permitAll();
+      .permitAll().and()
+      .logout().permitAll();
 
     return http.build();
   }

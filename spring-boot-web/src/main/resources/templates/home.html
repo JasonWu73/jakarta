@@ -19,6 +19,10 @@
       <h1 class="text-center">吴仙杰演示系统</h1>
       <hr>
       <p class="text-info">欢迎来到 Thymeleaf 首页！</p>
+
+      <form th:action="@{/logout}" method="post">
+        <button class="btn btn-primary">注销</button>
+      </form>
     </div>
 
     <!-- Bootstrap Bundle with Popper -->
