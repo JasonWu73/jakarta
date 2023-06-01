@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -33,7 +33,35 @@ public class WebSecurityConfig {
   private final TokenAuth tokenAuth;
 
   /**
+   * 将 Bcrypt 哈希算法作为 Spring Security 身份验证管理的密码编码器，密码有且仅有 60 位字符。
+   *
+   * <h2>{@code {id}encodedPassword}</h2>
+   *
+   * <p>若不注入此 Bean，则使用 Spring Security 默认密码格式：{@code {id}encodedPassword}。
+   *
+   * <p>常用编码算法 id 有：
+   *
+   * <ul>
+   *   <li>noop：明文密码</li>
+   *   <li>bcrypt：BCrypt 哈希密码</li>
+   * </ul>
+   *
+   * @return Bcrypt 密码编码器
+   */
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    // 使用 Spring Security 默认的密码编码器
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+    // 固定使用 BCrypt 作为项目的密码编码器
+    // FIXME: 测试完成后使用 BCrypt 作为密码编码器
+//    return new BCryptPasswordEncoder();
+  }
+
+  /**
    * 配置 Spring Security 的过滤器链。
+   *
+   * <p>若不注入此 Bean，则使用 Spring Security 默认配置。
    *
    * @param http HTTP 安全配置器
    * @return 配置后的过滤器链
@@ -105,15 +133,5 @@ public class WebSecurityConfig {
     source.registerCorsConfiguration("/**", config);
 
     return new CorsFilter(source);
-  }
-
-  /**
-   * 将 Bcrypt 哈希算法作为 Spring Security 身份验证管理的密码编码器。
-   *
-   * @return Bcrypt 密码编码器
-   */
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
   }
 }

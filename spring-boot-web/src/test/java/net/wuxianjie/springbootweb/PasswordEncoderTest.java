@@ -8,7 +8,7 @@ public class PasswordEncoderTest {
 
   @Test
   void testEncodePassword() {
-    final String rawPassword = "pass123";
+    final String rawPassword = "111";
 
     final String hashedPassword = new BCryptPasswordEncoder().encode(rawPassword);
 
