@@ -45,8 +45,11 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 auth:
   token-key: '=rgd(B`]{Q\4fRA'
-# 打印 JPA SQL 及参数值
+
 logging:
   level:
-    sql: debug
-    org.hibernate.orm.jdbc.bind: trace
+    # 打印 JPA SQL 及参数值
+#    sql: debug
+#    org.hibernate.orm.jdbc.bind: trace
+    # 打印 Spring BOOT SQL
+    org.springframework.jdbc.core: trace
