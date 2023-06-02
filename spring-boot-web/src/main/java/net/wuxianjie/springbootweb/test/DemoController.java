@@ -6,10 +6,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/thymeleaf")
-public class ThymeleafTestController {
+public class DemoController {
 
   @GetMapping("/")
   public String showHome() {
-    return "home";
+    return "demo/home";
+  }
+
+  @GetMapping("/power")
+  public String showPower() {
+    return "demo/power";
   }
 }

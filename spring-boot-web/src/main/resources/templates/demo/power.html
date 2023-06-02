@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+
+    <!-- Responsive meta tag  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>电源样式</title>
+
+    <link th:href="@{images/favicon.ico}" rel="icon">
+
+    <script defer src="https://kit.fontawesome.com/9c3ee9b0f7.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .container {
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #e3edf7;
+      }
+
+      .container p {
+        font-size: 32px;
+        letter-spacing: 4px;
+        color: #777;
+        margin: -250px 0 100px;
+      }
+
+      .container input {
+        width: 0;
+        height: 0;
+      }
+
+      .container input::before {
+        content: '\f011';
+        font-family: FontAwesome;
+        font-size: 52px;
+        color: #777;
+        height: 160px;
+        width: 160px;
+        transform: translateX(-80px);
+        background: #e3edf7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 10px;
+        box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.2),
+                    inset -4px -4px 6px -1px rgba(255, 255, 255, 0.7),
+
+                    -0.5px -0.5px 0 rgba(255, 255, 255, 1),
+                    0.5px 0.5px 0 rgba(0, 0, 0, 0.15),
+                    0 12px 10px -10px rgba(0, 0, 0, 0.05);
+      }
+
+      .container input:checked::before {
+        color: #4fce5d;
+        box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.3),
+                    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+      }
+    </style>
+  </head>
+    <div class="container">
+      <p>电源开/关</p>
+      <input type="checkbox">
+    </div>
+  <body>
+  </body>
+</html>
+
+
+
