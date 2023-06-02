@@ -6,9 +6,9 @@
     <!-- Responsive meta tag  -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>IT System Meeting</title>
+    <title>新建用户</title>
 
-    <link th:href="@{images/favicon.ico}" rel="icon">
+    <link th:href="@{/images/favicon.ico}" rel="icon">
 
     <!-- Bootstrap CSS -->
     <link th:href="@{/vendor/bootstrap/bootstrap.min.css}" rel="stylesheet">
@@ -16,13 +16,13 @@
 
   <body>
     <div class="container-fluid">
-      <h2>IT System Meeting</h2>
+      <h2 class="mt-3 text-center">新建用户</h2>
       <hr>
       <p>
-        Only Admin can see me.
+        拥有 <code>USER_ADD</code> 权限才可访问本页。
       </p>
       <hr>
-      <a th:href="@{/}">Back to Home Page</a>
+      <a th:href="@{/thymeleaf/}">返回首页</a>
     </div>
   </body>
 </html>

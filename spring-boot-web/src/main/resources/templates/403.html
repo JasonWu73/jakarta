@@ -12,7 +12,7 @@
 
     <title>403 拒绝访问</title>
 
-    <link th:href="@{images/favicon.ico}" rel="icon">
+    <link th:href="@{/images/favicon.ico}" rel="icon">
 
     <!-- Bootstrap CSS -->
     <link th:href="@{/vendor/bootstrap/bootstrap.min.css}" rel="stylesheet">
@@ -20,14 +20,18 @@
 
   <body>
     <div class="container-fluid">
-      <h1 class="text-center">403</h1>
+      <h2 class="mt-3 text-center">403</h2>
+
       <hr>
+
       <p>拒绝访问</p>
+
       <p>用户：<code sec:authentication="principal.username"></code></p>
       <p>角色：<code sec:authentication="principal.authorities"></code></p>
 
       <hr>
-      <p><a th:href="@{/}">Back to home page</a></p>
+
+      <p><a th:href="@{/thymeleaf/}">返回首页</a></p>
     </div>
   </body>
 </html>

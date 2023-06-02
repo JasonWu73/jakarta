@@ -8,12 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -39,25 +37,47 @@ public class WebSecurityConfig {
   private final HandlerExceptionResolver handlerExceptionResolver;
   private final TokenAuth tokenAuth;
 
-  // FIXME: 测试完请删除
+  // ========== Spring Security 测试配置 ==========
+
+  /**
+   * <p>静态资源需要排除在 Spring Security 之外，否则会导致浏览器无法缓存。
+   *
+   * <p>因为 Spring Security 会对所有经过其过滤器链的请求设置为不缓存，
+   * <br>即在 HTTP 响应头中添加 {@code Cache-Control: no-cache, no-store, max-age=0, must-revalidate}。
+   *
+   * <p>Spring Boot Web 静态资源查找目录，由优先级高到低排序：
+   *
+   * <ol>
+   *   <li>{@code src/main/resources/META-INF/resources/}</li>
+   *   <li>{@code src/main/resources/resources/}</li>
+   *   <li>{@code src/main/resources/static/}</li>
+   *   <li>{@code src/main/resources/public/}</li>
+   * </ol>
+   *
+   * @return 配置静态资源
+   */
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return web -> web.ignoring().requestMatchers(
+      "/images/**",
+      "/vendor/**"
+    );
+  }
+
+
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
     http.authorizeHttpRequests()
-      .requestMatchers("/").hasRole("EMPLOYEE")
-      .requestMatchers("/leaders/**").hasRole("MANAGER")
-      .requestMatchers("/systems/**").hasRole("ADMIN")
       .anyRequest().authenticated().and()
       .formLogin()
-      .loginPage("/showMyLoginPage")
-      .loginProcessingUrl("/authenticateTheUser")
-      .permitAll().and()
+      .loginPage("/thymeleaf/login")
+      .loginProcessingUrl("/authenticateTheUser").permitAll().and()
       .logout().permitAll().and()
-      .exceptionHandling(c -> c.accessDeniedPage("/access-denied"));
+      .exceptionHandling(c -> c.accessDeniedPage("/thymeleaf/access-denied"));
 
     return http.build();
   }
 
-  // FIXME: delete me
   @Bean
   public UserDetailsManager userDetailsManager(final DataSource dataSource) {
     final JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
@@ -69,29 +89,7 @@ public class WebSecurityConfig {
     return manager;
   }
 
-  // FIXME: 测试完请删除
-//  @Bean
-  public InMemoryUserDetailsManager userDetailsManager() {
-    final UserDetails john = User.builder()
-      .username("john")
-      .password("{noop}111")
-      .roles("EMPLOYEE")
-      .build();
-
-    final UserDetails mary = User.builder()
-      .username("mary")
-      .password("{noop}111")
-      .roles("EMPLOYEE", "MANAGER")
-      .build();
-
-    final UserDetails susan = User.builder()
-      .username("susan")
-      .password("{noop}111")
-      .roles("EMPLOYEE", "MANAGER", "ADMIN")
-      .build();
-
-    return new InMemoryUserDetailsManager(john, mary, susan);
-  }
+  // ========== Spring Security 正式配置 ==========
 
   /**
    * 将 Bcrypt 哈希算法作为 Spring Security 身份验证管理的密码编码器，密码有且仅有 60 位字符。
@@ -111,12 +109,11 @@ public class WebSecurityConfig {
    */
   @Bean
   public PasswordEncoder passwordEncoder() {
-    // 使用 Spring Security 默认的密码编码器
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
     // 固定使用 BCrypt 作为项目的密码编码器
-    // FIXME: 测试完成后使用 BCrypt 作为密码编码器
-//    return new BCryptPasswordEncoder();
+    return new BCryptPasswordEncoder();
+
+    // 使用 Spring Security 默认的密码编码器
+//    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
 
   /**

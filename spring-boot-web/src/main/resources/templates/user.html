@@ -6,9 +6,9 @@
     <!-- Responsive meta tag  -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Leader Home Page</title>
+    <title>用户列表</title>
 
-    <link th:href="@{images/favicon.ico}" rel="icon">
+    <link th:href="@{/images/favicon.ico}" rel="icon">
 
     <!-- Bootstrap CSS -->
     <link th:href="@{/vendor/bootstrap/bootstrap.min.css}" rel="stylesheet">
@@ -16,13 +16,13 @@
 
   <body>
     <div class="container-fluid">
-      <h2>Leader Home Page</h2>
+      <h2 class="mt-3 text-center">用户列表</h2>
       <hr>
       <p>
-        The secret for leader tier.
+        拥有 <code>USER_VIEW</code> 权限才可访问本页。
       </p>
       <hr>
-      <a th:href="@{/}">Back to Home Page</a>
+      <a th:href="@{/thymeleaf/}">返回首页</a>
     </div>
   </body>
 </html>
