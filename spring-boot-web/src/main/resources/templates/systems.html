@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+
+    <!-- Responsive meta tag  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>IT System Meeting</title>
+
+    <link th:href="@{images/favicon.ico}" rel="icon">
+
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/vendor/bootstrap/bootstrap.min.css}" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <h2>IT System Meeting</h2>
+      <hr>
+      <p>
+        Only Admin can see me.
+      </p>
+      <hr>
+      <a th:href="@{/}">Back to Home Page</a>
+    </div>
+  </body>
+</html>
+
+
+

@@ -21,4 +21,14 @@ public class LoginController {
   public String showLeaders() {
     return "leaders";
   }
+
+  @GetMapping("/systems")
+  public String showSystems() {
+    return "systems";
+  }
+
+  @GetMapping("/access-denied")
+  public String showAccessDeniedPage() {
+    return "403";
+  }
 }

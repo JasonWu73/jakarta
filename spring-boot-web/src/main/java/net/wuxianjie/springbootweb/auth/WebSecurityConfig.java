@@ -47,7 +47,8 @@ public class WebSecurityConfig {
       .loginPage("/showMyLoginPage")
       .loginProcessingUrl("/authenticateTheUser")
       .permitAll().and()
-      .logout().permitAll();
+      .logout().permitAll().and()
+      .exceptionHandling(c -> c.accessDeniedPage("/access-denied"));
 
     return http.build();
   }
