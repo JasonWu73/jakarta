@@ -14,12 +14,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import javax.sql.DataSource;
 
 /**
  * Spring Security 配置。
@@ -53,8 +57,14 @@ public class WebSecurityConfig {
     return http.build();
   }
 
-  // FIXME: 测试完请删除
+  // FIXME: delete me
   @Bean
+  public UserDetailsManager userDetailsManager(final DataSource dataSource) {
+    return new JdbcUserDetailsManager(dataSource);
+  }
+
+  // FIXME: 测试完请删除
+//  @Bean
   public InMemoryUserDetailsManager userDetailsManager() {
     final UserDetails john = User.builder()
       .username("john")
