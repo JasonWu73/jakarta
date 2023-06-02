@@ -11,4 +11,14 @@ public class LoginController {
 //    return "plain-login";
     return "fancy-login";
   }
+
+  @GetMapping("/")
+  public String showHome() {
+    return "home";
+  }
+
+  @GetMapping("/leaders")
+  public String showLeaders() {
+    return "leaders";
+  }
 }

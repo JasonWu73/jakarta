@@ -39,6 +39,9 @@ public class WebSecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
     http.authorizeHttpRequests()
+      .requestMatchers("/").hasRole("EMPLOYEE")
+      .requestMatchers("/leaders/**").hasRole("MANAGER")
+      .requestMatchers("/systems/**").hasRole("ADMIN")
       .anyRequest().authenticated().and()
       .formLogin()
       .loginPage("/showMyLoginPage")

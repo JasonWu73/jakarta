@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html
+  lang="zh"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+  <head>
+    <meta charset="UTF-8">
+
+    <!-- Responsive meta tag  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Thymeleaf 首页</title>
+
+    <link th:href="@{images/favicon.ico}" rel="icon">
+
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/vendor/bootstrap/bootstrap.min.css}" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <h1 class="text-center">吴仙杰演示系统</h1>
+      <hr>
+      <p>欢迎来到 Thymeleaf 首页！</p>
+      <p>用户：<code sec:authentication="principal.username"></code></p>
+      <p>角色：<code sec:authentication="principal.authorities"></code></p>
+
+      <form th:action="@{/logout}" method="post">
+        <button class="btn btn-primary">注销</button>
+      </form>
+
+      <hr>
+      <p><a th:href="@{/leaders}">Leadership Meeting</a> (Only for manager peeps)</p>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script th:src="@{/vendor/bootstrap/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>
+
+
+
