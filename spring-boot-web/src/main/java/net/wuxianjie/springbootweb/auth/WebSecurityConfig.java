@@ -5,23 +5,21 @@ import net.wuxianjie.springbootweb.shared.restapi.ApiException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-
-import javax.sql.DataSource;
 
 /**
  * Spring Security 配置。
@@ -79,14 +77,13 @@ public class WebSecurityConfig {
   }
 
   @Bean
-  public UserDetailsManager userDetailsManager(final DataSource dataSource) {
-    final JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+  public DaoAuthenticationProvider authenticationProvider(final UserDetailsService userService) {
+    final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
-    manager.setUsersByUsernameQuery("select user_id, pw, active from members where user_id = ?");
+    provider.setUserDetailsService(userService);
+    provider.setPasswordEncoder(passwordEncoder());
 
-    manager.setAuthoritiesByUsernameQuery("select user_id, role from roles where user_id = ?");
-
-    return manager;
+    return provider;
   }
 
   // ========== Spring Security 正式配置 ==========

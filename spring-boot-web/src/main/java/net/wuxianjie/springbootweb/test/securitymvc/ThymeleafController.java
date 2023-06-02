@@ -1,4 +1,4 @@
-package net.wuxianjie.springbootweb.test.mvc;
+package net.wuxianjie.springbootweb.test.securitymvc;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

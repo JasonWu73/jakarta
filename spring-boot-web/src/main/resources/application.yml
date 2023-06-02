@@ -49,7 +49,5 @@ auth:
 logging:
   level:
     # 打印 JPA SQL 及参数值
-#    sql: debug
-#    org.hibernate.orm.jdbc.bind: trace
-    # 打印 Spring BOOT SQL
-    org.springframework.jdbc.core: trace
+    sql: debug
+    org.hibernate.orm.jdbc.bind: trace
