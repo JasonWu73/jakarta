@@ -48,6 +48,6 @@ auth:
 
 logging:
   level:
-    # 打印 JPA SQL 及参数值
+    # 打印 JPA SQL 及参数值，生产环境下请注释掉
     sql: debug
     org.hibernate.orm.jdbc.bind: trace
