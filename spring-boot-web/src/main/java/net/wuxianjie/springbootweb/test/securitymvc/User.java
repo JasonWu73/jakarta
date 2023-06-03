@@ -51,7 +51,7 @@ public class User {
   /**
    * 角色 id。
    */
-  @ManyToOne()
+  @ManyToOne
   @JoinColumn(name = "role_id")
   private Role role;
 
