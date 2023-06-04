@@ -28,4 +28,8 @@ public class InstructorRepository {
 
     entityManager.remove(instructor);
   }
+
+  public Optional<InstructorDetail> findByInstructorDetailId(final int instructorDetailId) {
+    return Optional.ofNullable(entityManager.find(InstructorDetail.class, instructorDetailId));
+  }
 }
