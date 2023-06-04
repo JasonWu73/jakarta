@@ -5,6 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @AllArgsConstructor
 public class NeedDeleteApp {
@@ -14,7 +16,8 @@ public class NeedDeleteApp {
   @Bean
   public CommandLineRunner commandLineRunner() {
     return args -> {
-      createInstructor();
+//      createInstructor();
+      getInstructor();
     };
   }
 
@@ -34,5 +37,11 @@ public class NeedDeleteApp {
     // save the instructor
     System.out.println("Saving instructor: " + instructorToSave);
     instructorRepository.save(instructorToSave);
+  }
+
+  private void getInstructor() {
+    // eager
+    final Instructor instructor = instructorRepository.findById(1).orElseThrow();
+    System.out.println(instructor.getEmail());
   }
 }
