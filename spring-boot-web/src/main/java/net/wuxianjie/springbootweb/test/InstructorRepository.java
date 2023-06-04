@@ -32,4 +32,11 @@ public class InstructorRepository {
   public Optional<InstructorDetail> findByInstructorDetailId(final int instructorDetailId) {
     return Optional.ofNullable(entityManager.find(InstructorDetail.class, instructorDetailId));
   }
+
+  @Transactional(rollbackFor = Exception.class)
+  public void deleteInstructorDetailById(final int instructorDetailId) {
+    final InstructorDetail instructorDetail = entityManager.find(InstructorDetail.class, instructorDetailId);
+
+    entityManager.remove(instructorDetail);
+  }
 }

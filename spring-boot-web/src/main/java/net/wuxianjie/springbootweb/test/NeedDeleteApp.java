@@ -17,7 +17,8 @@ public class NeedDeleteApp {
 //      createInstructor();
 //      getInstructor();
 //      deleteInstructor();
-      getInstructorDetail();
+//      getInstructorDetail();
+      deleteInstructorDetail();
     };
   }
 
@@ -55,5 +56,9 @@ public class NeedDeleteApp {
 
     System.out.println(instructorDetail.getHobby());
     System.out.println(instructorDetail.getInstructor().getFirstName());
+  }
+
+  private void deleteInstructorDetail() {
+    instructorRepository.deleteInstructorById(2);
   }
 }
