@@ -54,7 +54,7 @@ public class WebSecurityConfig {
    *
    * @return 配置静态资源
    */
-  @Bean
+//  @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return web -> web.ignoring().requestMatchers(
       "/images/**",
@@ -63,7 +63,7 @@ public class WebSecurityConfig {
   }
 
 
-  @Bean
+//  @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
     http.authorizeHttpRequests()
       .anyRequest().authenticated().and()
@@ -76,7 +76,7 @@ public class WebSecurityConfig {
     return http.build();
   }
 
-  @Bean
+//  @Bean
   public DaoAuthenticationProvider authenticationProvider(final UserDetailsService userService) {
     final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
@@ -122,8 +122,7 @@ public class WebSecurityConfig {
    * @return 配置后的过滤器链
    * @throws Exception 当配置失败时抛出
    */
-//  @Bean
-  // FIXME: 测试完后恢复注入
+  @Bean
   public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
     // 以下配置仅对 API 请求（即以 `/api/` 为前缀的 Path）生效
     http
