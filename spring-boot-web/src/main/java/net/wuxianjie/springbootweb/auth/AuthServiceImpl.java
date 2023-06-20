@@ -32,6 +32,9 @@ public class AuthServiceImpl implements AuthService {
   private final AuthMapper authMapper;
 
   public ResponseEntity<TokenResponse> getToken(final GetTokenRequest req) {
+    // 用户名不区分大小写
+    req.setUsername(req.getUsername().toLowerCase());
+
     // 检索数据库，获取用户
     final AuthData auth = Optional.ofNullable(authMapper.selectByUsername(req.getUsername()))
       .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "用户名或密码错误"));

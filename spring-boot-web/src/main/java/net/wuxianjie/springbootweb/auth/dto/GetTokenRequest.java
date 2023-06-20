@@ -12,7 +12,7 @@ import lombok.Data;
 public class GetTokenRequest {
 
   /**
-   * 用户名，必填。
+   * 用户名（不区分大小写），必填。
    */
   @NotBlank(message = "用户名不能为空")
   private String username;

@@ -100,7 +100,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"wxj\", // 用户名, 必填\n  \"password\": \"111\" // 密码, 必填\n}",
+							"raw": "{\n  \"username\": \"wxj\", // 用户名（不区分大小写）, 必填\n  \"password\": \"111\" // 密码, 必填\n}",
 							"options": {
 								"raw": {
 									"language": "json"
